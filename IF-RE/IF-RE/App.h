@@ -17,11 +17,13 @@ public:
 
 private:
 	sf::VideoMode VM;
-	sf::RenderWindow *root;
+	sf::RenderWindow root;
 	sf::Event event_;
 
 	sf::Clock clock;
-	sf::View *view;
+	sf::View view;
+
+	float current_zoom;
 
 	float FPS;
 	bool gameEnd;

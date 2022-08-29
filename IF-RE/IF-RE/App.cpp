@@ -12,7 +12,6 @@ App::App(unsigned int width, unsigned int height, std::string wname)
 App::~App()
 {
     delete player;
-    delete root;
 }
 
 // Инициализаторы
@@ -22,27 +21,31 @@ void App::initWindow(unsigned int width, unsigned int height, std::string wname)
     VM.width = width;
     VM.height = height;
 
-    root = new sf::RenderWindow(VM, wname);
-    root->setView(*view);
+    root.create(VM, wname);
+    root.setView(view);
 }
 
 void App::initVariables()
 {
+    current_zoom = 1.f;
+
     FPS = 0;
     gameEnd = false;
     PxlFont.loadFromFile("resources/font/pxlfont.ttf");
 
-    view = new sf::View;
-    view->setCenter(sf::Vector2f(256.f, 128.f));
-    view->setSize(sf::Vector2f(640.f, 480.f));
+    view.setCenter(sf::Vector2f(256.f, 128.f));
+    view.setSize(sf::Vector2f(640.f, 480.f));
+    
 }
 
 void App::initPlayer()
 {
-    sf::Texture texture;
+    sf::Texture texture, sword;
     texture.loadFromFile("resources/img/hero.png");
     sf::Vector2f pos(100.f, 100.f);
-    Weapon gun;
+
+    sword.loadFromFile("resources/img/sword.png");
+    Weapon* gun = new Weapon(sword);
 
     player = new Pawn(texture, pos, gun, 400);
 }
@@ -52,7 +55,7 @@ void App::initPlayer()
 
 bool App::isOpen()
 {
-    return root->isOpen();
+    return root.isOpen();
 }
 
 bool App::isGameEnd()
@@ -65,17 +68,17 @@ bool App::isGameEnd()
 
 void App::pollEvent()
 {
-    while (root->pollEvent(event_))
+    while (root.pollEvent(event_))
     {
         switch (event_.type)
         {
         case sf::Event::Closed:
-            root->close();
+            root.close();
             break;
         
         case sf::Event::KeyPressed:
             if (event_.key.code == sf::Keyboard::Escape)
-                root->close();
+                root.close();
            // Player contoling
             if (event_.key.code == sf::Keyboard::W)
                 player->moveUp(true);
@@ -100,17 +103,27 @@ void App::pollEvent()
 
         case sf::Event::MouseButtonPressed:
             if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-                //map_creator.change_by_pos(sf::Mouse::getPosition(*root));
+                player->attack();
             break;
-        
+            
+        case sf::Event::MouseWheelScrolled:
+            if (event_.mouseWheelScroll.delta < 0 && current_zoom < 2)
+            {   
+                current_zoom *= 1.1;
+                view.zoom(1.1);
+            }
+            else if (event_.mouseWheelScroll.delta > 0 && current_zoom > 0.5)
+            {
+                current_zoom *= 0.9;
+                view.zoom(0.91);
+            }
+            break;
         }
     }
 }
 
 void App::update()
 {
-
-
     float time = clock.getElapsedTime().asSeconds();
     FPS = 1 / time;
 
@@ -119,26 +132,27 @@ void App::update()
     pollEvent();
 
     // game logic
-    player->update(time);
+    sf::Vector2f mouse_pos(sf::Mouse::getPosition(root).x - (int)root.getSize().x / 2, 
+                           sf::Mouse::getPosition(root).y - (int)root.getSize().y / 2);
+
+    player->update(mouse_pos,time);
     map_creator.update();
 }
 
 void App::render()
 {
-    root->clear();
+    root.clear();
 
     //drawing
-    sf::Sprite pl_skin = player->getDrawable();
-    
     sf::String counter_fps = "FPS: " + std::to_string(FPS);
-    
     sf::Text text(std::string(counter_fps), PxlFont, 20U);
+    
+    view.setCenter(player->getCenterPos());
+    root.setView(view);
 
-   
-    root->draw(map_creator.getMap());
-    root->draw(pl_skin);
-    root->draw(text);
+    root.draw(map_creator.getMap());
+    root.draw(*player);
+    root.draw(text);
 
-
-    root->display();
+    root.display();
 }
