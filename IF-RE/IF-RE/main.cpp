@@ -1,6 +1,5 @@
 #include "App.h"
 
-// С вас 5 тыщ
 
 int main()
 {
