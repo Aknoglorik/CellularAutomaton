@@ -4,9 +4,6 @@
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
 
-#include "Pawn.h"
-#include "MapCreator.h"
-
 
 class App
 {
@@ -23,23 +20,16 @@ private:
 	sf::Clock clock;
 	sf::View view;
 
-	float current_zoom;
-
 	float FPS;
-	bool gameEnd;
+	bool programEnd;
 	sf::Font PxlFont;
-	
-	MapCreator map_creator;
 
 	void initWindow(unsigned int width, unsigned int height, std::string wname);
 	void initVariables();
-	void initPlayer();
-
-	Pawn *player;
 
 public:
 	bool isOpen();
-	bool isGameEnd();
+	bool isProgramEnd();
 	
 	void pollEvent();
 	void update();

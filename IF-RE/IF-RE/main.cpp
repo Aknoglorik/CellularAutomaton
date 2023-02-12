@@ -3,13 +3,13 @@
 
 int main()
 {
-    App game;
+    App genAlg;
 
-    while (game.isOpen() && !game.isGameEnd())
+    while (genAlg.isOpen() && !genAlg.isProgramEnd())
     {
-        game.update();
+        genAlg.update();
 
-        game.render();
+        genAlg.render();
     }
 
     return 0;

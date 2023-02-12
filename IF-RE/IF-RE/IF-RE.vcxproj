@@ -140,20 +140,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
-    <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="MapCreator.cpp" />
-    <ClCompile Include="Pawn.cpp" />
     <ClCompile Include="TileMap.cpp" />
-    <ClCompile Include="Weapon.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h" />
-    <ClInclude Include="Bullet.h" />
-    <ClInclude Include="MapCreator.h" />
-    <ClInclude Include="Pawn.h" />
     <ClInclude Include="TileMap.h" />
-    <ClInclude Include="Weapon.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
