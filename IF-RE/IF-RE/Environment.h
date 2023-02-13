@@ -15,7 +15,7 @@ class Environment
 	std::vector<std::vector<Object>> matrix;
 
 public:
-	Environment(int, int);
+	Environment(int width = 100, int height = 100);
 	~Environment();
 
 	const Object& getByPos(sf::Vector2i);

@@ -1,6 +1,14 @@
 #pragma once
 #include "Object.h"
 
+
+// This class describe empty cell.
+class Empiness : public Object
+{
+	
+};
+
+// Bioligical unit.
 class Bot : public Object
 {
 	// Brain
@@ -9,4 +17,15 @@ class Bot : public Object
 
 };
 
+// ???
+class Food : public Object
+{
 
+};
+
+
+// remains afte bot's death
+class Corpse : public Object
+{
+
+};
