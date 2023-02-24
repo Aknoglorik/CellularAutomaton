@@ -234,3 +234,4 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
+IF-RE/IF-RE/IF-RE.vcxproj
