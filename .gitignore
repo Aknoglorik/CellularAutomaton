@@ -233,5 +233,10 @@ _Pvt_Extensions
 .paket/paket.exe
 
 # FAKE - F# Make
+<<<<<<< HEAD
 .fake/
 IF-RE/IF-RE/IF-RE.vcxproj
+*.vcxproj
+=======
+.fake/
+>>>>>>> parent of 8a5ae2e (update gitignore)
