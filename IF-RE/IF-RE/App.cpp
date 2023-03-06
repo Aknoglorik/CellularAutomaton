@@ -1,6 +1,9 @@
 #include "App.h"
 #include <vector>
 
+#define ADD_COLOR_SPECTR
+#include "GenGui.h"
+
 typedef std::vector<std::vector<int>> int_matrix;
 
 
@@ -22,9 +25,7 @@ void App::initWindow(unsigned int width, unsigned int height, std::string wname)
     VM.width = width;
     VM.height = height;
 
-    ((sf::Texture&)PxlFont.getTexture(12)).setSmooth(true);
-
-    root.create(VM, wname, 7U, sf::ContextSettings(0, 0, 8));
+    root.create(VM, wname, 7U, sf::ContextSettings(0, 0, 7));
     root.setView(view);
     root.setFramerateLimit(60);
 
@@ -111,7 +112,7 @@ void App::render()
     ///
 
     
-    sf::RectangleShape rectangle(sf::Vector2f(10.f, 10.f));
+    sf::RectangleShape rectangle(sf::Vector2f(100.f, 100.f));
     
 
     
@@ -122,12 +123,12 @@ void App::render()
         {
         case 0:
             rectangle.setOutlineColor(sf::Color::Black);
-            rectangle.setOutlineThickness(-0.1);
+            rectangle.setOutlineThickness(-1);
             rectangle.setFillColor(con::Color::DullWhite);
             break;
         case 1:
             rectangle.setOutlineColor(con::Color::DarkGreen);
-            rectangle.setOutlineThickness(-0.6);
+            rectangle.setOutlineThickness(-1);
             rectangle.setFillColor(con::Color::Green);
             break;
         default:
@@ -141,18 +142,18 @@ void App::render()
         {
             colorByNum(i, j);
             
-            rectangle.setPosition(i*10, j*10);
+            rectangle.setPosition(i*100, j*100);
             root.draw(rectangle);
         }
     }
 
     // Think about moving this code shape in initWindow()
-    sf::FloatRect view(0, 0, 100, 100);
+    sf::FloatRect view(0, 0, 1000, 1000);
     root.setView(sf::View(view));
 
     // drawing
     sf::String counter_fps = "FPS: " + std::to_string(int(FPS));
-    sf::Text text(std::string(counter_fps), PxlFont, 11U);
+    sf::Text text(std::string(counter_fps), PxlFont, 40U);
     text.setFillColor(sf::Color::Red);
     root.draw(text);
 

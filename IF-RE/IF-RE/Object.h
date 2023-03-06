@@ -4,7 +4,7 @@
 #include <SFML/Graphics.hpp>
 
 
-class Object : public sf::Drawable, public sf::Transform
+class Object : public sf::Drawable, public sf::Transformable
 {
 protected:
 	sf::Vector2i position;

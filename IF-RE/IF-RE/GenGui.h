@@ -1,35 +1,8 @@
 #pragma once
+#include "Button.h"
+#include "Label.h"
+#include "Slider.h"
 
-#include <SFML/Graphics.hpp>
-namespace con
-{
-	class Color
-	{
-	public:
-		static sf::Color Green;
-		static sf::Color DarkGreen;
-		static sf::Color DullWhite;
-	};
-}
-
-namespace gui
-{
-
-	class Button
-	{
-
-	};
-
-	class Lable
-	{
-
-	};
-
-	class Slider
-	{
-
-	};
-
-
-
-}
+#ifdef ADD_COLOR_SPECTR
+#include "ExtraColors.hpp"
+#endif // ADD_COLOR_SPECTR
