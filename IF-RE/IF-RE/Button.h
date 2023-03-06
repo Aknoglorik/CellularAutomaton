@@ -9,7 +9,7 @@ namespace gui
 		sf::RectangleShape rectangle;
 
 	public:
-		Button(sf::IntRect size);
+		Button(sf::FloatRect size);
 
 		void draw(sf::RenderTarget&, sf::RenderStates) const override;
 	};

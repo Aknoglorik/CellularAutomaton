@@ -6,6 +6,8 @@
 
 typedef std::vector<std::vector<int>> int_matrix;
 
+#include <iostream>
+
 
 // Конструкторы / деконструкторы
 App::App(unsigned int width, unsigned int height, std::string wname)
@@ -27,7 +29,7 @@ void App::initWindow(unsigned int width, unsigned int height, std::string wname)
 
     root.create(VM, wname, 7U, sf::ContextSettings(0, 0, 7));
     root.setView(view);
-    root.setFramerateLimit(60);
+    root.setFramerateLimit(5);
 
 }
 
@@ -94,12 +96,17 @@ void App::render()
 {
     root.clear();
 
+
     /// TEST SAMPLE
-    /// it must be in update method
+    
     int_matrix mat;
     mat.resize(10);
     for (int i = 0; i < 10; i++)
         mat[i].resize(10);
+    
+
+    // initialization
+    /// it must be in update method
 
     for (int i = 0; i < 10; i++)
         for (int j = 0; j < 10; j++)
@@ -107,29 +114,24 @@ void App::render()
             mat[i][j] = 0;
             if (i == 5 && j == 7)
                 mat[i][j] = 1;
-
         }
-    ///
-
     
     sf::RectangleShape rectangle(sf::Vector2f(100.f, 100.f));
     
-
-    
-
+    /// \brief Template function
     auto colorByNum = [&](int i, int j) 
     {
         switch (mat[i][j])
         {
         case 0:
-            rectangle.setOutlineColor(sf::Color::Black);
+            rectangle.setOutlineColor(sf::Color::Black);    
             rectangle.setOutlineThickness(-1);
-            rectangle.setFillColor(con::Color::DullWhite);
+            rectangle.setFillColor(gui::Color::DullWhite);
             break;
         case 1:
-            rectangle.setOutlineColor(con::Color::DarkGreen);
+            rectangle.setOutlineColor(gui::Color::DarkGreen);
             rectangle.setOutlineThickness(-1);
-            rectangle.setFillColor(con::Color::Green);
+            rectangle.setFillColor(gui::Color::Green);
             break;
         default:
             rectangle.setFillColor(sf::Color::Magenta);
@@ -140,6 +142,7 @@ void App::render()
     {
         for (int j = 0; j < mat[0].size(); j++)
         {
+
             colorByNum(i, j);
             
             rectangle.setPosition(i*100, j*100);
@@ -151,10 +154,15 @@ void App::render()
     sf::FloatRect view(0, 0, 1000, 1000);
     root.setView(sf::View(view));
 
+    // Test button
+    gui::Button btn(sf::FloatRect(10, 10, 200, 50));
+
     // drawing
     sf::String counter_fps = "FPS: " + std::to_string(int(FPS));
     sf::Text text(std::string(counter_fps), PxlFont, 40U);
     text.setFillColor(sf::Color::Red);
+    
+    root.draw(btn);
     root.draw(text);
 
     root.display();

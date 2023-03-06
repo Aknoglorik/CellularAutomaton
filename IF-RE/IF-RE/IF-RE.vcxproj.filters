@@ -13,11 +13,17 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Графика">
+      <UniqueIdentifier>{629a45b3-f4db-4887-9552-e019a8a112cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Графика\Исходные файлы">
+      <UniqueIdentifier>{cd9b08ea-7972-4b31-84a2-aa1d51a8fe0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Графика\Файлы заголовков">
+      <UniqueIdentifier>{39fb6d27-ba1b-4945-a529-41441d5eff75}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="App.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
@@ -36,14 +42,20 @@
     <ClCompile Include="Bots.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="GenGui.cpp">
+    <ClCompile Include="App.cpp">
       <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Button.cpp">
+      <Filter>Графика\Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Slider.cpp">
+      <Filter>Графика\Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Label.cpp">
+      <Filter>Графика\Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="App.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="TileMap.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
@@ -59,8 +71,23 @@
     <ClInclude Include="Bots.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="GenGui.h">
+    <ClInclude Include="App.h">
       <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="GenGui.h">
+      <Filter>Графика\Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Button.h">
+      <Filter>Графика\Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Slider.h">
+      <Filter>Графика\Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Label.h">
+      <Filter>Графика\Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="ExtraColors.hpp">
+      <Filter>Графика\Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -141,20 +141,26 @@
   <ItemGroup>
     <ClCompile Include="App.cpp" />
     <ClCompile Include="Bots.cpp" />
+    <ClCompile Include="Button.cpp" />
     <ClCompile Include="Environment.cpp" />
     <ClCompile Include="GeneticAlgorithm.cpp" />
-    <ClCompile Include="GenGui.cpp" />
+    <ClCompile Include="Label.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Object.cpp" />
+    <ClCompile Include="Slider.cpp" />
     <ClCompile Include="TileMap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h" />
     <ClInclude Include="Bots.h" />
+    <ClInclude Include="Button.h" />
     <ClInclude Include="Environment.h" />
+    <ClInclude Include="ExtraColors.hpp" />
     <ClInclude Include="GeneticAlgorithm.h" />
     <ClInclude Include="GenGui.h" />
+    <ClInclude Include="Label.h" />
     <ClInclude Include="Object.h" />
+    <ClInclude Include="Slider.h" />
     <ClInclude Include="TileMap.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
