@@ -3,7 +3,7 @@
 
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
-
+#include "GenGui.h"
 
 class App
 {
@@ -26,6 +26,7 @@ private:
 
 	void initWindow(unsigned int width, unsigned int height, std::string wname);
 	void initVariables();
+
 
 public:
 	bool isOpen();
