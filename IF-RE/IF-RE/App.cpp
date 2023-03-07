@@ -156,6 +156,8 @@ void App::render()
 
     // Test button
     gui::Button btn(sf::FloatRect(10, 10, 200, 50));
+    btn.bind([]() { std::cout << "callback" << std::endl; });
+    btn.update(root);
 
     // drawing
     sf::String counter_fps = "FPS: " + std::to_string(int(FPS));
