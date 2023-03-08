@@ -1,8 +1,6 @@
 #include "App.h"
 #include <vector>
 
-#define ADD_COLOR_SPECTR
-#include "GenGui.h"
 
 typedef std::vector<std::vector<int>> int_matrix;
 
@@ -28,8 +26,9 @@ void App::initWindow(unsigned int width, unsigned int height, std::string wname)
     VM.height = height;
 
     root.create(VM, wname, 7U, sf::ContextSettings(0, 0, 7));
-    root.setView(view);
-    root.setFramerateLimit(5);
+    //sf::FloatRect view(0, 0, 1000, 1000);
+    //root.setView(sf::View(view));
+    root.setFramerateLimit(60);
 
 }
 
@@ -150,14 +149,14 @@ void App::render()
         }
     }
 
-    // Think about moving this code shape in initWindow()
-    sf::FloatRect view(0, 0, 1000, 1000);
-    root.setView(sf::View(view));
-
     // Test button
-    gui::Button btn(sf::FloatRect(10, 10, 200, 50));
     btn.bind([]() { std::cout << "callback" << std::endl; });
     btn.update(root);
+
+    // Test Label
+    gui::Label lb(sf::Vector2f(60,60), 40U);
+    lb.setString(sf::String("Im label"));
+    lb.setFont(PxlFont);
 
     // drawing
     sf::String counter_fps = "FPS: " + std::to_string(int(FPS));
@@ -166,6 +165,7 @@ void App::render()
     
     root.draw(btn);
     root.draw(text);
+    root.draw(lb);
 
     root.display();
 }
