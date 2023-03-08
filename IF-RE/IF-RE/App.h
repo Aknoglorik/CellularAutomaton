@@ -3,9 +3,12 @@
 
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
+#include <vector>
+#include "Environment.h"
 
 #define ADD_COLOR_SPECTR
 #include "GenGui.h"
+
 
 class App
 {
@@ -19,8 +22,9 @@ private:
 	sf::RenderWindow root;
 	sf::Event event_;
 
-	gui::Button btn = gui::Button(sf::FloatRect(400, 200, 200, 50), PxlFont, "ni?");
+	std::vector<gui::Button*> butts;
 
+	Environment *env;
 
 	sf::Clock clock;
 	sf::View view;

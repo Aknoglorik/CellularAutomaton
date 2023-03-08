@@ -1,13 +1,16 @@
 #include "App.h"
 #include <vector>
-
-
-typedef std::vector<std::vector<int>> int_matrix;
-
 #include <iostream>
 
 
-// Конструкторы / деконструкторы
+#define CELL_SIZE 20.f
+
+
+typedef std::vector<std::vector<Object*>> obj_matrix;
+
+
+
+// Constructor / Destructors
 App::App(unsigned int width, unsigned int height, std::string wname)
 {
     initVariables();
@@ -19,7 +22,7 @@ App::~App()
 
 }
 
-// Инициализаторы
+// Initializers
 void App::initWindow(unsigned int width, unsigned int height, std::string wname)
 {
     VM.width = width;
@@ -37,10 +40,22 @@ void App::initVariables()
     FPS = 0;
     programEnd = false;
     PxlFont.loadFromFile("resources/font/pxlfont.ttf");
+
+    /// vector of Buttons
+    auto btn = new gui::Button(sf::FloatRect(400, 200, 200, 50), PxlFont, "ni?");
+    btn->bind([]() 
+        { 
+            std::cout << "callback" << std::endl; 
+        });
+    butts.push_back(btn);
+    ///
+
+    /// Seting up environment
+    env = new Environment();
 }
 
 
-// Гетереы
+// Getters
 bool App::isOpen()
 {
     return root.isOpen();
@@ -52,7 +67,7 @@ bool App::isProgramEnd()
 }
 
 
-// Основные ф-ции
+// Main methods
 void App::pollEvent()
 {
     while (root.pollEvent(event_))
@@ -78,92 +93,76 @@ void App::pollEvent()
 
 void App::update()
 {
+    /// Getting FPS
     float time = clock.getElapsedTime().asSeconds();
     FPS = 1 / time;
 
     clock.restart();
-
-    pollEvent();
+    ///
 
     // game logic
+    pollEvent();
+
     sf::Vector2f mouse_pos(sf::Mouse::getPosition(root).x - (int)root.getSize().x / 2, 
                            sf::Mouse::getPosition(root).y - (int)root.getSize().y / 2);
     
+    for (auto butt : butts)
+        butt->update(root);
+    
+    //env->update();
 }
 
 void App::render()
 {
     root.clear();
-
-
-    /// TEST SAMPLE
+    obj_matrix mat = env->getMatrix();
     
-    int_matrix mat;
-    mat.resize(10);
-    for (int i = 0; i < 10; i++)
-        mat[i].resize(10);
+    sf::RectangleShape rectangle(sf::Vector2f(CELL_SIZE, CELL_SIZE));
     
-
-    // initialization
-    /// it must be in update method
-
-    for (int i = 0; i < 10; i++)
-        for (int j = 0; j < 10; j++)
-        {
-            mat[i][j] = 0;
-            if (i == 5 && j == 7)
-                mat[i][j] = 1;
-        }
-    
-    sf::RectangleShape rectangle(sf::Vector2f(100.f, 100.f));
-    
-    /// \brief Template function
-    auto colorByNum = [&](int i, int j) 
-    {
-        switch (mat[i][j])
-        {
-        case 0:
-            rectangle.setOutlineColor(sf::Color::Black);    
-            rectangle.setOutlineThickness(-1);
-            rectangle.setFillColor(gui::Color::DullWhite);
-            break;
-        case 1:
-            rectangle.setOutlineColor(gui::Color::DarkGreen);
-            rectangle.setOutlineThickness(-1);
-            rectangle.setFillColor(gui::Color::Green);
-            break;
-        default:
-            rectangle.setFillColor(sf::Color::Magenta);
-        }
-    };
+    // Test Label
+    gui::Label lb(sf::Vector2f(60.f, 60.f), 40U);
+    lb.setString(sf::String("Im label"));
+    lb.setFont(PxlFont);
 
     for (int i = 0; i < mat.size(); i++)
     {
         for (int j = 0; j < mat[0].size(); j++)
         {
 
-            colorByNum(i, j);
+            auto name = sf::String("Empiness");//mat[i][j]->name;
+            if (name == sf::String("Empiness"))
+            {
+                rectangle.setOutlineColor(sf::Color::Black);
+                rectangle.setOutlineThickness(-1);
+                rectangle.setFillColor(gui::Color::DullWhite);
+
+            }
+            else if (name == sf::String("Bot"))
+            {
+                rectangle.setOutlineColor(gui::Color::DarkGreen);
+                rectangle.setOutlineThickness(-1);
+                rectangle.setFillColor(gui::Color::Green);
+            }
+            else
+            {
+                rectangle.setOutlineThickness(-1);
+                rectangle.setFillColor(gui::Color::DullWhite);
+                rectangle.setFillColor(sf::Color::Magenta);
+            }
             
-            rectangle.setPosition(i*100, j*100);
+            rectangle.setPosition(i * CELL_SIZE, j * CELL_SIZE);
             root.draw(rectangle);
         }
     }
-
-    // Test button
-    btn.bind([]() { std::cout << "callback" << std::endl; });
-    btn.update(root);
-
-    // Test Label
-    gui::Label lb(sf::Vector2f(60,60), 40U);
-    lb.setString(sf::String("Im label"));
-    lb.setFont(PxlFont);
 
     // drawing
     sf::String counter_fps = "FPS: " + std::to_string(int(FPS));
     sf::Text text(std::string(counter_fps), PxlFont, 40U);
     text.setFillColor(sf::Color::Red);
     
-    root.draw(btn);
+    for (auto butt : butts)
+        root.draw(*butt);
+
     root.draw(text);
     root.draw(lb);
 

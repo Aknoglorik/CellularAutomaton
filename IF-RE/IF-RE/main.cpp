@@ -3,7 +3,7 @@
 
 int main()
 {
-    App genAlg(640, 480, "Artificial life");
+    App genAlg(1000, 1000, "Artificial life");
 
     while (genAlg.isOpen() && !genAlg.isProgramEnd())
     {

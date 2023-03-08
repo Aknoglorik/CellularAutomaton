@@ -111,6 +111,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -128,6 +129,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -146,9 +148,7 @@
     <ClCompile Include="GeneticAlgorithm.cpp" />
     <ClCompile Include="Label.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Object.cpp" />
     <ClCompile Include="Slider.cpp" />
-    <ClCompile Include="TileMap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h" />
@@ -159,9 +159,8 @@
     <ClInclude Include="GeneticAlgorithm.h" />
     <ClInclude Include="GenGui.h" />
     <ClInclude Include="Label.h" />
-    <ClInclude Include="Object.h" />
+    <ClInclude Include="Object.hpp" />
     <ClInclude Include="Slider.h" />
-    <ClInclude Include="TileMap.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
