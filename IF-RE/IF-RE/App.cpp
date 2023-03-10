@@ -3,7 +3,7 @@
 #include <iostream>
 
 
-#define CELL_SIZE 20.f
+#define CELL_SIZE 10.f
 
 
 typedef std::vector<std::vector<Object*>> obj_matrix;
@@ -50,8 +50,34 @@ void App::initVariables()
     butts.push_back(btn);
     ///
 
-    /// Seting up environment
+    /// Setting up environment
     env = new Environment();
+
+
+    /// Setting up bots textures
+    sf::RectangleShape *emp     = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
+    sf::RectangleShape *bot     = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
+    sf::RectangleShape *food    = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
+    sf::RectangleShape *corpse  = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
+    sf::RectangleShape *object  = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
+    
+    emp->setOutlineColor(sf::Color::Black);
+    emp->setOutlineThickness(-1);
+    emp->setFillColor(gui::Color::DullWhite);
+    bot_shapes.push_back(emp);
+
+    bot->setOutlineColor(gui::Color::DarkGreen);
+    bot->setOutlineThickness(-1);
+    bot->setFillColor(gui::Color::Green);
+    bot_shapes.push_back(bot);
+    
+    food->setOutlineThickness(-1);
+    food->setFillColor(gui::Color::DullWhite);
+    food->setFillColor(sf::Color::Magenta);
+    bot_shapes.push_back(food);
+
+    bot_shapes.push_back(corpse);
+    bot_shapes.push_back(object);
 }
 
 
@@ -117,41 +143,21 @@ void App::render()
     root.clear();
     obj_matrix mat = env->getMatrix();
     
-    sf::RectangleShape rectangle(sf::Vector2f(CELL_SIZE, CELL_SIZE));
-    
     // Test Label
     gui::Label lb(sf::Vector2f(60.f, 60.f), 40U);
     lb.setString(sf::String("Im label"));
     lb.setFont(PxlFont);
 
+    sf::RectangleShape* rectangle;
+
     for (int i = 0; i < mat.size(); i++)
     {
         for (int j = 0; j < mat[0].size(); j++)
         {
-
-            auto name = sf::String("Empiness");//mat[i][j]->name;
-            if (name == sf::String("Empiness"))
-            {
-                rectangle.setOutlineColor(sf::Color::Black);
-                rectangle.setOutlineThickness(-1);
-                rectangle.setFillColor(gui::Color::DullWhite);
-
-            }
-            else if (name == sf::String("Bot"))
-            {
-                rectangle.setOutlineColor(gui::Color::DarkGreen);
-                rectangle.setOutlineThickness(-1);
-                rectangle.setFillColor(gui::Color::Green);
-            }
-            else
-            {
-                rectangle.setOutlineThickness(-1);
-                rectangle.setFillColor(gui::Color::DullWhite);
-                rectangle.setFillColor(sf::Color::Magenta);
-            }
+            rectangle = bot_shapes[mat[i][j]->getType()];
             
-            rectangle.setPosition(i * CELL_SIZE, j * CELL_SIZE);
-            root.draw(rectangle);
+            rectangle->setPosition(i * CELL_SIZE, j * CELL_SIZE);
+            root.draw(*rectangle);
         }
     }
 

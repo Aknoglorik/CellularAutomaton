@@ -22,6 +22,7 @@ private:
 	sf::RenderWindow root;
 	sf::Event event_;
 
+	std::vector<sf::RectangleShape*> bot_shapes;
 	std::vector<gui::Button*> butts;
 
 	Environment *env;
