@@ -142,9 +142,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
-    <ClCompile Include="Bots.cpp" />
+    <ClCompile Include="Bot.cpp" />
     <ClCompile Include="Button.cpp" />
+    <ClCompile Include="Corpse.cpp" />
+    <ClCompile Include="Empiness.cpp" />
     <ClCompile Include="Environment.cpp" />
+    <ClCompile Include="Food.cpp" />
     <ClCompile Include="GeneticAlgorithm.cpp" />
     <ClCompile Include="Label.cpp" />
     <ClCompile Include="main.cpp" />
@@ -152,10 +155,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h" />
-    <ClInclude Include="Bots.h" />
+    <ClInclude Include="Bot.h" />
+    <ClInclude Include="Cells.h" />
     <ClInclude Include="Button.h" />
+    <ClInclude Include="Corpse.h" />
+    <ClInclude Include="Empiness.h" />
     <ClInclude Include="Environment.h" />
     <ClInclude Include="ExtraColors.hpp" />
+    <ClInclude Include="Food.h" />
     <ClInclude Include="GeneticAlgorithm.h" />
     <ClInclude Include="GenGui.h" />
     <ClInclude Include="Label.h" />

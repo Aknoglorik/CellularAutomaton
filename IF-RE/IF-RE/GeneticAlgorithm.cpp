@@ -18,3 +18,8 @@ Object GeneticAlgorithm::mutation(const Object& entity)
 {
 	return Object();
 }
+
+std::vector<Object> GeneticAlgorithm::selection(const std::vector<Object>&)
+{
+	return std::vector<Object>();
+}

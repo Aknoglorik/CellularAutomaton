@@ -3,7 +3,7 @@
 #include <SFML/System.hpp>
 
 #include "Object.hpp"
-#include "Bots.h"
+#include "Cells.h"
 #include "GeneticAlgorithm.h"
 
 

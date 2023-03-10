@@ -25,7 +25,7 @@ void Environment::update()
 	{
 		for (auto cell : row)
 		{
-			//if (cell->name != sf::String("Empiness"))
+			//if (cell->getType() != cellType::Empiness)
 				//cell->update();
 		}
 	}
