@@ -20,6 +20,7 @@ protected:
 	sf::Vector2i position;
 
 	inline static const int type = cellType::Object;
+	bool is_die = false;
 
 public:
 	Object() {};
@@ -34,5 +35,6 @@ public:
 	void setPos(int x, int y) { position = sf::Vector2i(x, y); }
 
 	sf::Vector2i getPos() const { return position; }
+	bool isDie() { return is_die; }
 };
 

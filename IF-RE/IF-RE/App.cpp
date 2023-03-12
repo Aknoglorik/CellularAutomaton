@@ -60,7 +60,7 @@ void App::initVariables()
     sf::RectangleShape *corpse  = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
     sf::RectangleShape *object  = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
     
-    emp->setOutlineColor(sf::Color::Black);
+    emp->setOutlineColor(gui::Color::LightGray);
     emp->setOutlineThickness(-1);
     emp->setFillColor(gui::Color::DullWhite);
     bot_shapes.push_back(emp);
@@ -134,7 +134,7 @@ void App::update()
     for (auto butt : butts)
         butt->update(root);
     
-    //env->update();
+    env->update();
 }
 
 void App::render()
@@ -154,7 +154,6 @@ void App::render()
         for (int j = 0; j < mat[0].size(); j++)
         {
             rectangle = bot_shapes[mat[i][j]->getType()];
-            
             rectangle->setPosition(i * CELL_SIZE, j * CELL_SIZE);
             root.draw(*rectangle);
         }

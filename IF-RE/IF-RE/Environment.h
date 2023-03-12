@@ -15,7 +15,8 @@ class Environment
 	GeneticAlgorithm* genAlg = nullptr;
 	std::vector<std::vector<Object*>> matrix;
 
-	Empiness *mainEmpines;
+	Empiness *mainEmpines = nullptr;
+	Object *currentObj = nullptr;
 
 public:
 	Environment(int width = 100, int height = 100);
@@ -25,6 +26,8 @@ public:
 
 	const Object& getByPos(sf::Vector2i);
 	const Object& getByPos(int, int);
+
+	void moveCell();
 
 	const std::vector<std::vector<Object*>>& getMatrix();
 
