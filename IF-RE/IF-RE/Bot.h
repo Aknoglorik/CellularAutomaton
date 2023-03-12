@@ -8,15 +8,14 @@ class Environment;
 class Bot : public Object
 {
 	inline static const int type = cellType::Bot;
-
-	unsigned int energy;
 	std::vector<int> brain;
 
 	Environment* env;
 
 public:
-	Bot(Environment *_env, sf::Vector2i pos, int _energy =  100) : env(_env), energy(_energy)
+	Bot(Environment *_env, sf::Vector2i pos, unsigned int _energy =  25) : env(_env)
 	{
+		this->energy = _energy;
 		this->position = pos;
 	}
 

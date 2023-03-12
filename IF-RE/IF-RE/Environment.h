@@ -19,13 +19,16 @@ class Environment
 	Object *currentObj = nullptr;
 
 public:
+	int gen_step = 0;
+
 	Environment(int width = 100, int height = 100);
 	~Environment();
 
 	void update();
+	void generateFood();
 
-	const Object& getByPos(sf::Vector2i);
-	const Object& getByPos(int, int);
+	Object* getByPos(sf::Vector2i);
+	Object* getByPos(int, int);
 
 	void moveCell();
 

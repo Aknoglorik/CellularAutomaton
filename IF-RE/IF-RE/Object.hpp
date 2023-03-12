@@ -21,6 +21,7 @@ protected:
 
 	inline static const int type = cellType::Object;
 	bool is_die = false;
+	unsigned int energy = 0;
 
 public:
 	Object() {};
@@ -35,6 +36,11 @@ public:
 	void setPos(int x, int y) { position = sf::Vector2i(x, y); }
 
 	sf::Vector2i getPos() const { return position; }
-	bool isDie() { return is_die; }
+	unsigned int getEnergy() const { return energy; }
+
+
+	virtual void addEnergy(unsigned int value) { energy += value; }
+
+	bool isDie() const { return is_die; }
 };
 

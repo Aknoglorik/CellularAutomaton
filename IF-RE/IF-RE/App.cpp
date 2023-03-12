@@ -2,7 +2,7 @@
 #include <iostream>
 
 
-#define CELL_SIZE 10.f
+#define CELL_SIZE 40.f
 
 
 typedef std::vector<std::vector<Object*>> obj_matrix;
@@ -36,6 +36,10 @@ void App::initWindow(unsigned int width, unsigned int height, std::string wname)
 
 void App::initVariables()
 {
+    /// Setting up environment
+    env = new Environment(20, 20);
+
+
     FPS = 0;
     programEnd = false;
     PxlFont.loadFromFile("resources/font/pxlfont.ttf");
@@ -47,10 +51,11 @@ void App::initVariables()
             std::cout << "callback" << std::endl; 
         });
     butts.push_back(btn);
-    ///
-
-    /// Setting up environment
-    env = new Environment();
+    
+    /// Test Label
+    lb = new gui::Label(sf::Vector2f(60.f, 60.f), 40U);
+    lb->setString(sf::String(std::to_string(env->gen_step)));
+    lb->setFont(PxlFont);
 
 
     /// Setting up bots textures
@@ -70,12 +75,13 @@ void App::initVariables()
     bot->setFillColor(gui::Color::Green);
     bot_shapes.push_back(bot);
     
-    food->setOutlineThickness(-1);
-    food->setFillColor(gui::Color::DullWhite);
-    food->setFillColor(sf::Color::Magenta);
+    food->setFillColor(gui::Color::Red);
     bot_shapes.push_back(food);
 
+    corpse->setFillColor(gui::Color::LightGray);
     bot_shapes.push_back(corpse);
+
+    object->setFillColor(sf::Color::Magenta);
     bot_shapes.push_back(object);
 }
 
@@ -133,6 +139,8 @@ void App::update()
     
     for (auto butt : butts)
         butt->update(root);
+
+    lb->setString(sf::String("Step " + std::to_string(env->gen_step)));
     
     env->update();
 }
@@ -143,9 +151,6 @@ void App::render()
     obj_matrix mat = env->getMatrix();
     
     // Test Label
-    gui::Label lb(sf::Vector2f(60.f, 60.f), 40U);
-    lb.setString(sf::String("Im label"));
-    lb.setFont(PxlFont);
 
     sf::RectangleShape* rectangle;
 
@@ -168,7 +173,7 @@ void App::render()
         root.draw(*butt);
 
     root.draw(text);
-    root.draw(lb);
+    root.draw(*lb);
 
     root.display();
 }

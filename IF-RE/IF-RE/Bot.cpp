@@ -6,13 +6,14 @@ namespace BotComand
 	enum
 	{
 		move,
-		eat
+		eat,
+		nothing
 	};
 }
 
 int Bot::getNextInstruction()
 {
-	return rand() % 2; // 0 - move up, 1 - eat
+	return rand() % 3; // 0 - move up, 1 - eat
 };
 
 void Bot::update()
@@ -30,6 +31,8 @@ void Bot::update()
 		break;
 	case BotComand::eat:
 		energy++;
+		break;
+	case BotComand::nothing:
 		break;
 	default:
 		break;

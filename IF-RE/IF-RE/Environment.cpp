@@ -14,9 +14,14 @@ Environment::Environment(int width, int height) :
 		for (int j = 0; j < _height; j++)
 		{
 			matrix[i][j] = mainEmpines;
-			if (i == 10 && j == 40)
+			if (i == 10 && j == 1)
 			{
 				matrix[i][j] = new Bot(this, sf::Vector2i(i, j));
+			}
+			if (i == 10 && j == 15)
+			{
+				matrix[i][j] = new Food;
+				matrix[i][j]->setPos(sf::Vector2i(i, j));
 			}
 		}
 	}
@@ -46,6 +51,34 @@ void Environment::update()
 				currentObj->update();
 		}
 	}
+	generateFood();
+	gen_step++;
+}
+
+void Environment::generateFood()
+{
+	if (Food::amount > 10) // REDO!
+		return;
+	int x, y;
+	do
+	{
+		x = rand() % _width;
+		y = rand() % _height;
+	}
+	while (getByPos(x, y)->getType() != cellType::Empiness); // REDO! there is no logic to check if field is filled in
+
+	matrix[x][y] = new Food;
+	matrix[x][y]->setPos(x, y);
+}
+
+Object* Environment::getByPos(sf::Vector2i pos)
+{
+	return matrix[pos.x][pos.y];
+}
+
+Object* Environment::getByPos(int x, int y)
+{
+	return matrix[x][y];
 }
 
 void Environment::moveCell()
@@ -56,13 +89,23 @@ void Environment::moveCell()
 	if (newPos.y >= _height)
 		newPos.y -= _height;
 
+	// very bad code
+	// mb redo to switch()
+	if (currentObj->getType() == cellType::Bot && matrix[newPos.x][newPos.y]->getType() == cellType::Food)
+	{
+		currentObj->setPos(newPos);
 
-	if (matrix[newPos.y][newPos.x]->getType() == cellType::Empiness)
+		currentObj->addEnergy(matrix[newPos.x][newPos.y]->getEnergy());
+		delete matrix[newPos.x][newPos.y];
+
+		matrix[newPos.x][newPos.y] = currentObj;
+		matrix[oldPos.x][oldPos.y] = mainEmpines;
+	}
+	else if (!matrix[newPos.x][newPos.y]->getType()) // cellType::Empiness = 0
 	{
 		currentObj->setPos(newPos);
 		matrix[newPos.x][newPos.y] = currentObj;
 		matrix[oldPos.x][oldPos.y] = mainEmpines;
-
 	}
 }
 

@@ -24,6 +24,7 @@ private:
 
 	std::vector<sf::RectangleShape*> bot_shapes;
 	std::vector<gui::Button*> butts;
+	gui::Label* lb;
 
 	Environment *env;
 
