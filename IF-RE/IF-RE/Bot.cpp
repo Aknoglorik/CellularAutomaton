@@ -39,5 +39,4 @@ void Bot::update()
 	}
 
 
-	energy--;
 }

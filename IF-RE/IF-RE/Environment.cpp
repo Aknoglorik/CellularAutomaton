@@ -14,11 +14,11 @@ Environment::Environment(int width, int height) :
 		for (int j = 0; j < _height; j++)
 		{
 			matrix[i][j] = mainEmpines;
-			if (i == 10 && j == 1)
+			if (i == 10 && j == 10)
 			{
 				matrix[i][j] = new Bot(this, sf::Vector2i(i, j));
 			}
-			if (i == 10 && j == 15)
+			if (i == 10 && j == 5)
 			{
 				matrix[i][j] = new Food;
 				matrix[i][j]->setPos(sf::Vector2i(i, j));
@@ -83,11 +83,24 @@ Object* Environment::getByPos(int x, int y)
 
 void Environment::moveCell()
 {
+	//Moved right
 	sf::Vector2i oldPos = currentObj->getPos();
-	sf::Vector2i newPos = oldPos + sf::Vector2i(0, 1);
-
+	sf::Vector2i newPos = oldPos;
+	if (newPos.y != 5)
+	{
+		 newPos += sf::Vector2i(0, 1);
+	}
+	else 
+	{
+		newPos += sf::Vector2i(1, 0);
+	}
 	if (newPos.y >= _height)
-		newPos.y -= _height;
+		newPos.y = 0;
+
+	if (newPos.x >= _width)
+		newPos.x = 0;
+
+	
 
 	// very bad code
 	// mb redo to switch()
