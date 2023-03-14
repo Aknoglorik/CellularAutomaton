@@ -4,7 +4,7 @@
 int main()
 {
     srand(time(0));
-    App genAlg(1920, 1080, "Artificial life");
+    App genAlg(1920, 1080, "Artificial life", 20);
 
     while (genAlg.isOpen() && !genAlg.isProgramEnd())
     {

@@ -44,8 +44,10 @@ public:
 
 	Object* getByPos(sf::Vector2i);
 	Object* getByPos(int, int);
+	int getHeight() { return _height; }
 
 	void moveCell(int);
+
 
 	const std::vector<std::vector<Object*>>& getMatrix();
 

@@ -13,8 +13,12 @@ namespace BotComand
 
 int Bot::getNextInstruction()
 {
-	dir = rand() % 8;
-	return rand() % 3; // 0 - move, 1 - photosynthesis, 2 - nothing
+
+
+
+	dir_move = rand() % 8;
+	dir_sight = rand() % 8;
+	return rand() % 3;  // 0 - move, 1 - photosynthesis, 2 - nothing
 };
 
 void Bot::update()
@@ -28,15 +32,23 @@ void Bot::update()
 	switch (getNextInstruction())
 	{
 	case BotComand::move:
-		env->moveCell(dir);
+	{
+		int abs_dir = dir_move - dir_sight;
+		if (abs_dir < 0)
+			abs_dir += 8;
+		env->moveCell(abs_dir);
+		break; 
+	}
+	case BotComand::photosynthesis: 
+	{
+		int power = env->getHeight() / (position.y + 1);
+		energy += power;
 		break;
-	case BotComand::photosynthesis:
-		energy += 2;
-		break;
+	}
 	case BotComand::nothing:
 		break;
 	default:
 		break;
 	}
-
+	energy--;
 }

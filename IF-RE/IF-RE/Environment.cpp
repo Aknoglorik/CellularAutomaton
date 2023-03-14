@@ -14,7 +14,7 @@ Environment::Environment(int width, int height) :
 		for (int j = 0; j < _height; j++)
 		{
 			matrix[i][j] = mainEmptiness;
-			if (i == 10 && j == 10)
+			if (i == 10)
 			{
 				matrix[i][j] = new Bot(this, sf::Vector2i(i, j));
 			}
@@ -57,7 +57,7 @@ void Environment::update()
 
 void Environment::generateFood()
 {
-	if (Food::amount > 10) // REDO!
+	if (Food::amount > 0) // REDO!
 		return;
 	int x, y;
 	do
@@ -81,12 +81,12 @@ Object* Environment::getByPos(int x, int y)
 	return matrix[x][y];
 }
 
-void Environment::moveCell(int dir)
+void Environment::moveCell(int dir_move)
 {
 	//Moved
 	sf::Vector2i oldPos = currentObj->getPos();
 	sf::Vector2i newPos = oldPos;
-	switch (dir) {
+	switch (dir_move) {
 	case BotMove::up:
 		//up
 		newPos += sf::Vector2i(0, -1);
