@@ -6,6 +6,21 @@
 #include "Cells.h"
 #include "GeneticAlgorithm.h"
 
+namespace BotMove
+{
+	enum
+	{
+		up,
+		up_right,
+		right,
+		down_right,
+		down,
+		down_left,
+		left,
+		up_left
+	};
+}
+
 
 class Environment
 {
@@ -15,7 +30,7 @@ class Environment
 	GeneticAlgorithm* genAlg = nullptr;
 	std::vector<std::vector<Object*>> matrix;
 
-	Empiness *mainEmpines = nullptr;
+	Emptiness *mainEmptiness = nullptr;
 	Object *currentObj = nullptr;
 
 public:
@@ -30,8 +45,7 @@ public:
 	Object* getByPos(sf::Vector2i);
 	Object* getByPos(int, int);
 
-	int getNextMove();
-	void moveCell();
+	void moveCell(int);
 
 	const std::vector<std::vector<Object*>>& getMatrix();
 

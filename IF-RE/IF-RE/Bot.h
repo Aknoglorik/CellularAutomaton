@@ -9,7 +9,7 @@ class Bot : public Object
 {
 	inline static const int type = cellType::Bot;
 	std::vector<int> brain;
-
+	int dir;
 	Environment* env;
 
 public:
@@ -23,6 +23,5 @@ public:
 	virtual int getType() { return type; };
 
 	int getNextInstruction();
-
 	void update() override;
 };

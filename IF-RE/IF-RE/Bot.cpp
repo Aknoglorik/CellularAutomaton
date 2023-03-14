@@ -6,14 +6,15 @@ namespace BotComand
 	enum
 	{
 		move,
-		eat,
+		photosynthesis,
 		nothing
 	};
 }
 
 int Bot::getNextInstruction()
 {
-	return rand() % 3; // 0 - move up, 1 - eat
+	dir = rand() % 8;
+	return rand() % 3; // 0 - move, 1 - photosynthesis, 2 - nothing
 };
 
 void Bot::update()
@@ -27,9 +28,9 @@ void Bot::update()
 	switch (getNextInstruction())
 	{
 	case BotComand::move:
-		env->moveCell();
+		env->moveCell(dir);
 		break;
-	case BotComand::eat:
+	case BotComand::photosynthesis:
 		energy += 2;
 		break;
 	case BotComand::nothing:
@@ -38,5 +39,4 @@ void Bot::update()
 		break;
 	}
 
-	energy--;
 }

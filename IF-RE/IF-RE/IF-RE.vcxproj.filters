@@ -51,7 +51,7 @@
     <ClCompile Include="Corpse.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Empiness.cpp">
+    <ClCompile Include="Emptiness.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="Food.cpp">
@@ -89,7 +89,7 @@
     <ClInclude Include="Corpse.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="Empiness.h">
+    <ClInclude Include="Emptiness.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="Food.h">

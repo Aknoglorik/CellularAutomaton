@@ -1,25 +1,10 @@
 #include "Environment.h"
 #include <iostream>
 
-namespace BotMove
-{
-	enum
-	{
-		up,
-		up_right,
-		right,
-		down_right,
-		down,
-		down_left,
-		left,
-		up_left
-	};
-}
-
 Environment::Environment(int width, int height) : 
 	_width(width), _height(height)
 {
-	mainEmpines = new Empiness;
+	mainEmptiness = new Emptiness;
 	
 	// Creating & filling matrix
 	matrix.resize(_width);
@@ -28,7 +13,7 @@ Environment::Environment(int width, int height) :
 		matrix[i].resize(_height);
 		for (int j = 0; j < _height; j++)
 		{
-			matrix[i][j] = mainEmpines;
+			matrix[i][j] = mainEmptiness;
 			if (i == 10 && j == 10)
 			{
 				matrix[i][j] = new Bot(this, sf::Vector2i(i, j));
@@ -57,12 +42,12 @@ void Environment::update()
 			if (currentObj->isDie())
 			{
 				delete currentObj; // free mem
-				currentObj = mainEmpines;
-				matrix[i][j] = mainEmpines;
+				currentObj = mainEmptiness;
+				matrix[i][j] = mainEmptiness;
 				continue;
 			}
 
-			if (currentObj->getType() != cellType::Empiness)
+			if (currentObj->getType() != cellType::Emptiness)
 				currentObj->update();
 		}
 	}
@@ -80,7 +65,7 @@ void Environment::generateFood()
 		x = rand() % _width;
 		y = rand() % _height;
 	}
-	while (getByPos(x, y)->getType() != cellType::Empiness); // REDO! there is no logic to check if field is filled in
+	while (getByPos(x, y)->getType() != cellType::Emptiness); // REDO! there is no logic to check if field is filled in
 
 	matrix[x][y] = new Food;
 	matrix[x][y]->setPos(x, y);
@@ -96,16 +81,12 @@ Object* Environment::getByPos(int x, int y)
 	return matrix[x][y];
 }
 
-int Environment::getNextMove() {
-	return rand() % 8; // move in 8 dir;
-}
-
-void Environment::moveCell()
+void Environment::moveCell(int dir)
 {
 	//Moved
 	sf::Vector2i oldPos = currentObj->getPos();
 	sf::Vector2i newPos = oldPos;
-	switch (getNextMove()) {
+	switch (dir) {
 	case BotMove::up:
 		//up
 		newPos += sf::Vector2i(0, -1);
@@ -150,7 +131,7 @@ void Environment::moveCell()
 		newPos += sf::Vector2i(1, 0);
 	}*/
 	if (newPos.y >= _height)
-		newPos.y -= _height;
+		newPos.y = _height - 1;
 
 	if (newPos.y < 0)
 		newPos.y = 0;
@@ -159,7 +140,7 @@ void Environment::moveCell()
 		newPos.x = 0;
 
 	if (newPos.x < 0)
-		newPos.x = _width;
+		newPos.x = _width - 1;
 
 	
 
@@ -173,13 +154,13 @@ void Environment::moveCell()
 		delete matrix[newPos.x][newPos.y];
 
 		matrix[newPos.x][newPos.y] = currentObj;
-		matrix[oldPos.x][oldPos.y] = mainEmpines;
+		matrix[oldPos.x][oldPos.y] = mainEmptiness;
 	}
-	else if (!matrix[newPos.x][newPos.y]->getType()) // cellType::Empiness = 0
+	else if (!matrix[newPos.x][newPos.y]->getType()) // cellType::Emptiness = 0
 	{
 		currentObj->setPos(newPos);
 		matrix[newPos.x][newPos.y] = currentObj;
-		matrix[oldPos.x][oldPos.y] = mainEmpines;
+		matrix[oldPos.x][oldPos.y] = mainEmptiness;
 	}
 }
 
