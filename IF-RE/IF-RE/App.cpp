@@ -2,7 +2,7 @@
 #include <iostream>
 
 
-#define CELL_SIZE 40.f
+#define CELL_SIZE 20.f
 
 
 typedef std::vector<std::vector<Object*>> obj_matrix;
@@ -30,14 +30,14 @@ void App::initWindow(unsigned int width, unsigned int height, std::string wname)
     root.create(VM, wname, 7U, sf::ContextSettings(0, 0, 7));
     //sf::FloatRect view(0, 0, 1000, 1000);
     //root.setView(sf::View(view));
-    root.setFramerateLimit(60);
+    root.setFramerateLimit(10);
 
 }
 
 void App::initVariables()
 {
     /// Setting up environment
-    env = new Environment(20, 20);
+    env = new Environment(30, 30);
 
 
     FPS = 0;
@@ -45,7 +45,7 @@ void App::initVariables()
     PxlFont.loadFromFile("resources/font/pxlfont.ttf");
 
     /// vector of Buttons
-    auto btn = new gui::Button(sf::FloatRect(400, 200, 200, 50), PxlFont, "ni?");
+    auto btn = new gui::Button(sf::FloatRect(40, 600, 200, 50), PxlFont, "ni?");
     btn->bind([]() 
         { 
             std::cout << "callback" << std::endl; 

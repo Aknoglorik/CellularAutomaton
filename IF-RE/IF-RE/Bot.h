@@ -17,6 +17,7 @@ public:
 	{
 		this->energy = _energy;
 		this->position = pos;
+
 	}
 
 	virtual int getType() { return type; };

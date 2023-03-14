@@ -30,7 +30,7 @@ void Bot::update()
 		env->moveCell();
 		break;
 	case BotComand::eat:
-		energy++;
+		energy += 2;
 		break;
 	case BotComand::nothing:
 		break;
@@ -38,5 +38,5 @@ void Bot::update()
 		break;
 	}
 
-
+	energy--;
 }

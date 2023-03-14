@@ -30,6 +30,7 @@ public:
 	Object* getByPos(sf::Vector2i);
 	Object* getByPos(int, int);
 
+	int getNextMove();
 	void moveCell();
 
 	const std::vector<std::vector<Object*>>& getMatrix();

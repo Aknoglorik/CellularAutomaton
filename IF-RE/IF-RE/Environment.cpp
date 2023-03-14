@@ -1,6 +1,21 @@
 #include "Environment.h"
 #include <iostream>
 
+namespace BotMove
+{
+	enum
+	{
+		up,
+		up_right,
+		right,
+		down_right,
+		down,
+		down_left,
+		left,
+		up_left
+	};
+}
+
 Environment::Environment(int width, int height) : 
 	_width(width), _height(height)
 {
@@ -81,24 +96,70 @@ Object* Environment::getByPos(int x, int y)
 	return matrix[x][y];
 }
 
+int Environment::getNextMove() {
+	return rand() % 8; // move in 8 dir;
+}
+
 void Environment::moveCell()
 {
-	//Moved right
+	//Moved
 	sf::Vector2i oldPos = currentObj->getPos();
 	sf::Vector2i newPos = oldPos;
-	if (newPos.y != 5)
+	switch (getNextMove()) {
+	case BotMove::up:
+		//up
+		newPos += sf::Vector2i(0, -1);
+		break;
+	case BotMove::up_right:
+		//up+right
+		newPos += sf::Vector2i(1, -1);
+		break;
+	case BotMove::right:
+		//right
+		newPos += sf::Vector2i(1, 0);
+		break;
+	case BotMove::down_right:
+		//down + rihgt
+		newPos += sf::Vector2i(1, 1);
+		break;
+	case BotMove::down:
+		//down
+		newPos += sf::Vector2i(0, 1);
+		break;
+	case BotMove::down_left:
+		//down+left
+		newPos += sf::Vector2i(-1, 1);
+		break;
+	case BotMove::left:
+		//left
+		newPos += sf::Vector2i(-1, 0);
+		break;
+	case BotMove::up_left:
+		//up
+		newPos += sf::Vector2i(-1, -1);
+		break;
+	default: 
+		break;
+	}
+	/*if (newPos.y != 5)
 	{
 		 newPos += sf::Vector2i(0, 1);
 	}
 	else 
 	{
 		newPos += sf::Vector2i(1, 0);
-	}
+	}*/
 	if (newPos.y >= _height)
+		newPos.y -= _height;
+
+	if (newPos.y < 0)
 		newPos.y = 0;
 
 	if (newPos.x >= _width)
 		newPos.x = 0;
+
+	if (newPos.x < 0)
+		newPos.x = _width;
 
 	
 
