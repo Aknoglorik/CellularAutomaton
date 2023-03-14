@@ -3,9 +3,9 @@
 
 
 // This class describe empty cell.
-class Empiness : public Object
+class Emptiness : public Object
 {
-	inline static const int type = cellType::Empiness;
+	inline static const int type = cellType::Emptiness;
 
 public:
 	virtual int getType() { return type; };

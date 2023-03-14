@@ -145,7 +145,7 @@
     <ClCompile Include="Bot.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Corpse.cpp" />
-    <ClCompile Include="Empiness.cpp" />
+    <ClCompile Include="Emptiness.cpp" />
     <ClCompile Include="Environment.cpp" />
     <ClCompile Include="Food.cpp" />
     <ClCompile Include="GeneticAlgorithm.cpp" />
@@ -159,7 +159,7 @@
     <ClInclude Include="Cells.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="Corpse.h" />
-    <ClInclude Include="Empiness.h" />
+    <ClInclude Include="Emptiness.h" />
     <ClInclude Include="Environment.h" />
     <ClInclude Include="ExtraColors.hpp" />
     <ClInclude Include="Food.h" />

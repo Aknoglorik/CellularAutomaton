@@ -6,7 +6,7 @@ namespace cellType
 {
 	enum
 	{
-		Empiness,
+		Emptiness,
 		Bot,
 		Food,
 		Corpse,

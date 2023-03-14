@@ -13,7 +13,7 @@ namespace BotComand
 
 int Bot::getNextInstruction()
 {
-	return rand() % 3; // 0 - move up, 1 - eat
+	return rand() % 3; // 0 - move up, 1 - eat, 2 - nothing
 };
 
 void Bot::update()

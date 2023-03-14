@@ -19,7 +19,7 @@ namespace BotMove
 Environment::Environment(int width, int height) : 
 	_width(width), _height(height)
 {
-	mainEmpines = new Empiness;
+	mainEmpines = new Emptiness;
 	
 	// Creating & filling matrix
 	matrix.resize(_width);
@@ -62,7 +62,7 @@ void Environment::update()
 				continue;
 			}
 
-			if (currentObj->getType() != cellType::Empiness)
+			if (currentObj->getType() != cellType::Emptiness)
 				currentObj->update();
 		}
 	}
@@ -80,7 +80,7 @@ void Environment::generateFood()
 		x = rand() % _width;
 		y = rand() % _height;
 	}
-	while (getByPos(x, y)->getType() != cellType::Empiness); // REDO! there is no logic to check if field is filled in
+	while (getByPos(x, y)->getType() != cellType::Emptiness); // REDO! there is no logic to check if field is filled in
 
 	matrix[x][y] = new Food;
 	matrix[x][y]->setPos(x, y);
@@ -175,7 +175,7 @@ void Environment::moveCell()
 		matrix[newPos.x][newPos.y] = currentObj;
 		matrix[oldPos.x][oldPos.y] = mainEmpines;
 	}
-	else if (!matrix[newPos.x][newPos.y]->getType()) // cellType::Empiness = 0
+	else if (!matrix[newPos.x][newPos.y]->getType()) // cellType::Emptiness = 0
 	{
 		currentObj->setPos(newPos);
 		matrix[newPos.x][newPos.y] = currentObj;

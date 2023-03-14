@@ -15,7 +15,7 @@ class Environment
 	GeneticAlgorithm* genAlg = nullptr;
 	std::vector<std::vector<Object*>> matrix;
 
-	Empiness *mainEmpines = nullptr;
+	Emptiness *mainEmpines = nullptr;
 	Object *currentObj = nullptr;
 
 public:
