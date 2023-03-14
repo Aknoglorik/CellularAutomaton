@@ -13,7 +13,7 @@
 class App
 {
 public:
-	App(unsigned int width = 640, unsigned int height = 480, std::string wname = "SFML 2.5.1");
+	App(unsigned int width = 640, unsigned int height = 480, std::string wname = "SFML 2.5.1", int _fps = 60);
 	~App();
 
 
@@ -21,6 +21,7 @@ private:
 	sf::VideoMode VM;
 	sf::RenderWindow root;
 	sf::Event event_;
+	int FPS;
 
 	std::vector<sf::RectangleShape*> bot_shapes;
 	std::vector<gui::Button*> butts;
@@ -31,11 +32,11 @@ private:
 	sf::Clock clock;
 	sf::View view;
 
-	float FPS;
+	float _FPS;
 	bool programEnd;
 	sf::Font PxlFont;
 
-	void initWindow(unsigned int width, unsigned int height, std::string wname);
+	void initWindow(unsigned int width, unsigned int height, std::string wname, int _fps);
 	void initVariables();
 
 

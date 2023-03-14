@@ -10,10 +10,10 @@ typedef std::vector<std::vector<Object*>> obj_matrix;
 
 
 // Constructor / Destructors
-App::App(unsigned int width, unsigned int height, std::string wname)
+App::App(unsigned int width, unsigned int height, std::string wname, int _fps)
 {
     initVariables();
-    initWindow(width, height, wname);
+    initWindow(width, height, wname, _fps);
 }
 
 App::~App()
@@ -22,7 +22,7 @@ App::~App()
 }
 
 // Initializers
-void App::initWindow(unsigned int width, unsigned int height, std::string wname)
+void App::initWindow(unsigned int width, unsigned int height, std::string wname, int _fps)
 {
     VM.width = width;
     VM.height = height;
@@ -30,7 +30,8 @@ void App::initWindow(unsigned int width, unsigned int height, std::string wname)
     root.create(VM, wname, 7U, sf::ContextSettings(0, 0, 7));
     //sf::FloatRect view(0, 0, 1000, 1000);
     //root.setView(sf::View(view));
-    root.setFramerateLimit(10);
+    FPS = _fps;
+    root.setFramerateLimit(FPS);
 
 }
 
@@ -44,13 +45,60 @@ void App::initVariables()
     programEnd = false;
     PxlFont.loadFromFile("resources/font/pxlfont.ttf");
 
+    auto create_button = [&](sf::FloatRect size, sf::String str, std::function<void()> f)
+    {
+        auto btn = new gui::Button(size, PxlFont, str);
+        btn->bind(f);
+        butts.push_back(btn);
+    };
+
     /// vector of Buttons
-    auto btn = new gui::Button(sf::FloatRect(40, 600, 200, 50), PxlFont, "ni?");
-    btn->bind([]() 
-        { 
-            std::cout << "callback" << std::endl; 
+
+    auto start_pos = 1600;
+    auto vert_pos  = 50;
+    auto wtdh      = 100;
+    auto hght      = 30;
+    auto vert_del  = 40;
+    auto hor_del   = 110;
+
+    // first line
+    create_button(sf::FloatRect(start_pos, vert_pos, wtdh, hght), "Pause",
+        []() 
+        {
+            std::cout << "Pause" << std::endl;
         });
-    butts.push_back(btn);
+    create_button(sf::FloatRect(start_pos+ hor_del, vert_pos, wtdh, hght), "Resume",
+        []()
+        {
+            std::cout << "Resume" << std::endl;
+        });
+    // second line
+    create_button(sf::FloatRect(start_pos, vert_pos+ vert_del, wtdh, hght), "+sun",
+        []() 
+        {
+            std::cout << "+sun" << std::endl;
+        });
+    create_button(sf::FloatRect(start_pos+ hor_del, vert_pos+ vert_del, wtdh, hght), "-sun",
+        []() 
+        {
+            std::cout << "-sun" << std::endl;
+        });
+    // third line
+    create_button(sf::FloatRect(start_pos, vert_pos + 2*vert_del, wtdh, hght), "+delay",
+        [&]()
+        {
+            FPS+=5;
+            root.setFramerateLimit(FPS);
+        });
+    create_button(sf::FloatRect(start_pos + hor_del, vert_pos + 2*vert_del, wtdh, hght), "-delay",
+        [&]()
+        {
+            if ((FPS-5) > 1)
+            {
+                FPS-=5;
+                root.setFramerateLimit(FPS);
+            }
+        });
     
     /// Test Label
     lb = new gui::Label(sf::Vector2f(60.f, 60.f), 40U);
@@ -126,7 +174,7 @@ void App::update()
 {
     /// Getting FPS
     float time = clock.getElapsedTime().asSeconds();
-    FPS = 1 / time;
+    _FPS = 1 / time;
 
     clock.restart();
     ///
@@ -165,7 +213,7 @@ void App::render()
     }
 
     // drawing
-    sf::String counter_fps = "FPS: " + std::to_string(int(FPS));
+    sf::String counter_fps = "FPS: " + std::to_string(int(_FPS));
     sf::Text text(std::string(counter_fps), PxlFont, 40U);
     text.setFillColor(sf::Color::Red);
     
