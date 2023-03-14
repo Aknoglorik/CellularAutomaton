@@ -1,18 +1,7 @@
 #pragma once
 
 #include <SFML/System.hpp>
-
-namespace cellType
-{
-	enum
-	{
-		Emptiness,
-		Bot,
-		Food,
-		Corpse,
-		Object
-	};
-}
+#include "consts.h"
 
 class Object
 {

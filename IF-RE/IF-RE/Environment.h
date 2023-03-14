@@ -5,22 +5,9 @@
 #include "Object.hpp"
 #include "Cells.h"
 #include "GeneticAlgorithm.h"
+#include "consts.h"
 
-namespace BotMove
-{
-	enum
-	{
-		up,
-		up_right,
-		right,
-		down_right,
-		down,
-		down_left,
-		left,
-		up_left
-	};
-}
-
+_INC_OBJ_MATRIX
 
 class Environment
 {
@@ -28,7 +15,7 @@ class Environment
 	int _height;
 
 	GeneticAlgorithm* genAlg = nullptr;
-	std::vector<std::vector<Object*>> matrix;
+	obj_matrix matrix;
 
 	Emptiness *mainEmptiness = nullptr;
 	Object *currentObj = nullptr;
@@ -47,9 +34,7 @@ public:
 	int getHeight() { return _height; }
 
 	void moveCell(int);
-
-
-	const std::vector<std::vector<Object*>>& getMatrix();
+	const obj_matrix& getMatrix();
 
 };
 

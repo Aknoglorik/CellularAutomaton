@@ -158,6 +158,7 @@
     <ClInclude Include="Bot.h" />
     <ClInclude Include="Cells.h" />
     <ClInclude Include="Button.h" />
+    <ClInclude Include="consts.h" />
     <ClInclude Include="Corpse.h" />
     <ClInclude Include="Emptiness.h" />
     <ClInclude Include="Environment.h" />

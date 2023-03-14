@@ -17,9 +17,9 @@ public:
 	std::vector<Object> selection(const std::vector<Object>&);
 
 	void setOutSelection(int num_out_select) { _out_selection = num_out_select; }
-	void setMutationProbability(int mutation_precent) { _mutation_probability = mutation_precent; }
+	void setMutationProbability(float mutation_precent) { _mutation_probability = mutation_precent; }
 
 	int getOutSelection() { return _out_selection; }
-	int getMutationProbability() { return _mutation_probability; }
+	float getMutationProbability() { return _mutation_probability; }
 };
 

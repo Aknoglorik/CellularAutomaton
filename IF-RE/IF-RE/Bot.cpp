@@ -1,15 +1,7 @@
 #include "Bot.h"
 #include "Environment.h"
 
-namespace BotComand
-{
-	enum
-	{
-		move,
-		photosynthesis,
-		nothing
-	};
-}
+
 
 int Bot::getNextInstruction()
 {
@@ -31,7 +23,7 @@ void Bot::update()
 
 	switch (getNextInstruction())
 	{
-	case BotComand::move:
+	case botCmd::move:
 	{
 		int abs_dir = dir_move - dir_sight;
 		if (abs_dir < 0)
@@ -39,13 +31,13 @@ void Bot::update()
 		env->moveCell(abs_dir);
 		break; 
 	}
-	case BotComand::photosynthesis: 
+	case botCmd::photosynthesis: 
 	{
 		int power = env->getHeight() / (position.y + 1);
 		energy += power;
 		break;
 	}
-	case BotComand::nothing:
+	case botCmd::nothing:
 		break;
 	default:
 		break;

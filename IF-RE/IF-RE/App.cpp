@@ -1,11 +1,7 @@
 #include "App.h"
 #include <iostream>
-
-
-#define CELL_SIZE 20.f
-
-
-typedef std::vector<std::vector<Object*>> obj_matrix;
+#include "consts.h"
+_INC_OBJ_MATRIX
 
 
 
@@ -38,7 +34,7 @@ void App::initWindow(unsigned int width, unsigned int height, std::string wname,
 void App::initVariables()
 {
     /// Setting up environment
-    env = new Environment(30, 30);
+    env = new Environment(ENV_WIDTH, ENV_HEIGHT);
 
 
     FPS = 0;
@@ -52,45 +48,36 @@ void App::initVariables()
         butts.push_back(btn);
     };
 
-    /// vector of Buttons
-
-    auto start_pos = 1600;
-    auto vert_pos  = 50;
-    auto wtdh      = 100;
-    auto hght      = 30;
-    auto vert_del  = 40;
-    auto hor_del   = 110;
-
     // first line
-    create_button(sf::FloatRect(start_pos, vert_pos, wtdh, hght), "Pause",
+    create_button(sf::FloatRect(BTN_HORIZ_POS, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "Pause",
         []() 
         {
             std::cout << "Pause" << std::endl;
         });
-    create_button(sf::FloatRect(start_pos+ hor_del, vert_pos, wtdh, hght), "Resume",
+    create_button(sf::FloatRect(BTN_HORIZ_POS+ BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "Resume",
         []()
         {
             std::cout << "Resume" << std::endl;
         });
     // second line
-    create_button(sf::FloatRect(start_pos, vert_pos+ vert_del, wtdh, hght), "+sun",
+    create_button(sf::FloatRect(BTN_HORIZ_POS, BTN_VERT_POS+ BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "+sun",
         []() 
         {
             std::cout << "+sun" << std::endl;
         });
-    create_button(sf::FloatRect(start_pos+ hor_del, vert_pos+ vert_del, wtdh, hght), "-sun",
+    create_button(sf::FloatRect(BTN_HORIZ_POS+ BTN_HORIZ_DEL, BTN_VERT_POS+ BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "-sun",
         []() 
         {
             std::cout << "-sun" << std::endl;
         });
     // third line
-    create_button(sf::FloatRect(start_pos, vert_pos + 2*vert_del, wtdh, hght), "+delay",
+    create_button(sf::FloatRect(BTN_HORIZ_POS, BTN_VERT_POS + 2*BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "+delay",
         [&]()
         {
             FPS+=5;
             root.setFramerateLimit(FPS);
         });
-    create_button(sf::FloatRect(start_pos + hor_del, vert_pos + 2*vert_del, wtdh, hght), "-delay",
+    create_button(sf::FloatRect(BTN_HORIZ_POS + BTN_HORIZ_DEL, BTN_VERT_POS + 2*BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "-delay",
         [&]()
         {
             if ((FPS-5) > 1)
@@ -101,7 +88,7 @@ void App::initVariables()
         });
     
     /// Test Label
-    lb = new gui::Label(sf::Vector2f(60.f, 60.f), 40U);
+    lb = new gui::Label(STEP_LABEL_POS, STEP_LABEL_SIZE);
     lb->setString(sf::String(std::to_string(env->gen_step)));
     lb->setFont(PxlFont);
 
@@ -214,7 +201,8 @@ void App::render()
 
     // drawing
     sf::String counter_fps = "FPS: " + std::to_string(int(_FPS));
-    sf::Text text(std::string(counter_fps), PxlFont, 40U);
+    sf::Text text(std::string(counter_fps), PxlFont, FPS_LABEL_SIZE);
+    text.setPosition(FPS_LABEL_POS);
     text.setFillColor(sf::Color::Red);
     
     for (auto butt : butts)

@@ -1,5 +1,6 @@
 #include "Environment.h"
-#include <iostream>
+
+_INC_OBJ_MATRIX
 
 Environment::Environment(int width, int height) : 
 	_width(width), _height(height)
@@ -57,8 +58,9 @@ void Environment::update()
 
 void Environment::generateFood()
 {
-	if (Food::amount > 0) // REDO!
+	if (Food::amount > FOOD_AMOUNT) // REDO!
 		return;
+
 	int x, y;
 	do
 	{
@@ -83,53 +85,42 @@ Object* Environment::getByPos(int x, int y)
 
 void Environment::moveCell(int dir_move)
 {
-	//Moved
 	sf::Vector2i oldPos = currentObj->getPos();
 	sf::Vector2i newPos = oldPos;
-	switch (dir_move) {
-	case BotMove::up:
-		//up
-		newPos += sf::Vector2i(0, -1);
+
+	// vertical
+	switch (dir_move)
+	{
+	case botMove::up:
+	case botMove::up_right:
+	case botMove::up_left:
+		newPos += DIR_UP;
 		break;
-	case BotMove::up_right:
-		//up+right
-		newPos += sf::Vector2i(1, -1);
+	case botMove::down:
+	case botMove::down_right:
+	case botMove::down_left:
+		newPos += DIR_DOWN;
 		break;
-	case BotMove::right:
-		//right
-		newPos += sf::Vector2i(1, 0);
-		break;
-	case BotMove::down_right:
-		//down + rihgt
-		newPos += sf::Vector2i(1, 1);
-		break;
-	case BotMove::down:
-		//down
-		newPos += sf::Vector2i(0, 1);
-		break;
-	case BotMove::down_left:
-		//down+left
-		newPos += sf::Vector2i(-1, 1);
-		break;
-	case BotMove::left:
-		//left
-		newPos += sf::Vector2i(-1, 0);
-		break;
-	case BotMove::up_left:
-		//up
-		newPos += sf::Vector2i(-1, -1);
-		break;
-	default: 
+	default:
 		break;
 	}
-	/*if (newPos.y != 5)
+	// horizontal
+	switch (dir_move)
 	{
-		 newPos += sf::Vector2i(0, 1);
+	case botMove::right:
+	case botMove::up_right:
+	case botMove::down_right:
+		newPos += DIR_RIGHT;
+		break;
+	case botMove::left:
+	case botMove::up_left:
+	case botMove::down_left:
+		newPos += DIR_LEFT;
+		break;
+	default:
+		break;
 	}
-	else 
-	{
-		newPos += sf::Vector2i(1, 0);
-	}*/
+
 	if (newPos.y >= _height)
 		newPos.y = _height - 1;
 
@@ -141,8 +132,6 @@ void Environment::moveCell(int dir_move)
 
 	if (newPos.x < 0)
 		newPos.x = _width - 1;
-
-	
 
 	// very bad code
 	// mb redo to switch()
@@ -164,7 +153,7 @@ void Environment::moveCell(int dir_move)
 	}
 }
 
-const std::vector<std::vector<Object*>>& Environment::getMatrix()
+const obj_matrix& Environment::getMatrix()
 {
 	return matrix;
 }
