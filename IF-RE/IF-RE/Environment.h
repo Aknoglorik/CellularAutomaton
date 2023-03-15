@@ -34,6 +34,7 @@ public:
 	int getHeight() { return _height; }
 
 	void moveCell(int);
+	void eatCell(int);
 	const obj_matrix& getMatrix();
 
 };

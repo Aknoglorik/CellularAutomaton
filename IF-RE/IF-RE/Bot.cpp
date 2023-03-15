@@ -10,7 +10,7 @@ int Bot::getNextInstruction()
 
 	dir_move = rand() % 8;
 	dir_sight = rand() % 8;
-	return rand() % 3;  // 0 - move, 1 - photosynthesis, 2 - nothing
+	return 1; rand() % 3;  // 0 - move, 2 - photosynthesis, 1 - eat, 3 - nothing
 };
 
 void Bot::update()
@@ -31,6 +31,9 @@ void Bot::update()
 		env->moveCell(abs_dir);
 		break; 
 	}
+	case botCmd::eat:
+		env->eatCell(dir_sight);
+		break;
 	case botCmd::photosynthesis: 
 	{
 		int power = env->getHeight() / (position.y + 1);

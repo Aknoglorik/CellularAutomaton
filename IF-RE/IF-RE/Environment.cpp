@@ -1,6 +1,78 @@
 #include "Environment.h"
+#include <iostream>
 
 _INC_OBJ_MATRIX
+
+
+using sf::Vector2i; // work only in this cpp
+
+/// \brief Function return vector2i by botMove direction (0-7)
+/// \brief 0 - up, 1 - up-right, 2 - right ...  
+Vector2i vecByInt(int dir)
+{
+	Vector2i v_dir(0, 0);
+	// vertical
+	switch (dir)
+	{
+	case botMove::up:
+	case botMove::up_right:
+	case botMove::up_left:
+		v_dir += DIR_UP;
+		break;
+	case botMove::down:
+	case botMove::down_right:
+	case botMove::down_left:
+		v_dir += DIR_DOWN;
+		break;
+	default:
+		break;
+	}
+	// horizontal
+	switch (dir)
+	{
+	case botMove::right:
+	case botMove::up_right:
+	case botMove::down_right:
+		v_dir += DIR_RIGHT;
+		break;
+	case botMove::left:
+	case botMove::up_left:
+	case botMove::down_left:
+		v_dir += DIR_LEFT;
+		break;
+	default:
+		break;
+	}
+	return v_dir;
+}
+
+/// \brief Check if position out of Rect(0, 0, width, height) and correct pos if necassary
+/// \param pos - checkable position
+/// \param width, height - properties of a Rect
+/// \return True - if correct in the vertical is nesaccary else false
+bool checkPos(Vector2i& pos, int width, int height)
+{
+	bool vert_corr = false;
+	if (pos.y >= height)
+	{
+		pos.y = height - 1;
+		vert_corr = true;
+	}
+
+	if (pos.y < 0)
+	{
+		pos.y = 0;
+		vert_corr = true;
+	}
+
+	if (pos.x >= width)
+		pos.x = 0;
+
+	if (pos.x < 0)
+		pos.x = width - 1;
+
+	return vert_corr;
+}
 
 Environment::Environment(int width, int height) : 
 	_width(width), _height(height)
@@ -15,14 +87,14 @@ Environment::Environment(int width, int height) :
 		for (int j = 0; j < _height; j++)
 		{
 			matrix[i][j] = mainEmptiness;
-			if (i == 10)
+			if (j == 0 || j == _height - 1)//i == 10)
 			{
-				matrix[i][j] = new Bot(this, sf::Vector2i(i, j));
+				matrix[i][j] = new Bot(this, Vector2i(i, j));
 			}
 			if (i == 10 && j == 5)
 			{
 				matrix[i][j] = new Food;
-				matrix[i][j]->setPos(sf::Vector2i(i, j));
+				matrix[i][j]->setPos(Vector2i(i, j));
 			}
 		}
 	}
@@ -73,7 +145,7 @@ void Environment::generateFood()
 	matrix[x][y]->setPos(x, y);
 }
 
-Object* Environment::getByPos(sf::Vector2i pos)
+Object* Environment::getByPos(Vector2i pos)
 {
 	return matrix[pos.x][pos.y];
 }
@@ -85,53 +157,10 @@ Object* Environment::getByPos(int x, int y)
 
 void Environment::moveCell(int dir_move)
 {
-	sf::Vector2i oldPos = currentObj->getPos();
-	sf::Vector2i newPos = oldPos;
+	Vector2i oldPos = currentObj->getPos();
+	Vector2i newPos = oldPos + vecByInt(dir_move);
 
-	// vertical
-	switch (dir_move)
-	{
-	case botMove::up:
-	case botMove::up_right:
-	case botMove::up_left:
-		newPos += DIR_UP;
-		break;
-	case botMove::down:
-	case botMove::down_right:
-	case botMove::down_left:
-		newPos += DIR_DOWN;
-		break;
-	default:
-		break;
-	}
-	// horizontal
-	switch (dir_move)
-	{
-	case botMove::right:
-	case botMove::up_right:
-	case botMove::down_right:
-		newPos += DIR_RIGHT;
-		break;
-	case botMove::left:
-	case botMove::up_left:
-	case botMove::down_left:
-		newPos += DIR_LEFT;
-		break;
-	default:
-		break;
-	}
-
-	if (newPos.y >= _height)
-		newPos.y = _height - 1;
-
-	if (newPos.y < 0)
-		newPos.y = 0;
-
-	if (newPos.x >= _width)
-		newPos.x = 0;
-
-	if (newPos.x < 0)
-		newPos.x = _width - 1;
+	checkPos(newPos, _width, _height);
 
 	// very bad code
 	// mb redo to switch()
@@ -150,6 +179,30 @@ void Environment::moveCell(int dir_move)
 		currentObj->setPos(newPos);
 		matrix[newPos.x][newPos.y] = currentObj;
 		matrix[oldPos.x][oldPos.y] = mainEmptiness;
+	}
+}
+
+
+/// \brief Method allow cell to eat other in the direction of view
+/// 
+/// \param dir - cell view direction
+void Environment::eatCell(int dir)
+{
+	Vector2i oldPos = currentObj->getPos();
+	Vector2i newPos = oldPos + vecByInt(dir);
+
+	if (checkPos(newPos, _width, _height)) // True mean y of newPos was corrected, that is mean bot look at the wall
+		return;
+
+	if (matrix[newPos.x][newPos.y]->getType() == cellType::Bot)
+	{
+		matrix[newPos.x][newPos.y]->setIsDie(true);
+
+		// REDO! (DRY dont executed mb)
+		delete matrix[newPos.x][newPos.y]; // free mem
+		matrix[newPos.x][newPos.y] = mainEmptiness;
+
+		currentObj->addEnergy(FOOD_FOR_BOT);
 	}
 }
 

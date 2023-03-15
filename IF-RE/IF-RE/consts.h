@@ -51,6 +51,7 @@ namespace botCmd
 	enum
 	{
 		move,
+		eat,
 		photosynthesis,
 		nothing
 	};
@@ -62,8 +63,9 @@ namespace botCmd
 #define BOT_START_ENERGY 25
 
 // _Food_
-#define FOOD_ENERGY 10
-#define FOOD_AMOUNT 10
+#define FOOD_ENERGY  10
+#define FOOD_AMOUNT  10
+#define FOOD_FOR_BOT 10
 
 // _Corpse_
 

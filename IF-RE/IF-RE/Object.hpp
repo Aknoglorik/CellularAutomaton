@@ -19,11 +19,11 @@ public:
 	/// \brief Object make his step.
 	virtual void update() {};
 
-	virtual int getType() { return type; };
-
+	void setIsDie(bool flag) { is_die = flag; }
 	void setPos(sf::Vector2i newPos) { position = newPos; }
 	void setPos(int x, int y) { position = sf::Vector2i(x, y); }
 
+	virtual int getType() { return type; };
 	sf::Vector2i getPos() const { return position; }
 	unsigned int getEnergy() const { return energy; }
 
