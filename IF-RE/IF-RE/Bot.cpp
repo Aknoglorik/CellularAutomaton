@@ -10,7 +10,7 @@ int Bot::getNextInstruction()
 
 	dir_move = rand() % 8;
 	dir_sight = rand() % 8;
-	return 1; rand() % 3;  // 0 - move, 2 - photosynthesis, 1 - eat, 3 - nothing
+	return rand() % 3;  // 0 - move, 2 - photosynthesis, 1 - eat, 3 - nothing
 };
 
 void Bot::update()
@@ -25,9 +25,9 @@ void Bot::update()
 	{
 	case botCmd::move:
 	{
-		int abs_dir = dir_move - dir_sight;
-		if (abs_dir < 0)
-			abs_dir += 8;
+		int abs_dir = dir_move + dir_sight;
+		if (abs_dir > 7)
+			abs_dir -= 8;
 		env->moveCell(abs_dir);
 		break; 
 	}

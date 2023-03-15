@@ -1,7 +1,7 @@
 #include "Environment.h"
 #include <iostream>
 
-_INC_OBJ_MATRIX
+_INC_OBJP_MATRIX
 
 
 using sf::Vector2i; // work only in this cpp
@@ -81,12 +81,16 @@ Environment::Environment(int width, int height) :
 	
 	// Creating & filling matrix
 	matrix.resize(_width);
+	temp.resize(_width);
 	for (int i = 0; i < _width; i++)
 	{
 		matrix[i].resize(_height);
+		temp[i].resize(_height);
 		for (int j = 0; j < _height; j++)
 		{
 			matrix[i][j] = mainEmptiness;
+			temp[i][j] = _height / (2*j + 10);
+
 			if (j == 0 || j == _height - 1)//i == 10)
 			{
 				matrix[i][j] = new Bot(this, Vector2i(i, j));
@@ -106,6 +110,9 @@ Environment::~Environment()
 
 void Environment::update()
 {
+	if (pause)
+		return;
+
 	for (int i = 0; i < _width; i++)
 	{
 		for (int j = 0; j < _height; j++)
@@ -153,6 +160,14 @@ Object* Environment::getByPos(Vector2i pos)
 Object* Environment::getByPos(int x, int y)
 {
 	return matrix[x][y];
+}
+
+void Environment::setExtraTemp(int extra_temperature)
+{
+	for (int i = 0; i < _width; i++)
+		for (int j = 0; j < _width; j++)
+			temp[i][j] += extra_temperature;
+
 }
 
 void Environment::moveCell(int dir_move)
@@ -206,7 +221,7 @@ void Environment::eatCell(int dir)
 	}
 }
 
-const obj_matrix& Environment::getMatrix()
+const objp_matrix& Environment::getMatrix()
 {
 	return matrix;
 }

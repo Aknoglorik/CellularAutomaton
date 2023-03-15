@@ -7,7 +7,8 @@
 #include "GeneticAlgorithm.h"
 #include "consts.h"
 
-_INC_OBJ_MATRIX
+_INC_OBJP_MATRIX
+_INC_INT_MATRIX
 
 class Environment
 {
@@ -15,10 +16,15 @@ class Environment
 	int _height;
 
 	GeneticAlgorithm* genAlg = nullptr;
-	obj_matrix matrix;
+	objp_matrix matrix;
 
 	Emptiness *mainEmptiness = nullptr;
 	Object *currentObj = nullptr;
+	
+	bool pause = false;
+	
+	// temprature
+	int_matrix temp;
 
 public:
 	int gen_step = 0;
@@ -32,10 +38,12 @@ public:
 	Object* getByPos(sf::Vector2i);
 	Object* getByPos(int, int);
 	int getHeight() { return _height; }
+	const objp_matrix& getMatrix();
+
+	void setPause(bool flag) { pause = flag; }
+	void setExtraTemp(int);
 
 	void moveCell(int);
 	void eatCell(int);
-	const obj_matrix& getMatrix();
-
 };
 

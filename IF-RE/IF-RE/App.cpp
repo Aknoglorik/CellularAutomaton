@@ -1,7 +1,7 @@
 #include "App.h"
 #include <iostream>
 #include "consts.h"
-_INC_OBJ_MATRIX
+_INC_OBJP_MATRIX
 
 
 
@@ -50,25 +50,25 @@ void App::initVariables()
 
     // first line
     create_button(sf::FloatRect(BTN_HORIZ_POS, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "Pause",
-        []() 
+        [&]() 
         {
-            std::cout << "Pause" << std::endl;
+            env->setPause(true);
         });
     create_button(sf::FloatRect(BTN_HORIZ_POS+ BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "Resume",
-        []()
+        [&]()
         {
-            std::cout << "Resume" << std::endl;
+            env->setPause(false);
         });
     // second line
     create_button(sf::FloatRect(BTN_HORIZ_POS, BTN_VERT_POS+ BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "+sun",
-        []() 
+        [&]() 
         {
-            std::cout << "+sun" << std::endl;
+            env->setExtraTemp(1);
         });
     create_button(sf::FloatRect(BTN_HORIZ_POS+ BTN_HORIZ_DEL, BTN_VERT_POS+ BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "-sun",
-        []() 
+        [&]()
         {
-            std::cout << "-sun" << std::endl;
+            env->setExtraTemp(-1);
         });
     // third line
     create_button(sf::FloatRect(BTN_HORIZ_POS, BTN_VERT_POS + 2*BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "+delay",
@@ -183,7 +183,7 @@ void App::update()
 void App::render()
 {
     root.clear();
-    obj_matrix mat = env->getMatrix();
+    objp_matrix mat = env->getMatrix();
     
     // Test Label
 

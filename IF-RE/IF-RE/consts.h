@@ -6,7 +6,9 @@
 
 /// <- this mean end of section
 
-#define _INC_OBJ_MATRIX typedef std::vector<std::vector<Object*>> obj_matrix;
+/// OBJP mean pointer on object
+#define _INC_OBJP_MATRIX typedef std::vector<std::vector<Object*>> objp_matrix;
+#define _INC_INT_MATRIX  typedef std::vector<std::vector<int>> int_matrix;
 
 
 /// ENVIRONMENT

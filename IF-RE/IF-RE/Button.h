@@ -24,6 +24,8 @@ namespace gui
 
 		Label *label;
 		bool isPressed = false;
+		bool isHovered = false;
+		bool isClickedOnThis = false;
 
 	public:
 		Button(sf::FloatRect size, const sf::Font &font, sf::String str = "Button");

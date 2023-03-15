@@ -26,6 +26,7 @@ public:
 	virtual int getType() { return type; };
 	sf::Vector2i getPos() const { return position; }
 	unsigned int getEnergy() const { return energy; }
+	virtual int getSpriteType() const { return -1; }
 
 
 	virtual void addEnergy(unsigned int value) { energy += value; }

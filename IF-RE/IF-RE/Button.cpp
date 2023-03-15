@@ -59,27 +59,37 @@ void Button::update(sf::RenderWindow& target)
 {
     sf::Vector2f pos = (sf::Vector2f) sf::Mouse::getPosition(target);
     label->update();
+    bool isClick = sf::Mouse::isButtonPressed(sf::Mouse::Left);
 
     if (isPressed)
     {
-        if (!sf::Mouse::isButtonPressed(sf::Mouse::Left))
+        if (!isClick)
             isPressed = false;
         return;
     }
 
     if (size.contains(pos))
     {
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+        if (!isClick)
+            isClickedOnThis = true;
+        if (isClick && isClickedOnThis)
         {
             isPressed = true;
             setByStat(_status::_clicked);
             m_callback();
         }
         else
+        {
             setByStat(_status::_hovered);
+        }
+
     }
     else
+    {
+        if (isClick)
+            isClickedOnThis = false;
         setByStat(_status::_default);
+    }
 
 }
 
