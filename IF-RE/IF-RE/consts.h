@@ -102,6 +102,9 @@ namespace botCmd
 
 #define FPS_LABEL_POS sf::Vector2f(0.f, 0.f)
 #define FPS_LABEL_SIZE 40U
+
+// _Sliders_
+#define SLD_HEIGHT 40.f
 ///
 
 

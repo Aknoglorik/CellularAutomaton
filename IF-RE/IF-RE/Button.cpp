@@ -1,9 +1,15 @@
 #include "Button.h"
 #include "ExtraColors.hpp"
 #include "Label.h"
-#include <iostream>
 
 using namespace gui;
+
+enum _status
+{
+    _default = 0,
+    _hovered = 1,
+    _clicked = 2
+};
 
 Button::Button(sf::FloatRect _size, const sf::Font &font, sf::String str) : size(_size)
 {
@@ -20,12 +26,17 @@ Button::Button(sf::FloatRect _size, const sf::Font &font, sf::String str) : size
     setByStat(_status::_default);
 }
 
-void gui::Button::setString(sf::String str)
+gui::Button::~Button()
+{
+    delete label;
+}
+
+void Button::setString(sf::String str)
 {
     label->setString(str);
 }
 
-void Button::setByStat(_status status)
+void Button::setByStat(int status)
 {
     switch (status)
     {

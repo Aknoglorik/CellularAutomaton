@@ -4,15 +4,6 @@
 
 namespace gui
 {
-	enum _status
-	{
-		_default = 0,
-		_hovered = 1,
-		_clicked = 2
-	};
-
-	void setByStat(_status);
-
 	class Label;
 
 	class Button : public sf::Drawable, public sf::Transformable
@@ -29,6 +20,7 @@ namespace gui
 
 	public:
 		Button(sf::FloatRect size, const sf::Font &font, sf::String str = "Button");
+		~Button();
 
 		void setString(sf::String);
 
@@ -37,7 +29,7 @@ namespace gui
 		void bind(std::function<void(void)>);
 
 	private:
-		void setByStat(_status);
+		void setByStat(int);
 	};
 
 }

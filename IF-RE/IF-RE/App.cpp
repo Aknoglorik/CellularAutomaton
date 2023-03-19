@@ -122,6 +122,7 @@ void App::initVariables()
 
     object->setFillColor(sf::Color::Magenta);
     bot_shapes.push_back(object);
+    sl = new gui::Slider(sf::Vector2f(40, 100), sf::Vector2f(540, 100), SLD_HEIGHT);
 }
 
 
@@ -194,8 +195,7 @@ void App::render()
     text.setPosition(FPS_LABEL_POS);
     text.setFillColor(sf::Color::Red);
 
-    gui::Slider sl;
-
+    sl->update(root);
 
     // drawing
     root.setView(view);
@@ -211,13 +211,13 @@ void App::render()
     }
 
     // HUD
-    root.setView(defaultView);
+    //root.setView(defaultView);
     for (auto butt : butts)
         root.draw(*butt);
 
     root.draw(text);
     root.draw(*lb);
-    root.draw(sl);
+    root.draw(*sl);
 
     root.display();
 }
