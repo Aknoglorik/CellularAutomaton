@@ -22,6 +22,15 @@
     <Filter Include="Графика\Файлы заголовков">
       <UniqueIdentifier>{39fb6d27-ba1b-4945-a529-41441d5eff75}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Bot">
+      <UniqueIdentifier>{889975aa-e9c7-4b28-9c95-f8108bfc92c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Bot\Файлы заголовков">
+      <UniqueIdentifier>{92daba45-4635-4fc2-a4b7-9d10d0d03412}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Bot\Исходные файлы">
+      <UniqueIdentifier>{fd37a194-a98a-43b9-a04f-45b6563be866}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -45,17 +54,17 @@
     <ClCompile Include="Label.cpp">
       <Filter>Графика\Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Bot.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="Corpse.cpp">
-      <Filter>Исходные файлы</Filter>
+    <ClCompile Include="Food.cpp">
+      <Filter>Bot\Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="Emptiness.cpp">
-      <Filter>Исходные файлы</Filter>
+      <Filter>Bot\Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Food.cpp">
-      <Filter>Исходные файлы</Filter>
+    <ClCompile Include="Corpse.cpp">
+      <Filter>Bot\Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Bot.cpp">
+      <Filter>Bot\Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -83,26 +92,26 @@
     <ClInclude Include="ExtraColors.hpp">
       <Filter>Графика\Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="Bot.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="Corpse.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="Emptiness.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="Food.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="Object.hpp">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="Cells.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="consts.h">
       <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Bot.h">
+      <Filter>Bot\Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Cells.h">
+      <Filter>Bot\Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Corpse.h">
+      <Filter>Bot\Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Emptiness.h">
+      <Filter>Bot\Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Food.h">
+      <Filter>Bot\Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.hpp">
+      <Filter>Bot\Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

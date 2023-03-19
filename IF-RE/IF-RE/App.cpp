@@ -24,8 +24,12 @@ void App::initWindow(unsigned int width, unsigned int height, std::string wname,
     VM.height = height;
 
     root.create(VM, wname, 7U, sf::ContextSettings(0, 0, 7));
-    //sf::FloatRect view(0, 0, 1000, 1000);
-    //root.setView(sf::View(view));
+
+    defaultView = sf::View(sf::FloatRect(0, 0, width, height));
+
+    view = sf::View(sf::FloatRect(0, 0, CELL_SIZE * ENV_WIDTH, CELL_SIZE * ENV_HEIGHT));
+    root.setView(view);
+    
     FPS = _fps;
     root.setFramerateLimit(FPS);
 
@@ -94,11 +98,11 @@ void App::initVariables()
 
 
     /// Setting up bots textures
-    sf::RectangleShape *emp     = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
-    sf::RectangleShape *bot     = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
-    sf::RectangleShape *food    = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
-    sf::RectangleShape *corpse  = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
-    sf::RectangleShape *object  = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
+    sf::RectangleShape *emp             = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
+    sf::RectangleShape *bot             = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
+    sf::RectangleShape *food            = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
+    sf::RectangleShape *corpse          = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
+    sf::RectangleShape *object          = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
     
     emp->setOutlineColor(gui::Color::LightGray);
     emp->setOutlineThickness(-1);
@@ -150,8 +154,8 @@ void App::pollEvent()
             break;
 
         case sf::Event::Resized:
-            sf::FloatRect view(0, 0, event_.size.width, event_.size.height);
-            root.setView(sf::View(view));
+            defaultView = sf::View(sf::FloatRect(0, 0, event_.size.width, event_.size.height));
+            view.setViewport(sf::FloatRect(0, 0, event_.size.width / root.getSize().x, event_.size.height / root.getSize().y));
             break;
         }
     }
@@ -184,11 +188,18 @@ void App::render()
 {
     root.clear();
     objp_matrix mat = env->getMatrix();
-    
-    // Test Label
 
+    sf::String counter_fps = "FPS: " + std::to_string(int(_FPS));
+    sf::Text text(std::string(counter_fps), PxlFont, FPS_LABEL_SIZE);
+    text.setPosition(FPS_LABEL_POS);
+    text.setFillColor(sf::Color::Red);
+
+    gui::Slider sl;
+
+
+    // drawing
+    root.setView(view);
     sf::RectangleShape* rectangle;
-
     for (int i = 0; i < mat.size(); i++)
     {
         for (int j = 0; j < mat[0].size(); j++)
@@ -199,17 +210,14 @@ void App::render()
         }
     }
 
-    // drawing
-    sf::String counter_fps = "FPS: " + std::to_string(int(_FPS));
-    sf::Text text(std::string(counter_fps), PxlFont, FPS_LABEL_SIZE);
-    text.setPosition(FPS_LABEL_POS);
-    text.setFillColor(sf::Color::Red);
-    
+    // HUD
+    root.setView(defaultView);
     for (auto butt : butts)
         root.draw(*butt);
 
     root.draw(text);
     root.draw(*lb);
+    root.draw(sl);
 
     root.display();
 }

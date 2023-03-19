@@ -30,7 +30,7 @@ private:
 	Environment *env;
 
 	sf::Clock clock;
-	sf::View view;
+	sf::View view, defaultView;
 
 	float _FPS;
 	bool programEnd;

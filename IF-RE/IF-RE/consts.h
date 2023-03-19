@@ -12,8 +12,8 @@
 
 
 /// ENVIRONMENT
-#define ENV_WIDTH  30
-#define ENV_HEIGHT 30
+#define ENV_WIDTH  96
+#define ENV_HEIGHT 54
 
 ///
 
@@ -86,7 +86,7 @@ namespace botCmd
 #define CELL_SIZE 20.f 
 
 // *btn pos*
-#define BTN_HORIZ_POS 1600.f
+#define BTN_HORIZ_POS 800.f
 #define BTN_VERT_POS  50.f
 
 // *btn prop*

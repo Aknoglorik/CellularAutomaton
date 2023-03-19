@@ -57,9 +57,12 @@ void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 void Button::update(sf::RenderWindow& target)
 {
-    sf::Vector2f pos = (sf::Vector2f) sf::Mouse::getPosition(target);
+    // sf::View target_view = target.getView();
+    sf::Vector2i m_pos = sf::Mouse::getPosition(target);
+    
     label->update();
     bool isClick = sf::Mouse::isButtonPressed(sf::Mouse::Left);
+    sf::Vector2f pos = target.mapPixelToCoords(m_pos);
 
     if (isPressed)
     {
@@ -90,7 +93,6 @@ void Button::update(sf::RenderWindow& target)
             isClickedOnThis = false;
         setByStat(_status::_default);
     }
-
 }
 
 void Button::bind(std::function<void(void)> new_callback)
