@@ -236,3 +236,6 @@ _Pvt_Extensions
 .fake/
 
 IF-RE/IF-RE/IF-RE.vcxproj
+*.vcxproj
+IF-RE/IF-RE/IF-RE.vcxproj
+*.vcxproj
