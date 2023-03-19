@@ -71,7 +71,7 @@ void Button::update(sf::RenderWindow& target)
     // sf::View target_view = target.getView();
     sf::Vector2i m_pos = sf::Mouse::getPosition(target);
     
-    label->update();
+    label->update(target);
     bool isClick = sf::Mouse::isButtonPressed(sf::Mouse::Left);
     sf::Vector2f pos = target.mapPixelToCoords(m_pos);
 

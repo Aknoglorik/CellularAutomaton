@@ -1,10 +1,12 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "GObject.hpp"
+
 
 namespace gui
 {
 
-	class Slider : public sf::Drawable, public sf::Transformable
+	class Slider : public GObject
 	{
 		int max_value;
 		int value;
@@ -25,7 +27,7 @@ namespace gui
 		void setByStat(int status);
 
 		void draw(sf::RenderTarget&, sf::RenderStates) const override;
-		void update(sf::RenderWindow& target);
+		void update(sf::RenderWindow&) override;
 
 		void setValue(int val);
 		int getValue() { return value; }

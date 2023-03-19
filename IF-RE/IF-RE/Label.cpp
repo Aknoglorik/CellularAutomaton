@@ -54,7 +54,7 @@ void Label::draw(sf::RenderTarget& target, sf::RenderStates state) const
 	target.draw(text, state);
 }
 
-void Label::update()
+void Label::update(sf::RenderWindow&)
 {
 	if (m_string)
 		text.setString(*m_string);

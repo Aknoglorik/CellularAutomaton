@@ -1,12 +1,14 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <functional>
+#include "GObject.hpp"
+
 
 namespace gui
 {
 	class Label;
 
-	class Button : public sf::Drawable, public sf::Transformable
+	class Button : public GObject
 	{
 		std::function<void(void)> m_callback = [](){};
 
@@ -25,7 +27,7 @@ namespace gui
 		void setString(sf::String);
 
 		void draw(sf::RenderTarget&, sf::RenderStates) const override;
-		void update(sf::RenderWindow&);
+		void update(sf::RenderWindow&) override;
 		void bind(std::function<void(void)>);
 
 	private:

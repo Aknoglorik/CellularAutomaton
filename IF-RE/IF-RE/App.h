@@ -24,9 +24,11 @@ private:
 	int FPS;
 
 	std::vector<sf::RectangleShape*> bot_shapes;
-	std::vector<gui::Button*> butts;
-	gui::Label* lb;
-	gui::Slider* sl;
+	std::vector<gui::GObject*> widgets;
+	
+	// Strings for dynamic Labels
+	sf::String step_string;
+	sf::String fps_counter_string;
 
 	Environment *env;
 

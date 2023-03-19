@@ -166,6 +166,7 @@
     <ClInclude Include="Food.h" />
     <ClInclude Include="GeneticAlgorithm.h" />
     <ClInclude Include="GenGui.h" />
+    <ClInclude Include="GObject.hpp" />
     <ClInclude Include="Label.h" />
     <ClInclude Include="Object.hpp" />
     <ClInclude Include="Slider.h" />

@@ -113,5 +113,8 @@
     <ClInclude Include="Object.hpp">
       <Filter>Bot\Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="GObject.hpp">
+      <Filter>Графика\Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

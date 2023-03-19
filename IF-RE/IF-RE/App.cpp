@@ -14,7 +14,13 @@ App::App(unsigned int width, unsigned int height, std::string wname, int _fps)
 
 App::~App()
 {
+    delete env;
 
+    for (int i = 0; i < widgets.size(); i++)
+        delete widgets[i];
+
+    for (int i = 0; i < bot_shapes.size(); i++)
+        delete bot_shapes[i];
 }
 
 // Initializers
@@ -49,7 +55,7 @@ void App::initVariables()
     {
         auto btn = new gui::Button(size, PxlFont, str);
         btn->bind(f);
-        butts.push_back(btn);
+        widgets.push_back(btn);
     };
 
     // first line
@@ -89,12 +95,27 @@ void App::initVariables()
                 FPS-=5;
                 root.setFramerateLimit(FPS);
             }
+            else
+            {
+                FPS = 0;
+                root.setFramerateLimit(1);
+            }
         });
     
-    /// Test Label
-    lb = new gui::Label(STEP_LABEL_POS, STEP_LABEL_SIZE);
-    lb->setString(sf::String(std::to_string(env->gen_step)));
-    lb->setFont(PxlFont);
+    widgets.push_back(new gui::Slider(sf::Vector2f(40, 100), sf::Vector2f(540, 100), SLD_HEIGHT));
+
+    /// Labels
+    gui::Label* lb_step = new gui::Label(STEP_LABEL_POS, STEP_LABEL_SIZE);
+    lb_step->setDynamicString(step_string);
+    lb_step->setFont(PxlFont);
+    widgets.push_back(lb_step);
+
+
+    gui::Label* lb_fps = new gui::Label(FPS_LABEL_POS, FPS_LABEL_SIZE);
+    lb_fps->setDynamicString(fps_counter_string);
+    lb_fps->setFont(PxlFont);
+    lb_fps->setColor(sf::Color::Red);
+    widgets.push_back(lb_fps);
 
 
     /// Setting up bots textures
@@ -122,7 +143,6 @@ void App::initVariables()
 
     object->setFillColor(sf::Color::Magenta);
     bot_shapes.push_back(object);
-    sl = new gui::Slider(sf::Vector2f(40, 100), sf::Vector2f(540, 100), SLD_HEIGHT);
 }
 
 
@@ -177,11 +197,11 @@ void App::update()
     sf::Vector2f mouse_pos(sf::Mouse::getPosition(root).x - (int)root.getSize().x / 2, 
                            sf::Mouse::getPosition(root).y - (int)root.getSize().y / 2);
     
-    for (auto butt : butts)
-        butt->update(root);
+    for (auto wid : widgets)
+        wid->update(root);
 
-    lb->setString(sf::String("Step " + std::to_string(env->gen_step)));
-    
+    step_string         = "Step " + std::to_string(env->gen_step);
+    fps_counter_string  = "FPS: " + std::to_string(int(_FPS));
     env->update();
 }
 
@@ -189,13 +209,6 @@ void App::render()
 {
     root.clear();
     objp_matrix mat = env->getMatrix();
-
-    sf::String counter_fps = "FPS: " + std::to_string(int(_FPS));
-    sf::Text text(std::string(counter_fps), PxlFont, FPS_LABEL_SIZE);
-    text.setPosition(FPS_LABEL_POS);
-    text.setFillColor(sf::Color::Red);
-
-    sl->update(root);
 
     // drawing
     root.setView(view);
@@ -212,12 +225,8 @@ void App::render()
 
     // HUD
     //root.setView(defaultView);
-    for (auto butt : butts)
-        root.draw(*butt);
-
-    root.draw(text);
-    root.draw(*lb);
-    root.draw(*sl);
+    for (auto wid : widgets)
+        root.draw(*wid);
 
     root.display();
 }

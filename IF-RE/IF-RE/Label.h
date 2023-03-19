@@ -1,11 +1,12 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "GObject.hpp"
 
 
 namespace gui
 {
 
-	class Label : public sf::Drawable, public sf::Transformable
+	class Label : public GObject
 	{
 		sf::Vector2f pos;
 		sf::String* m_string;
@@ -25,7 +26,7 @@ namespace gui
 		void setDynamicString(sf::String& str);
 
 		void draw(sf::RenderTarget&, sf::RenderStates) const override;
-		void update();
+		void update(sf::RenderWindow&) override;
 	};
 
 }
