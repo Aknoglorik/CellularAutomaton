@@ -1,5 +1,4 @@
 #include "App.h"
-#include <iostream>
 #include "consts.h"
 _INC_OBJP_MATRIX
 
@@ -28,12 +27,14 @@ void App::initWindow(unsigned int width, unsigned int height, std::string wname,
 {
     VM.width = width;
     VM.height = height;
+    root.create(VM, wname, sf::Style::Default, sf::ContextSettings(0, 0, 7));
 
-    root.create(VM, wname, 7U, sf::ContextSettings(0, 0, 7));
+    sf::RenderWindow ret;
+    ret.create(VM, wname, 7U, sf::ContextSettings(0, 0, 7));
 
     defaultView = sf::View(sf::FloatRect(0, 0, width, height));
 
-    view = sf::View(sf::FloatRect(0, 0, CELL_SIZE * ENV_WIDTH, CELL_SIZE * ENV_HEIGHT));
+    view = sf::View(sf::FloatRect(0, 0, CELL_SIZE * ENV_WIDTH, CELL_SIZE * ENV_HEIGHT + HUD_HEIGHT));
     root.setView(view);
     
     FPS = _fps;
@@ -43,14 +44,15 @@ void App::initWindow(unsigned int width, unsigned int height, std::string wname,
 
 void App::initVariables()
 {
+    PxlFont.loadFromFile("resources/font/pxlfont.ttf");
+    
     /// Setting up environment
     env = new Environment(ENV_WIDTH, ENV_HEIGHT);
 
 
+    /// Setup buttons props
     FPS = 0;
     programEnd = false;
-    PxlFont.loadFromFile("resources/font/pxlfont.ttf");
-
     auto create_button = [&](sf::FloatRect size, sf::String str, std::function<void()> f)
     {
         auto btn = new gui::Button(size, PxlFont, str);
@@ -101,21 +103,26 @@ void App::initVariables()
                 root.setFramerateLimit(1);
             }
         });
-    
-    widgets.push_back(new gui::Slider(sf::Vector2f(40, 100), sf::Vector2f(540, 100), SLD_HEIGHT));
+    ///
+
+
+    // Slider
+    widgets.push_back(new gui::Slider(SLD_POSITION, SLD_SIZE, SLD_HEIGHT));
+
 
     /// Labels
     gui::Label* lb_step = new gui::Label(STEP_LABEL_POS, STEP_LABEL_SIZE);
     lb_step->setDynamicString(step_string);
     lb_step->setFont(PxlFont);
+    lb_step->setColor(sf::Color::Red);
     widgets.push_back(lb_step);
-
 
     gui::Label* lb_fps = new gui::Label(FPS_LABEL_POS, FPS_LABEL_SIZE);
     lb_fps->setDynamicString(fps_counter_string);
     lb_fps->setFont(PxlFont);
     lb_fps->setColor(sf::Color::Red);
     widgets.push_back(lb_fps);
+    ///
 
 
     /// Setting up bots textures
@@ -143,6 +150,7 @@ void App::initVariables()
 
     object->setFillColor(sf::Color::Magenta);
     bot_shapes.push_back(object);
+    ///
 }
 
 
@@ -224,7 +232,12 @@ void App::render()
     }
 
     // HUD
-    //root.setView(defaultView);
+    sf::RectangleShape hud_bg(sf::Vector2f(ENV_WIDTH*CELL_SIZE, HUD_HEIGHT));
+    hud_bg.setFillColor(HUD_BG);
+    hud_bg.setPosition(0, ENV_HEIGHT * CELL_SIZE);
+    root.draw(hud_bg);
+
+    root.setView(defaultView);
     for (auto wid : widgets)
         root.draw(*wid);
 

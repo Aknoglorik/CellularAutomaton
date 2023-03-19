@@ -12,7 +12,8 @@ enum _status
 };
 
 
-Slider::Slider(sf::Vector2f p1, sf::Vector2f p2, float height, int start_value, int _max_value) : value(start_value), max_value(_max_value)
+Slider::Slider(sf::Vector2f p1, sf::Vector2f p2, float height, int start_value, int _max_value, std::function<void(int)> callback) 
+    : value(start_value), max_value(_max_value), m_callback(callback)
 {
     circle_radius = height / 2;
 
@@ -71,6 +72,7 @@ void Slider::setupByPos(sf::Vector2f pos)
 
     // new width = (pos.x - hitbox.left)
     value = (pos.x - hitbox.left) / hitbox.width * max_value;
+    m_callback(value);
 
     line1.setSize(sf::Vector2f(pos.x - line1.getPosition().x, 2 * circle_radius));
     circle.setPosition(pos.x - circle_radius, hitbox.top);

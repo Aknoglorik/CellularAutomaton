@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <functional>
 #include "GObject.hpp"
 
 
@@ -19,9 +20,11 @@ namespace gui
 		bool isPressed = false;
 		bool isHovered = false;
 		bool isClickedOnThis = false;
+		std::function<void(int)> m_callback;
+		
 
 	public:
-		Slider(sf::Vector2f p1, sf::Vector2f p2, float height, int start_value = 0, int _max_value = 100);
+		Slider(sf::Vector2f p1, sf::Vector2f p2, float height, int start_value = 0, int _max_value = 100, std::function<void(int)> callback = [](int) {});
 		~Slider();
 
 		void setByStat(int status);
@@ -31,6 +34,8 @@ namespace gui
 
 		void setValue(int val);
 		int getValue() { return value; }
+
+		void bind(std::function<void(int)> callback) { m_callback = callback;	}
 
 	private:
 		void setupByPos(sf::Vector2f pos);
