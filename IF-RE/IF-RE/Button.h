@@ -1,21 +1,14 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <functional>
+#include "GObject.hpp"
+
 
 namespace gui
 {
-	enum _status
-	{
-		_default = 0,
-		_hovered = 1,
-		_clicked = 2
-	};
-
-	void setByStat(_status);
-
 	class Label;
 
-	class Button : public sf::Drawable, public sf::Transformable
+	class Button : public GObject
 	{
 		std::function<void(void)> m_callback = [](){};
 
@@ -29,15 +22,16 @@ namespace gui
 
 	public:
 		Button(sf::FloatRect size, const sf::Font &font, sf::String str = "Button");
+		~Button();
 
 		void setString(sf::String);
 
 		void draw(sf::RenderTarget&, sf::RenderStates) const override;
-		void update(sf::RenderWindow&);
+		void update(sf::RenderWindow&) override;
 		void bind(std::function<void(void)>);
 
 	private:
-		void setByStat(_status);
+		void setByStat(int);
 	};
 
 }

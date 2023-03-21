@@ -1,5 +1,4 @@
 #include "App.h"
-#include <iostream>
 #include "consts.h"
 _INC_OBJP_MATRIX
 
@@ -14,7 +13,13 @@ App::App(unsigned int width, unsigned int height, std::string wname, int _fps)
 
 App::~App()
 {
+    delete env;
 
+    for (int i = 0; i < widgets.size(); i++)
+        delete widgets[i];
+
+    for (int i = 0; i < bot_shapes.size(); i++)
+        delete bot_shapes[i];
 }
 
 // Initializers
@@ -22,10 +27,16 @@ void App::initWindow(unsigned int width, unsigned int height, std::string wname,
 {
     VM.width = width;
     VM.height = height;
+    root.create(VM, wname, sf::Style::Default, sf::ContextSettings(0, 0, 7));
 
-    root.create(VM, wname, 7U, sf::ContextSettings(0, 0, 7));
-    //sf::FloatRect view(0, 0, 1000, 1000);
-    //root.setView(sf::View(view));
+    sf::RenderWindow ret;
+    ret.create(VM, wname, 7U, sf::ContextSettings(0, 0, 7));
+
+    defaultView = sf::View(sf::FloatRect(0, 0, width, height));
+
+    view = sf::View(sf::FloatRect(0, 0, CELL_SIZE * ENV_WIDTH, CELL_SIZE * ENV_HEIGHT + HUD_HEIGHT));
+    root.setView(view);
+    
     FPS = _fps;
     root.setFramerateLimit(FPS);
 
@@ -33,19 +44,20 @@ void App::initWindow(unsigned int width, unsigned int height, std::string wname,
 
 void App::initVariables()
 {
+    PxlFont.loadFromFile("resources/font/pxlfont.ttf");
+    
     /// Setting up environment
     env = new Environment(ENV_WIDTH, ENV_HEIGHT);
 
 
+    /// Setup buttons props
     FPS = 0;
     programEnd = false;
-    PxlFont.loadFromFile("resources/font/pxlfont.ttf");
-
     auto create_button = [&](sf::FloatRect size, sf::String str, std::function<void()> f)
     {
         auto btn = new gui::Button(size, PxlFont, str);
         btn->bind(f);
-        butts.push_back(btn);
+        widgets.push_back(btn);
     };
 
     // first line
@@ -85,20 +97,40 @@ void App::initVariables()
                 FPS-=5;
                 root.setFramerateLimit(FPS);
             }
+            else
+            {
+                FPS = 0;
+                root.setFramerateLimit(1);
+            }
         });
-    
-    /// Test Label
-    lb = new gui::Label(STEP_LABEL_POS, STEP_LABEL_SIZE);
-    lb->setString(sf::String(std::to_string(env->gen_step)));
-    lb->setFont(PxlFont);
+    ///
+
+
+    // Slider
+    widgets.push_back(new gui::Slider(SLD_POSITION, SLD_SIZE, SLD_HEIGHT));
+
+
+    /// Labels
+    gui::Label* lb_step = new gui::Label(STEP_LABEL_POS, STEP_LABEL_SIZE);
+    lb_step->setDynamicString(step_string);
+    lb_step->setFont(PxlFont);
+    lb_step->setColor(sf::Color::Red);
+    widgets.push_back(lb_step);
+
+    gui::Label* lb_fps = new gui::Label(FPS_LABEL_POS, FPS_LABEL_SIZE);
+    lb_fps->setDynamicString(fps_counter_string);
+    lb_fps->setFont(PxlFont);
+    lb_fps->setColor(sf::Color::Red);
+    widgets.push_back(lb_fps);
+    ///
 
 
     /// Setting up bots textures
-    sf::RectangleShape *emp     = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
-    sf::RectangleShape *bot     = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
-    sf::RectangleShape *food    = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
-    sf::RectangleShape *corpse  = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
-    sf::RectangleShape *object  = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
+    sf::RectangleShape *emp             = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
+    sf::RectangleShape *bot             = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
+    sf::RectangleShape *food            = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
+    sf::RectangleShape *corpse          = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
+    sf::RectangleShape *object          = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
     
     emp->setOutlineColor(gui::Color::LightGray);
     emp->setOutlineThickness(-1);
@@ -118,6 +150,7 @@ void App::initVariables()
 
     object->setFillColor(sf::Color::Magenta);
     bot_shapes.push_back(object);
+    ///
 }
 
 
@@ -150,8 +183,8 @@ void App::pollEvent()
             break;
 
         case sf::Event::Resized:
-            sf::FloatRect view(0, 0, event_.size.width, event_.size.height);
-            root.setView(sf::View(view));
+            defaultView = sf::View(sf::FloatRect(0, 0, event_.size.width, event_.size.height));
+            view.setViewport(sf::FloatRect(0, 0, event_.size.width / root.getSize().x, event_.size.height / root.getSize().y));
             break;
         }
     }
@@ -172,11 +205,11 @@ void App::update()
     sf::Vector2f mouse_pos(sf::Mouse::getPosition(root).x - (int)root.getSize().x / 2, 
                            sf::Mouse::getPosition(root).y - (int)root.getSize().y / 2);
     
-    for (auto butt : butts)
-        butt->update(root);
+    for (auto wid : widgets)
+        wid->update(root);
 
-    lb->setString(sf::String("Step " + std::to_string(env->gen_step)));
-    
+    step_string         = "Step " + std::to_string(env->gen_step);
+    fps_counter_string  = "FPS: " + std::to_string(int(_FPS));
     env->update();
 }
 
@@ -184,11 +217,10 @@ void App::render()
 {
     root.clear();
     objp_matrix mat = env->getMatrix();
-    
-    // Test Label
 
+    // drawing
+    root.setView(view);
     sf::RectangleShape* rectangle;
-
     for (int i = 0; i < mat.size(); i++)
     {
         for (int j = 0; j < mat[0].size(); j++)
@@ -199,17 +231,15 @@ void App::render()
         }
     }
 
-    // drawing
-    sf::String counter_fps = "FPS: " + std::to_string(int(_FPS));
-    sf::Text text(std::string(counter_fps), PxlFont, FPS_LABEL_SIZE);
-    text.setPosition(FPS_LABEL_POS);
-    text.setFillColor(sf::Color::Red);
-    
-    for (auto butt : butts)
-        root.draw(*butt);
+    // HUD
+    sf::RectangleShape hud_bg(sf::Vector2f(ENV_WIDTH*CELL_SIZE, HUD_HEIGHT));
+    hud_bg.setFillColor(HUD_BG);
+    hud_bg.setPosition(0, ENV_HEIGHT * CELL_SIZE);
+    root.draw(hud_bg);
 
-    root.draw(text);
-    root.draw(*lb);
+    root.setView(defaultView);
+    for (auto wid : widgets)
+        root.draw(*wid);
 
     root.display();
 }

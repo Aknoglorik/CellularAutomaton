@@ -1,9 +1,15 @@
 #include "Button.h"
 #include "ExtraColors.hpp"
 #include "Label.h"
-#include <iostream>
 
 using namespace gui;
+
+enum _status
+{
+    _default = 0,
+    _hovered = 1,
+    _clicked = 2
+};
 
 Button::Button(sf::FloatRect _size, const sf::Font &font, sf::String str) : size(_size)
 {
@@ -20,12 +26,17 @@ Button::Button(sf::FloatRect _size, const sf::Font &font, sf::String str) : size
     setByStat(_status::_default);
 }
 
-void gui::Button::setString(sf::String str)
+gui::Button::~Button()
+{
+    delete label;
+}
+
+void Button::setString(sf::String str)
 {
     label->setString(str);
 }
 
-void Button::setByStat(_status status)
+void Button::setByStat(int status)
 {
     switch (status)
     {
@@ -57,9 +68,12 @@ void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 void Button::update(sf::RenderWindow& target)
 {
-    sf::Vector2f pos = (sf::Vector2f) sf::Mouse::getPosition(target);
-    label->update();
+    // sf::View target_view = target.getView();
+    sf::Vector2i m_pos = sf::Mouse::getPosition(target);
+    
+    label->update(target);
     bool isClick = sf::Mouse::isButtonPressed(sf::Mouse::Left);
+    sf::Vector2f pos = target.mapPixelToCoords(m_pos);
 
     if (isPressed)
     {
@@ -90,7 +104,6 @@ void Button::update(sf::RenderWindow& target)
             isClickedOnThis = false;
         setByStat(_status::_default);
     }
-
 }
 
 void Button::bind(std::function<void(void)> new_callback)

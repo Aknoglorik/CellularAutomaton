@@ -24,13 +24,16 @@ private:
 	int FPS;
 
 	std::vector<sf::RectangleShape*> bot_shapes;
-	std::vector<gui::Button*> butts;
-	gui::Label* lb;
+	std::vector<gui::GObject*> widgets;
+	
+	// Strings for dynamic Labels
+	sf::String step_string;
+	sf::String fps_counter_string;
 
 	Environment *env;
 
 	sf::Clock clock;
-	sf::View view;
+	sf::View view, defaultView;
 
 	float _FPS;
 	bool programEnd;

@@ -1,5 +1,5 @@
 #include "Environment.h"
-#include <iostream>
+
 
 _INC_OBJP_MATRIX
 
@@ -165,7 +165,7 @@ Object* Environment::getByPos(int x, int y)
 void Environment::setExtraTemp(int extra_temperature)
 {
 	for (int i = 0; i < _width; i++)
-		for (int j = 0; j < _width; j++)
+		for (int j = 0; j < _height; j++)
 			temp[i][j] += extra_temperature;
 
 }
