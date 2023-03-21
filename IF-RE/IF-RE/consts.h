@@ -61,7 +61,7 @@ namespace botCmd
 
 
 // _Bot_
-#define BOT_BRAIN_SIZE   16
+#define BOT_BRAIN_SIZE   18
 #define BOT_START_ENERGY 25
 
 // _Food_
