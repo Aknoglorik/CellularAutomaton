@@ -26,7 +26,7 @@ Button::Button(sf::FloatRect _size, const sf::Font &font, sf::String str) : size
     setByStat(_status::_default);
 }
 
-gui::Button::~Button()
+Button::~Button()
 {
     delete label;
 }
@@ -68,12 +68,19 @@ void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 void Button::update(sf::RenderWindow& target)
 {
-    // sf::View target_view = target.getView();
     sf::Vector2i m_pos = sf::Mouse::getPosition(target);
     
     label->update(target);
     bool isClick = sf::Mouse::isButtonPressed(sf::Mouse::Left);
+    
     sf::Vector2f pos = target.mapPixelToCoords(m_pos);
+
+    setOriginByAnchor((GObject*)this, target);
+    if (label)
+        label->setOrigin(this->getOrigin());
+
+    size.left = getPosition().x - getOrigin().x;
+    size.top = getPosition().y - getOrigin().y;
 
     if (isPressed)
     {
@@ -109,4 +116,11 @@ void Button::update(sf::RenderWindow& target)
 void Button::bind(std::function<void(void)> new_callback)
 {
     m_callback = new_callback;
+}
+
+void Button::setAnc(Anchor anc)
+{
+    _anchor = anc;
+    if (label) 
+        label->setAnc(anc);
 }

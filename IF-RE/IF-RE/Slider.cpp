@@ -22,10 +22,11 @@ Slider::Slider(sf::Vector2f p1, sf::Vector2f p2, float height, int start_value, 
 
     sf::Vector2f midle_point(p1.x + (width) * factor,
                               p1.y + (p2.y - p1.y) * factor);
-
-    line1.setPosition(p1);
-    line2.setPosition(p1);
-    circle.setPosition(midle_point.x - circle_radius, midle_point.y);
+    setPosition(p1);
+    //line1.setPosition(p1);
+    //line2.setPosition(p1);
+    //pos.x - hitbox.left - circle_radius
+    circle.setPosition((width)*factor - circle_radius, 0);
 
     line1.setSize(sf::Vector2f(midle_point.x - p1.x, 2 * circle_radius));
     line2.setSize(sf::Vector2f(p2.x - p1.x, 2 * circle_radius));
@@ -74,8 +75,8 @@ void Slider::setupByPos(sf::Vector2f pos)
     value = (pos.x - hitbox.left) / hitbox.width * max_value;
     m_callback(value);
 
-    line1.setSize(sf::Vector2f(pos.x - line1.getPosition().x, 2 * circle_radius));
-    circle.setPosition(pos.x - circle_radius, hitbox.top);
+    line1.setSize(sf::Vector2f(pos.x - hitbox.left, 2 * circle_radius));
+    circle.setPosition(pos.x - hitbox.left - circle_radius, 0);
 }
 
 void Slider::draw(sf::RenderTarget& target, sf::RenderStates states) const
@@ -94,6 +95,11 @@ void gui::Slider::update(sf::RenderWindow& target)
 
     bool isClick = sf::Mouse::isButtonPressed(sf::Mouse::Left);
     sf::Vector2f pos = target.mapPixelToCoords(m_pos);
+
+    setOriginByAnchor((GObject*)this, target);
+
+    hitbox.left = getPosition().x - getOrigin().x;
+    hitbox.top = getPosition().y - getOrigin().y;
 
     if (isPressed)
     {

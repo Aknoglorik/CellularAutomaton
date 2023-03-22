@@ -25,6 +25,7 @@
 /// GRAPH
 // _Field_
 #define CELL_SIZE 20.f 
+
 #define HUD_HEIGHT 200.f
 #define HUD_BG gui::Color::DarkGray
 
@@ -37,7 +38,8 @@
 
 // *btn pos*
 #define BTN_HORIZ_POS 40.f
-#define BTN_VERT_POS  (ENV_HEIGHT * CELL_SIZE) + 40.f
+#define BTN_VERT_POS  -HUD_HEIGHT + 40.f // reveres because BottomLeft
+#define BTN_ANCHOR	  gui::BottomLeft
 
 // *btn prop*
 #define BTN_WITDH		100.f
