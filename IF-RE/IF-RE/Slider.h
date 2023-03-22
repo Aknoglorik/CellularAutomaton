@@ -24,7 +24,7 @@ namespace gui
 		
 
 	public:
-		Slider(sf::Vector2f p1, sf::Vector2f p2, float height, int start_value = 0, int _max_value = 100, std::function<void(int)> callback = [](int) {});
+		Slider(sf::Vector2f p1, sf::Vector2f p2, float height, int start_value = 50, int _max_value = 100, std::function<void(int)> callback = [](int) {});
 		~Slider();
 
 		void setByStat(int status);
@@ -35,7 +35,7 @@ namespace gui
 		void setValue(int val);
 		int getValue() { return value; }
 
-		void bind(std::function<void(int)> callback) { m_callback = callback;	}
+		void bind(std::function<void(int)> callback) { m_callback = callback; }
 
 	private:
 		void setupByPos(sf::Vector2f pos);

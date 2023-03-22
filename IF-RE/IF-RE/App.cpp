@@ -57,6 +57,7 @@ void App::initVariables()
     {
         auto btn = new gui::Button(size, PxlFont, str);
         btn->bind(f);
+        btn->setAnc(BTN_ANCHOR);
         widgets.push_back(btn);
     };
 
@@ -107,7 +108,9 @@ void App::initVariables()
 
 
     // Slider
-    widgets.push_back(new gui::Slider(SLD_POSITION, SLD_SIZE, SLD_HEIGHT));
+    auto sld = new gui::Slider(SLD_POSITION, SLD_SIZE, SLD_HEIGHT);
+    sld->setAnc(BTN_ANCHOR);
+    widgets.push_back(sld);
 
 
     /// Labels
@@ -115,12 +118,14 @@ void App::initVariables()
     lb_step->setDynamicString(step_string);
     lb_step->setFont(PxlFont);
     lb_step->setColor(sf::Color::Red);
+    lb_step->setAnc(BTN_ANCHOR);
     widgets.push_back(lb_step);
 
     gui::Label* lb_fps = new gui::Label(FPS_LABEL_POS, FPS_LABEL_SIZE);
     lb_fps->setDynamicString(fps_counter_string);
     lb_fps->setFont(PxlFont);
     lb_fps->setColor(sf::Color::Red);
+    lb_fps->setAnc(BTN_ANCHOR);
     widgets.push_back(lb_fps);
     ///
 
@@ -232,12 +237,13 @@ void App::render()
     }
 
     // HUD
-    sf::RectangleShape hud_bg(sf::Vector2f(ENV_WIDTH*CELL_SIZE, HUD_HEIGHT));
+    root.setView(defaultView);
+
+    sf::RectangleShape hud_bg(sf::Vector2f(defaultView.getSize().x, HUD_HEIGHT));
     hud_bg.setFillColor(HUD_BG);
-    hud_bg.setPosition(0, ENV_HEIGHT * CELL_SIZE);
+    hud_bg.setPosition(0, defaultView.getSize().y - HUD_HEIGHT);
     root.draw(hud_bg);
 
-    root.setView(defaultView);
     for (auto wid : widgets)
         root.draw(*wid);
 

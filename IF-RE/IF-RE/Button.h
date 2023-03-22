@@ -15,7 +15,7 @@ namespace gui
 		sf::FloatRect size;
 		sf::RectangleShape rectangle;
 
-		Label *label;
+		Label *label = nullptr;
 		bool isPressed = false;
 		bool isHovered = false;
 		bool isClickedOnThis = false;
@@ -29,6 +29,7 @@ namespace gui
 		void draw(sf::RenderTarget&, sf::RenderStates) const override;
 		void update(sf::RenderWindow&) override;
 		void bind(std::function<void(void)>);
+		void setAnc(Anchor anc) override;
 
 	private:
 		void setByStat(int);

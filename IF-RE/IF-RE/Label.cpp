@@ -50,6 +50,7 @@ void Label::setDynamicString(sf::String& str)
 void Label::draw(sf::RenderTarget& target, sf::RenderStates state) const
 {
 	state.transform = getTransform();
+	setOriginByAnchor((GObject*)this, target);
 
 	target.draw(text, state);
 }
