@@ -22,6 +22,7 @@ public:
 	void setIsDie(bool flag) { is_die = flag; }
 	void setPos(sf::Vector2i newPos) { position = newPos; }
 	void setPos(int x, int y) { position = sf::Vector2i(x, y); }
+	void setEnergy(int _energy) { energy = _energy; }
 
 	virtual int getType() { return type; };
 	sf::Vector2i getPos() const { return position; }

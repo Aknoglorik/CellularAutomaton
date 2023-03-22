@@ -98,19 +98,20 @@ namespace botCmd
 		move,
 		eat,
 		photosynthesis,
-		nothing
+		nothing,
+		gemmation
 	};
 }
 
 
 // _Bot_
-#define BOT_BRAIN_SIZE   18
+#define BOT_BRAIN_SIZE   19
+#define BOT_CMD_AMOUNT   19
 #define BOT_START_ENERGY 25
 
 // _Food_
 #define FOOD_ENERGY  10
 #define FOOD_AMOUNT  10
-#define FOOD_FOR_BOT 10
 
 // _Corpse_
 

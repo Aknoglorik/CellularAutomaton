@@ -15,19 +15,23 @@ class Bot : public Object
 	Environment* env;
 
 public:
-	Bot(Environment *_env, sf::Vector2i pos, unsigned int _energy = BOT_START_ENERGY) : env(_env)
+	Bot(Environment *_env, sf::Vector2i pos, unsigned int _energy = BOT_START_ENERGY, 
+		const std::vector<int>* parent_brain = nullptr) : env(_env)
 	{
 		energy = _energy;
 		position = pos;
-		
 		brain.resize(BOT_BRAIN_SIZE);
-		for (int i = 0; i < BOT_BRAIN_SIZE; i++)
-		{
-			brain[i] = rand() % 18;
-		}
+		if (!parent_brain)
+			createRandomBrain();
+		else
+			for (int i = 0; i < BOT_BRAIN_SIZE; i++)
+				brain[i] = parent_brain->at(i);
 	}
 
+	void createRandomBrain();
+
 	virtual int getType() { return type; };
+	const std::vector<int>* getPBrain() { return &brain; }
 
 	int getNextInstruction();
 	void update() override;

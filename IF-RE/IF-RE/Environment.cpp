@@ -213,12 +213,34 @@ void Environment::eatCell(int dir)
 	{
 		matrix[newPos.x][newPos.y]->setIsDie(true);
 
+		currentObj->addEnergy(matrix[newPos.x][newPos.y]->getEnergy());
+
 		// REDO! (DRY dont executed mb)
 		delete matrix[newPos.x][newPos.y]; // free mem
 		matrix[newPos.x][newPos.y] = mainEmptiness;
-
-		currentObj->addEnergy(FOOD_FOR_BOT);
 	}
+}
+
+void Environment::gemmationCell(int dir)
+{
+	int dir_gem = (dir + 4) % 8;
+	Vector2i oldPos = currentObj->getPos();
+	Vector2i newPos = oldPos + vecByInt(dir_gem);
+
+	for(int i = 0; i < 8; i++)
+	{
+		dir_gem = (dir_gem + i) % 8;
+		newPos = oldPos + vecByInt(dir_gem);
+		if ((!checkPos(newPos, _width, _height)) && 
+			(matrix[newPos.x][newPos.y]->getType() == cellType::Emptiness))
+		{
+			currentObj->setEnergy(currentObj->getEnergy() / 2);
+			auto upCastObj = (Bot*)currentObj;
+			matrix[newPos.x][newPos.y] = new Bot(this, newPos, 
+				currentObj->getEnergy(), upCastObj->getPBrain());
+			return;
+		}
+	}	
 }
 
 const objp_matrix& Environment::getMatrix()
