@@ -31,7 +31,7 @@ namespace gui
 
 	inline void setOriginByAnchor(GObject* obj, sf::RenderTarget& target)
 	{
-		sf::Vector2i t_size = (sf::Vector2i)target.getSize();
+		sf::Vector2i t_size = (sf::Vector2i)target.getView().getSize();
 
 		switch (obj->getAnc())
 		{

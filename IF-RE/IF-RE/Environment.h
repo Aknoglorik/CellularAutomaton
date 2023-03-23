@@ -38,7 +38,8 @@ public:
 	Object* getByPos(sf::Vector2i);
 	Object* getByPos(int, int);
 	int getHeight() { return _height; }
-	const objp_matrix& getMatrix();
+	const objp_matrix& getMatrix() { return matrix; }
+	const int_matrix& getTemperatureMatrix() { return temp; }
 
 	void setPause(bool flag) { pause = flag; }
 	void setExtraTemp(int);

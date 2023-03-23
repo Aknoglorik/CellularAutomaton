@@ -107,7 +107,7 @@ void Bot::update()
 		break;
 	case botCmd::photosynthesis: 
 	{
-		int power = env->getHeight() / (position.y + 1);
+		int power = env->getTemperatureMatrix()[position.x][position.y];
 		energy += power;
 		break;
 	}

@@ -4,6 +4,7 @@
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include "Camera.hpp"
 #include "Environment.h"
 
 #define ADD_COLOR_SPECTR
@@ -29,14 +30,18 @@ private:
 	// Strings for dynamic Labels
 	sf::String step_string;
 	sf::String fps_counter_string;
+	sf::String temp_mode;
 
 	Environment *env;
 
 	sf::Clock clock;
-	sf::View view, defaultView;
+	sf::View view, default_view;
+	Camera *cameraView;
+	operatingMode::Mode view_mode = operatingMode::_default;
 
 	float _FPS;
 	bool programEnd;
+	bool isFullscreen;
 	sf::Font PxlFont;
 
 	void initWindow(unsigned int width, unsigned int height, std::string wname, int _fps);

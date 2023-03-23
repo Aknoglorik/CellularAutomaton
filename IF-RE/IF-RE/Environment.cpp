@@ -1,6 +1,5 @@
 #include "Environment.h"
 
-
 _INC_OBJP_MATRIX
 
 
@@ -89,9 +88,9 @@ Environment::Environment(int width, int height) :
 		for (int j = 0; j < _height; j++)
 		{
 			matrix[i][j] = mainEmptiness;
-			temp[i][j] = _height / (2*j + 10);
-
-			if (j == 0 || j == _height - 1)//i == 10)
+			temp[i][j] = (height/2 - 2*j > 0)? height/2 - 2*j: 0;
+			
+			//if (j == 0 || j == _height - 1)//i == 10)
 			{
 				matrix[i][j] = new Bot(this, Vector2i(i, j));
 			}
@@ -137,7 +136,7 @@ void Environment::update()
 
 void Environment::generateFood()
 {
-	if (Food::amount > FOOD_AMOUNT) // REDO!
+	if (Food::amount >= FOOD_AMOUNT) // REDO!
 		return;
 
 	int x, y;
@@ -166,7 +165,11 @@ void Environment::setExtraTemp(int extra_temperature)
 {
 	for (int i = 0; i < _width; i++)
 		for (int j = 0; j < _height; j++)
-			temp[i][j] += extra_temperature;
+			if (temp[i][j] + extra_temperature >= 0)
+				temp[i][j] += extra_temperature;
+			else
+				temp[i][j] = 0;
+
 
 }
 
@@ -240,9 +243,4 @@ void Environment::gemmationCell(int dir)
 			return;
 		}
 	}	
-}
-
-const objp_matrix& Environment::getMatrix()
-{
-	return matrix;
 }

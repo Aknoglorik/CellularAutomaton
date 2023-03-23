@@ -34,6 +34,10 @@
 #define WN_WIDTH	 1600
 #define WN_HEIGHT	 900
 #define WN_START_FPS 20
+#define WN_START_MOD sf::Style::Default // or Fullscreen
+
+// *view prop*
+#define VIEW_SPEED 10
 
 
 // *btn pos*
@@ -58,8 +62,8 @@
 
 // _Sliders_
 #define SLD_HEIGHT 30.f
-#define SLD_POSITION sf::Vector2f(3*BTN_HORIZ_DEL, BTN_VERT_POS + 2*BTN_VERT_DEL)
-#define SLD_SIZE sf::Vector2f(540, 100)
+#define SLD_POSITION sf::Vector2f(5*BTN_HORIZ_DEL, BTN_VERT_POS + 2*BTN_VERT_DEL)
+#define SLD_SIZE sf::Vector2f(540, BTN_WITDH)
 ///
 
 
@@ -105,6 +109,14 @@ namespace botCmd
 	};
 }
 
+namespace operatingMode
+{
+	enum Mode
+	{
+		_default,
+		_temperature
+	};
+}
 
 // _Bot_
 #define BOT_BRAIN_SIZE   64
