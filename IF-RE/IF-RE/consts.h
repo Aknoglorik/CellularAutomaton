@@ -31,8 +31,8 @@
 
 
 // *win prop*
-#define WN_WIDTH	 1920
-#define WN_HEIGHT	 1080
+#define WN_WIDTH	 1600
+#define WN_HEIGHT	 900
 #define WN_START_FPS 20
 
 
@@ -107,13 +107,13 @@ namespace botCmd
 
 
 // _Bot_
-#define BOT_BRAIN_SIZE   19
-#define BOT_CMD_AMOUNT   19
+#define BOT_BRAIN_SIZE   64
+#define BOT_CMD_AMOUNT   21
 #define BOT_START_ENERGY 25
 
 // _Food_
 #define FOOD_ENERGY  10
-#define FOOD_AMOUNT  10
+#define FOOD_AMOUNT  0
 
 // _Corpse_
 
@@ -122,7 +122,7 @@ namespace botCmd
 
 
 /// OTHER
-#define GENALG_MUTATION_PRECENT 0.25
+#define GENALG_MUTATION_PRECENT 0.1
 #define GENALG_NUM_OUT_SELECT   8
 
 #define DIR_UP		sf::Vector2i( 0, -1)

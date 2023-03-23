@@ -95,11 +95,11 @@ Environment::Environment(int width, int height) :
 			{
 				matrix[i][j] = new Bot(this, Vector2i(i, j));
 			}
-			if (i == 10 && j == 5)
+			/*if (i == 10 && j == 5)
 			{
 				matrix[i][j] = new Food;
 				matrix[i][j]->setPos(Vector2i(i, j));
-			}
+			}*/
 		}
 	}
 }
@@ -148,8 +148,8 @@ void Environment::generateFood()
 	}
 	while (getByPos(x, y)->getType() != cellType::Emptiness); // REDO! there is no logic to check if field is filled in
 
-	matrix[x][y] = new Food;
-	matrix[x][y]->setPos(x, y);
+	/*matrix[x][y] = new Food;
+	matrix[x][y]->setPos(x, y);*/
 }
 
 Object* Environment::getByPos(Vector2i pos)
@@ -196,7 +196,6 @@ void Environment::moveCell(int dir_move)
 		matrix[oldPos.x][oldPos.y] = mainEmptiness;
 	}
 }
-
 
 /// \brief Method allow cell to eat other in the direction of view
 /// 

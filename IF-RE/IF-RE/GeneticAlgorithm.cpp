@@ -16,6 +16,7 @@ int GeneticAlgorithm::fitness(const Object& entity)
 
 Object GeneticAlgorithm::mutation(const Object& entity)
 {
+
 	return Object();
 }
 
