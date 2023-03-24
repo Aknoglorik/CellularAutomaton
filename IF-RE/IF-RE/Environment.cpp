@@ -76,8 +76,10 @@ bool checkPos(Vector2i& pos, int width, int height)
 Environment::Environment(int width, int height) : 
 	_width(width), _height(height)
 {
+	genAlg = new GeneticAlgorithm;
+
 	mainEmptiness = new Emptiness;
-	
+
 	// Creating & filling matrix
 	matrix.resize(_width);
 	temp.resize(_width);
@@ -105,6 +107,7 @@ Environment::Environment(int width, int height) :
 
 Environment::~Environment()
 {
+	delete genAlg;
 }
 
 void Environment::update()
@@ -233,13 +236,14 @@ void Environment::gemmationCell(int dir)
 	{
 		dir_gem = (dir_gem + i) % 8;
 		newPos = oldPos + vecByInt(dir_gem);
-		if ((!checkPos(newPos, _width, _height)) && 
-			(matrix[newPos.x][newPos.y]->getType() == cellType::Emptiness))
+		if ((!checkPos(newPos, _width, _height)) && (matrix[newPos.x][newPos.y]->getType() == cellType::Emptiness))
 		{
 			currentObj->setEnergy(currentObj->getEnergy() / 2);
 			auto upCastObj = (Bot*)currentObj;
-			matrix[newPos.x][newPos.y] = new Bot(this, newPos, 
-				currentObj->getEnergy(), upCastObj->getPBrain());
+
+			matrix[newPos.x][newPos.y] = genAlg->mutation(upCastObj);
+			matrix[newPos.x][newPos.y]->setPos(newPos);
+
 			return;
 		}
 	}	

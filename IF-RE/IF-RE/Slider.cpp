@@ -12,27 +12,23 @@ enum _status
 };
 
 
-Slider::Slider(sf::Vector2f p1, sf::Vector2f p2, float height, int start_value, int _max_value, std::function<void(int)> callback) 
+Slider::Slider(sf::Vector2f p1, sf::Vector2f size, int start_value, int _max_value, std::function<void(int)> callback) 
     : value(start_value), max_value(_max_value), m_callback(callback)
 {
-    circle_radius = height / 2;
+    circle_radius = size.y / 2;
 
     float factor = (float)value / max_value;
-    float width = p2.x - p1.x;
+    float width = size.x;
 
-    sf::Vector2f midle_point(p1.x + (width) * factor,
-                              p1.y + (p2.y - p1.y) * factor);
+    sf::Vector2f midle_point(width * factor, 0);
     setPosition(p1);
-    //line1.setPosition(p1);
-    //line2.setPosition(p1);
-    //pos.x - hitbox.left - circle_radius
     circle.setPosition((width)*factor - circle_radius, 0);
 
-    line1.setSize(sf::Vector2f(midle_point.x - p1.x, 2 * circle_radius));
-    line2.setSize(sf::Vector2f(p2.x - p1.x, 2 * circle_radius));
+    line1.setSize(sf::Vector2f(midle_point.x, 2 * circle_radius));
+    line2.setSize(sf::Vector2f(size.x, 2 * circle_radius));
     circle.setRadius(circle_radius);
 
-    hitbox = sf::FloatRect(p1, sf::Vector2f(width, 2* circle_radius));
+    hitbox = sf::FloatRect(p1, size);
 
     setByStat(_status::_default);
 }

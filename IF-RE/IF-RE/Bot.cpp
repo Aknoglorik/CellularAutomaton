@@ -2,6 +2,29 @@
 #include "Environment.h"
 
 
+Bot::Bot(Environment* _env, sf::Vector2i pos, unsigned int _energy, const std::vector<int>* parent_brain)
+	: env(_env)
+{
+	energy = _energy;
+	position = pos;
+	brain.resize(BOT_BRAIN_SIZE);
+	if (!parent_brain)
+		createRandomBrain();
+	else
+		for (int i = 0; i < BOT_BRAIN_SIZE; i++)
+			brain[i] = parent_brain->at(i);
+}
+
+// \brief copy-constructor
+Bot::Bot(const Bot& other)
+{
+	env = other.env;
+	energy = other.energy;
+	position = other.position;
+
+	brain.resize(other.brain.size());
+	std::copy(other.brain.begin(), other.brain.end(), brain.begin());
+}
 
 void Bot::createRandomBrain()
 {

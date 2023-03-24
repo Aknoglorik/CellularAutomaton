@@ -24,7 +24,7 @@ namespace gui
 		
 
 	public:
-		Slider(sf::Vector2f p1, sf::Vector2f p2, float height, int start_value = 50, int _max_value = 100, std::function<void(int)> callback = [](int) {});
+		Slider(sf::Vector2f p1, sf::Vector2f size, int start_value = 50, int _max_value = 100, std::function<void(int)> callback = [](int) {});
 		~Slider();
 
 		void setByStat(int status);

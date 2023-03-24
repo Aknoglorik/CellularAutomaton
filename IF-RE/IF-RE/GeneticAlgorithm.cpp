@@ -9,18 +9,25 @@ GeneticAlgorithm::~GeneticAlgorithm()
 {
 }
 
-int GeneticAlgorithm::fitness(const Object& entity)
+int GeneticAlgorithm::fitness(const Bot& entity)
 {
 	return 0;
 }
 
-Object GeneticAlgorithm::mutation(const Object& entity)
+Bot* GeneticAlgorithm::mutation(const Bot* entity)
 {
+	auto newBot = new Bot(*entity);
+	int rnd_cmd_pos = rand() % BOT_BRAIN_SIZE;
 
-	return Object();
+	float probability = static_cast <float>(rand()) / static_cast <float> (RAND_MAX);
+
+	if (probability <= _mutation_probability)
+		newBot->getBrain()[rnd_cmd_pos] = rand() & BOT_CMD_AMOUNT;
+
+	return newBot;
 }
 
-std::vector<Object> GeneticAlgorithm::selection(const std::vector<Object>&)
+std::vector<Bot*> GeneticAlgorithm::selection(const std::vector<Bot*>&)
 {
-	return std::vector<Object>();
+	return std::vector<Bot*>();
 }

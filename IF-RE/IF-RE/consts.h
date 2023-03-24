@@ -33,7 +33,7 @@
 // *win prop*
 #define WN_WIDTH	 1600
 #define WN_HEIGHT	 900
-#define WN_START_FPS 20
+#define WN_START_FPS 60
 #define WN_START_MOD sf::Style::Default // or Fullscreen
 
 // *view prop*
@@ -46,24 +46,24 @@
 #define BTN_ANCHOR	  gui::BottomLeft
 
 // *btn prop*
-#define BTN_WITDH		100.f
+#define BTN_WITDH		120.f
 #define BTN_HEIGHT		30.f
 #define BTN_VERT_DEL	40.f
-#define BTN_HORIZ_DEL	110.f
+#define BTN_HORIZ_DEL	130.f
 
 
 // _Labels_
-#define STEP_LABEL_POS sf::Vector2f(3*BTN_HORIZ_DEL, BTN_VERT_POS)
+#define STEP_LABEL_POS sf::Vector2f(BTN_HORIZ_POS + 2*BTN_HORIZ_DEL, BTN_VERT_POS)
 #define STEP_LABEL_SIZE 30U
 
-#define FPS_LABEL_POS sf::Vector2f(3*BTN_HORIZ_DEL, BTN_VERT_POS + BTN_VERT_DEL)
+#define FPS_LABEL_POS sf::Vector2f(BTN_HORIZ_POS + 2*BTN_HORIZ_DEL, BTN_VERT_POS + BTN_VERT_DEL)
 #define FPS_LABEL_SIZE 30U
 
 
 // _Sliders_
 #define SLD_HEIGHT 30.f
-#define SLD_POSITION sf::Vector2f(5*BTN_HORIZ_DEL, BTN_VERT_POS + 2*BTN_VERT_DEL)
-#define SLD_SIZE sf::Vector2f(540, BTN_WITDH)
+#define SLD_POSITION sf::Vector2f(BTN_HORIZ_POS + 4*BTN_HORIZ_DEL, BTN_VERT_POS + 2*BTN_VERT_DEL)
+#define SLD_SIZE sf::Vector2f(3*BTN_HORIZ_DEL - 10.f, SLD_HEIGHT)
 ///
 
 
@@ -114,7 +114,8 @@ namespace operatingMode
 	enum Mode
 	{
 		_default,
-		_temperature
+		_temperature,
+		_energy
 	};
 }
 

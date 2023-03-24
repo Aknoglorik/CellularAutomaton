@@ -76,16 +76,20 @@ void App::initVariables()
         {
             env->setPause(false);
         });
-
-    create_button(sf::FloatRect(BTN_HORIZ_POS + 4*BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "temp",
+    create_button(sf::FloatRect(BTN_HORIZ_POS + 4*BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "tempera",
         [&]() 
         {
             view_mode = operatingMode::_temperature;
         });
-    create_button(sf::FloatRect(BTN_HORIZ_POS + 5*BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "def",
+    create_button(sf::FloatRect(BTN_HORIZ_POS + 5*BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "default",
         [&]()
         {
             view_mode = operatingMode::_default;
+        });
+    create_button(sf::FloatRect(BTN_HORIZ_POS + 6*BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "Energy",
+        [&]()
+        {
+            view_mode = operatingMode::_energy;
         });
     // second line
     create_button(sf::FloatRect(BTN_HORIZ_POS, BTN_VERT_POS+ BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "+sun",
@@ -123,7 +127,7 @@ void App::initVariables()
 
 
     // Slider
-    auto sld = new gui::Slider(SLD_POSITION, SLD_SIZE, SLD_HEIGHT);
+    auto sld = new gui::Slider(SLD_POSITION, SLD_SIZE);
     sld->setAnc(BTN_ANCHOR);
     widgets.push_back(sld);
 
@@ -292,82 +296,101 @@ void App::render()
 {
     root.clear();
 
+    auto colorByInt = [](float temp) -> sf::Color
+    {
+        float Red, Green, Blue;
+        if (temp <= 66)
+        {
+            Red = 255;
+        }
+        else
+        {
+            Red = temp - 60;
+            Red = 329.698727446 * pow(Red, -0.1332047592);
+            if (Red < 0) Red = 0;
+            if (Red > 255) Red = 255;
+        }
+
+        if (temp <= 66)
+        {
+            Green = temp;
+            Green = 99.4708025861 * log(Green) - 161.1195681661;
+
+            if (Green < 0) Green = 0;
+            if (Green > 255) Green = 255;
+        }
+        else
+        {
+            Green = temp - 60;
+            Green = 288.1221695283 * pow(Green, -0.0755148492);
+
+            if (Green < 0) Green = 0;
+            if (Green > 255) Green = 255;
+        }
+
+        if (temp >= 66)
+        {
+            Blue = 255;
+        }
+        else
+        {
+
+            if (temp <= 19)
+                Blue = 0;
+            else
+            {
+                Blue = temp - 10;
+                Blue = 138.5177312231 * log(Blue) - 305.0447927307;
+
+                if (Blue < 0) Blue = 0;
+                if (Blue > 255) Blue = 255;
+            }
+        }
+
+        return sf::Color(Red, Green, Blue, 150);
+    };
+
     // drawing
     root.setView(view);
     int max_temp = 0;
     int min_temp = 0;
-    if (view_mode == operatingMode::_default || view_mode == operatingMode::_temperature)
+
+    int max_enrg = 0;
+    int min_enrg = 0;
+
+    objp_matrix mat = env->getMatrix();
+    sf::RectangleShape* rectangle;
+    sf::RectangleShape* color_rectangle = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));;
+    for (int i = 0; i < mat.size(); i++)
     {
-        objp_matrix mat = env->getMatrix();
-        sf::RectangleShape* rectangle;
-        for (int i = 0; i < mat.size(); i++)
+        for (int j = 0; j < mat[0].size(); j++)
         {
-            for (int j = 0; j < mat[0].size(); j++)
+            rectangle = bot_shapes[mat[i][j]->getType()];
+            rectangle->setPosition(i * CELL_SIZE, j * CELL_SIZE);
+            root.draw(*rectangle);
+
+            if (view_mode == operatingMode::_energy)
             {
-                rectangle = bot_shapes[mat[i][j]->getType()];
-                    rectangle->setPosition(i * CELL_SIZE, j * CELL_SIZE);
-                    root.draw(*rectangle);
+                color_rectangle->setFillColor(colorByInt((mat[i][j])->getEnergy() * 20));
+                color_rectangle->setPosition(i * CELL_SIZE, j * CELL_SIZE);
+                root.draw(*color_rectangle);
+
+                if (mat[i][j]->getEnergy() > max_enrg)
+                    max_enrg = mat[i][j]->getEnergy();
+
+                if (mat[i][j]->getEnergy() < min_enrg)
+                    min_enrg = mat[i][j]->getEnergy();
+
+                temp_mode = "Enrg: " + std::to_string(min_enrg) + " ~ " + std::to_string(max_enrg);
+
             }
         }
     }
+    delete color_rectangle;
     
     if (view_mode == operatingMode::_temperature)
     {
         int_matrix mat = env->getTemperatureMatrix();
-
-        auto colorByInt = [](float temp) -> sf::Color
-        {
-            float Red, Green, Blue;
-            if (temp <= 66)
-            {
-                Red = 255;
-            }
-            else
-            {
-                Red = temp - 60;
-                Red = 329.698727446 * pow(Red, -0.1332047592);
-                if (Red < 0) Red = 0;
-                if (Red > 255) Red = 255;
-            }
-
-            if (temp <= 66)
-            {
-                Green = temp;
-                Green = 99.4708025861 * log(Green) - 161.1195681661;
-
-                if (Green < 0) Green = 0;
-                if (Green > 255) Green = 255;
-            }
-            else
-            {
-                Green = temp - 60;
-                Green = 288.1221695283 * pow(Green, -0.0755148492);
-
-                if (Green < 0) Green = 0;
-                if (Green > 255) Green = 255;
-            }
-
-            if (temp >= 66)
-            {
-                Blue = 255;
-            }
-            else
-            {
-
-                if (temp <= 19)
-                    Blue = 0;
-                else
-                {
-                    Blue = temp - 10;
-                    Blue = 138.5177312231 * log(Blue) - 305.0447927307;
-
-                    if (Blue < 0) Blue = 0;
-                    if (Blue > 255) Blue = 255;
-                }
-            }
-
-            return sf::Color(Red, Green, Blue, 150);
-        };
 
         sf::RectangleShape* rectangle = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
         max_temp = mat[0][0];
@@ -399,8 +422,8 @@ void App::render()
         }
 
         delete rectangle;
+        temp_mode = "Temp: " + std::to_string(min_temp) + " ~ " + std::to_string(max_temp);
     }
-    temp_mode = "Temp: " + std::to_string(min_temp) + " ~ " + std::to_string(max_temp);
 
     // HUD
     root.setView(default_view);
