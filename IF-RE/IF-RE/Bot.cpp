@@ -130,8 +130,11 @@ void Bot::update()
 		break;
 	case botCmd::photosynthesis: 
 	{
-		int power = env->getTemperatureMatrix()[position.x][position.y];
-		energy += power;
+		int power = env->getTemperatureMatrix()[position.x][position.y] + env->getGloabalTemp();
+		if (((long)energy + power) > 0)
+			energy += power;
+		else
+			energy = 0;
 		break;
 	}
 	case botCmd::nothing:

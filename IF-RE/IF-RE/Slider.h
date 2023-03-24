@@ -10,6 +10,7 @@ namespace gui
 	class Slider : public GObject
 	{
 		int max_value;
+		int min_value;
 		int value;
 		float circle_radius;
 
@@ -24,7 +25,7 @@ namespace gui
 		
 
 	public:
-		Slider(sf::Vector2f p1, sf::Vector2f size, int start_value = 50, int _max_value = 100, std::function<void(int)> callback = [](int) {});
+		Slider(sf::Vector2f p1, sf::Vector2f size, int start_value = 50, int _min_value = 0, int _max_value = 100, std::function<void(int)> callback = [](int) {});
 		~Slider();
 
 		void setByStat(int status);

@@ -164,17 +164,17 @@ Object* Environment::getByPos(int x, int y)
 	return matrix[x][y];
 }
 
-void Environment::setExtraTemp(int extra_temperature)
-{
-	for (int i = 0; i < _width; i++)
-		for (int j = 0; j < _height; j++)
-			if (temp[i][j] + extra_temperature >= 0)
-				temp[i][j] += extra_temperature;
-			else
-				temp[i][j] = 0;
-
-
-}
+//void Environment::setExtraTemp(int extra_temperature)
+//{
+//	for (int i = 0; i < _width; i++)
+//		for (int j = 0; j < _height; j++)
+//			if (temp[i][j] + extra_temperature >= 0)
+//				temp[i][j] += extra_temperature;
+//			else
+//				temp[i][j] = 0;
+//
+//
+//}
 
 void Environment::moveCell(int dir_move)
 {

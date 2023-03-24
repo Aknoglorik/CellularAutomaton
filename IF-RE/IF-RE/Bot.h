@@ -19,7 +19,6 @@ public:
 		const std::vector<int>* parent_brain = nullptr);
 	Bot(const Bot& other);
 
-
 	void createRandomBrain();
 
 	virtual int getType() { return type; };

@@ -127,7 +127,11 @@ void App::initVariables()
 
 
     // Slider
-    auto sld = new gui::Slider(SLD_POSITION, SLD_SIZE);
+    auto sld = new gui::Slider(SLD_POSITION, SLD_SIZE, 0, -10, 9,
+        [&](int value) 
+        {
+            env->setGlobalTemp(value);
+        });
     sld->setAnc(BTN_ANCHOR);
     widgets.push_back(sld);
 
@@ -422,7 +426,7 @@ void App::render()
         }
 
         delete rectangle;
-        temp_mode = "Temp: " + std::to_string(min_temp) + " ~ " + std::to_string(max_temp);
+        temp_mode = "Temp: " + std::to_string(min_temp + env->getGloabalTemp()) + " ~ " + std::to_string(max_temp + env->getGloabalTemp());
     }
 
     // HUD
