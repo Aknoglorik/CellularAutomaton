@@ -16,7 +16,7 @@
 
 
 /// ENVIRONMENT
-#define ENV_WIDTH  96
+#define ENV_WIDTH  96*2
 #define ENV_HEIGHT 44
 ///
 
@@ -41,8 +41,8 @@
 
 
 // *btn pos*
-#define BTN_HORIZ_POS 40.f
-#define BTN_VERT_POS  -HUD_HEIGHT + 40.f // reveres because BottomLeft
+#define BTN_HORIZ_POS 20.f
+#define BTN_VERT_POS  -HUD_HEIGHT + 20.f // reveres because BottomLeft
 #define BTN_ANCHOR	  gui::BottomLeft
 
 // *btn prop*
@@ -135,6 +135,9 @@ namespace botSpriteType
 #define BOT_START_ENERGY 25
 #define BOT_MAX_ENERGY	 200
 #define BOT_MAX_LIFE	 1000
+#define BOT_EAT_RATIO	 0.8f
+#define BOT_DIGEST_RATIO 2.f
+#define BOT_DIGEST_SPEED 0.1f
 
 // _Food_
 #define FOOD_ENERGY  10

@@ -34,6 +34,17 @@ void Bot::createRandomBrain()
 	}
 }
 
+void Bot::digest()
+{
+	if (digested_material - digest_speed >= 0)
+		energy += digest_speed * BOT_DIGEST_RATIO;
+	else
+	{
+		energy += digested_material * BOT_DIGEST_RATIO;
+		digested_material = 0;
+	}
+}
+
 int Bot::getNextInstruction()
 {
 	int Inst = botCmd::nothing;
@@ -157,6 +168,9 @@ void Bot::update()
 
 	if ((long)energy > BOT_MAX_ENERGY)
 		energy = BOT_MAX_ENERGY;
+
+	if (spriteType == botSpriteType::predator)
+		digest();
 
 	if(energy)
 		energy--;

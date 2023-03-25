@@ -37,7 +37,9 @@ void App::initWindow(unsigned int width, unsigned int height, std::string wname,
 
     default_view = sf::View(sf::FloatRect(0, 0, width, height));
 
-    view = sf::View(sf::FloatRect(0, 0, CELL_SIZE * ENV_WIDTH, CELL_SIZE * ENV_HEIGHT + HUD_HEIGHT));
+    float x_factor = width / height;
+
+    view = sf::View(sf::FloatRect(0, 0, width * CELL_SIZE * ENV_HEIGHT / height, CELL_SIZE * ENV_HEIGHT));
     cameraView = new Camera(view);
     root.setView(view);
     
@@ -134,8 +136,15 @@ void App::initVariables()
     create_button(sf::FloatRect(-BTN_HORIZ_POS - BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "Save",
         [&]()
         {
-            view_mode = operatingMode::_botType;
-        }, gui::BottomRight);
+            env->saveWorld("saved_world.txt");
+        }, 
+        gui::BottomRight);
+    create_button(sf::FloatRect(-BTN_HORIZ_POS - BTN_HORIZ_DEL, BTN_VERT_POS + BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "Load",
+        [&]()
+        {
+            env->loadWorld("saved_world.txt");
+        }, 
+        gui::BottomRight);
 
     // Slider
     auto sld = new gui::Slider(SLD_POSITION, SLD_SIZE, 0, -19, 20,
@@ -257,6 +266,8 @@ void App::pollEvent()
                 cameraView->moveDown(true);
             if (pressed_key == sf::Keyboard::D)
                 cameraView->moveRight(true);
+            if (pressed_key == sf::Keyboard::Space)
+                env->setPause(!env->getPause());
             break;
         }
         case sf::Event::KeyReleased:
@@ -274,14 +285,12 @@ void App::pollEvent()
         }
 
         case sf::Event::MouseWheelScrolled:
-            if (event_.mouseWheelScroll.delta < 0) //& view..z < 2)
+            if (event_.mouseWheelScroll.delta < 0)
             {
-                //current_zoom *= 1.1;
                 view.zoom(1.1);
             }
-            else if (event_.mouseWheelScroll.delta > 0) //&& current_zoom > 0.5)
+            else if (event_.mouseWheelScroll.delta > 0)
             {
-                //current_zoom *= 0.9;
                 view.zoom(0.9);
             }
             break;

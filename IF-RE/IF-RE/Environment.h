@@ -42,6 +42,7 @@ public:
 	const objp_matrix& getMatrix() { return matrix; }
 	const int_matrix& getTemperatureMatrix() { return temp; }
 	int getGloabalTemp() { return _temp; }
+	bool getPause() { return pause; }
 
 	void setPause(bool flag) { pause = flag; }
 	void setExtraTemp(int temp) { _temp += temp; }
@@ -51,6 +52,7 @@ public:
 	void eatCell(int);
 	void gemmationCell(int);
 
-	void saveWorld(std::string fname);
+	void saveWorld(std::string fname = "");
+	void loadWorld(std::string fname);
 };
 
