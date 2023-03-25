@@ -57,11 +57,11 @@ void App::initVariables()
     /// Setup buttons props
     FPS = 0;
     programEnd = false;
-    auto create_button = [&](sf::FloatRect size, sf::String str, std::function<void()> f)
+    auto create_button = [&](sf::FloatRect size, sf::String str, std::function<void()> f, gui::Anchor anc = BTN_ANCHOR)
     {
         auto btn = new gui::Button(size, PxlFont, str);
         btn->bind(f);
-        btn->setAnc(BTN_ANCHOR);
+        btn->setAnc(anc);
         widgets.push_back(btn);
     };
 
@@ -131,6 +131,12 @@ void App::initVariables()
     ///
 
 
+    create_button(sf::FloatRect(-BTN_HORIZ_POS - BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "Save",
+        [&]()
+        {
+            view_mode = operatingMode::_botType;
+        }, gui::BottomRight);
+
     // Slider
     auto sld = new gui::Slider(SLD_POSITION, SLD_SIZE, 0, -19, 20,
         [&](int value) 
@@ -182,7 +188,7 @@ void App::initVariables()
     bot->setFillColor(gui::Color::Green);
     bot_shapes.push_back(bot);
     
-    food->setFillColor(gui::Color::Red);
+    food->setFillColor(gui::Color::Pink);
     bot_shapes.push_back(food);
 
     corpse->setFillColor(gui::Color::LightGray);
@@ -380,9 +386,12 @@ void App::render()
     int max_enrg = 0;
     int min_enrg = 0;
 
+    bool flag = false;
+
     objp_matrix mat = env->getMatrix();
     sf::RectangleShape* rectangle;
     sf::RectangleShape* color_rectangle = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));;
+    temp_mode = "DefaultView";
     for (int i = 0; i < mat.size(); i++)
     {
         for (int j = 0; j < mat[0].size(); j++)
@@ -393,15 +402,23 @@ void App::render()
 
             if (view_mode == operatingMode::_energy && mat[i][j]->getType() == cellType::Bot)
             {
-                color_rectangle->setFillColor(colorByInt((mat[i][j])->getEnergy() * 20));
+                color_rectangle->setFillColor(colorByInt((mat[i][j])->getEnergy() * 4));
                 color_rectangle->setPosition(i * CELL_SIZE, j * CELL_SIZE);
                 root.draw(*color_rectangle);
 
                 if (mat[i][j]->getEnergy() > max_enrg)
                     max_enrg = mat[i][j]->getEnergy();
 
-                if (mat[i][j]->getEnergy() < min_enrg)
+
+                if (!flag && !min_enrg && mat[i][j]->getType() == cellType::Bot)
+                {
                     min_enrg = mat[i][j]->getEnergy();
+                }
+
+                if (flag && mat[i][j]->getEnergy() < min_enrg && mat[i][j]->getType() == cellType::Bot)
+                {
+                    min_enrg = mat[i][j]->getEnergy();
+                }
 
                 temp_mode = "Enrg: " + std::to_string(min_enrg) + " ~ " + std::to_string(max_enrg);
 

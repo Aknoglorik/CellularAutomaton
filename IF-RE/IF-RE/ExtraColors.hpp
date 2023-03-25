@@ -12,5 +12,6 @@ namespace gui
 		static sf::Color DullWhite	= sf::Color(232, 225, 239);
 		static sf::Color LightGray	= sf::Color(214, 204, 194);
 		static sf::Color Red		= sf::Color(255, 75, 62);
+		static sf::Color Pink		= sf::Color(255, 48, 196);
 	}
 }

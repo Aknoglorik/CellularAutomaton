@@ -109,6 +109,10 @@ int Bot::getNextInstruction()
 
 void Bot::update()
 {
+
+	if (life_counter >= BOT_MAX_LIFE)
+		is_die = true;
+
 	if (is_die || energy <= 0)
 	{
 		is_die = true;
@@ -131,6 +135,9 @@ void Bot::update()
 		break;
 	case botCmd::photosynthesis: 
 	{
+		if (spriteType == botSpriteType::predator)
+			break;
+
 		int power = env->getTemperatureMatrix()[position.x][position.y] + env->getGloabalTemp();
 		if (((long)energy + power) > 0)
 			energy += power;
@@ -153,4 +160,6 @@ void Bot::update()
 
 	if(energy)
 		energy--;
+
+	life_counter++;
 }

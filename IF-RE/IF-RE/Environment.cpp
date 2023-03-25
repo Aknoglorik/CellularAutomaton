@@ -143,6 +143,19 @@ void Environment::generateFood()
 	if (Food::amount >= FOOD_AMOUNT) // REDO!
 		return;
 
+	bool flag = false;
+
+	for (int i = 0; i < _width; i++)
+		for (int j = 0; j < _height; j++)
+			if (matrix[i][j]->getType() == cellType::Emptiness)
+			{
+				flag = true;
+				break;
+			}
+
+	if (!flag)
+		return;
+
 	int x, y;
 	do
 	{

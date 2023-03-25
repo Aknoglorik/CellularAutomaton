@@ -134,6 +134,7 @@ namespace botSpriteType
 #define BOT_CMD_AMOUNT   21
 #define BOT_START_ENERGY 25
 #define BOT_MAX_ENERGY	 200
+#define BOT_MAX_LIFE	 1000
 
 // _Food_
 #define FOOD_ENERGY  10

@@ -12,6 +12,7 @@ class Bot : public Object
 	int dir_move	= 0;
 	int dir_sight	= 0;
 	int cmd_counter = 0;
+	int life_counter = 0;
 	Environment* env;
 	int spriteType = botSpriteType::prey;
 
