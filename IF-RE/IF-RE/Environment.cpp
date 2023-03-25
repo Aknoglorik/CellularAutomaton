@@ -1,4 +1,5 @@
 #include "Environment.h"
+#include <fstream>
 
 _INC_OBJP_MATRIX
 
@@ -90,7 +91,7 @@ Environment::Environment(int width, int height) :
 		for (int j = 0; j < _height; j++)
 		{
 			matrix[i][j] = mainEmptiness;
-			temp[i][j] = (height/2 - 2*j > 0)? height/2 - 2*j: 0;
+			temp[i][j] = 3;// (height / 2 - 2 * j > 0) ? height / 2 - 2 * j : 0;
 			
 			//if (j == 0 || j == _height - 1)//i == 10)
 			{
@@ -150,8 +151,8 @@ void Environment::generateFood()
 	}
 	while (getByPos(x, y)->getType() != cellType::Emptiness); // REDO! there is no logic to check if field is filled in
 
-	/*matrix[x][y] = new Food;
-	matrix[x][y]->setPos(x, y);*/
+	matrix[x][y] = new Food;
+	matrix[x][y]->setPos(x, y);
 }
 
 Object* Environment::getByPos(Vector2i pos)
@@ -247,4 +248,24 @@ void Environment::gemmationCell(int dir)
 			return;
 		}
 	}	
+}
+
+void Environment::saveWorld(std::string fname)
+{
+	std::ofstream out;
+
+	out.open(fname);
+
+	if (!out.is_open())
+		return;
+
+	
+	for (int i = 0; i < matrix.size(); i++)
+		for (int j = 0; j < matrix[0].size(); j++)
+			i;
+
+
+
+
+	out.close();
 }

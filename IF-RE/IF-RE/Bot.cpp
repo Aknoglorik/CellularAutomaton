@@ -126,6 +126,7 @@ void Bot::update()
 		break; 
 	}
 	case botCmd::eat:
+		spriteType = botSpriteType::predator;
 		env->eatCell(dir_sight);
 		break;
 	case botCmd::photosynthesis: 
@@ -135,6 +136,7 @@ void Bot::update()
 			energy += power;
 		else
 			energy = 0;
+
 		break;
 	}
 	case botCmd::nothing:
@@ -145,6 +147,10 @@ void Bot::update()
 	default:
 		break;
 	}
+
+	if ((long)energy > BOT_MAX_ENERGY)
+		energy = BOT_MAX_ENERGY;
+
 	if(energy)
 		energy--;
 }

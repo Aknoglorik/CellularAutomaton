@@ -76,20 +76,25 @@ void App::initVariables()
         {
             env->setPause(false);
         });
-    create_button(sf::FloatRect(BTN_HORIZ_POS + 4*BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "tempera",
+    create_button(sf::FloatRect(BTN_HORIZ_POS + 5*BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "tempera",
         [&]() 
         {
             view_mode = operatingMode::_temperature;
         });
-    create_button(sf::FloatRect(BTN_HORIZ_POS + 5*BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "default",
+    create_button(sf::FloatRect(BTN_HORIZ_POS + 6*BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "default",
         [&]()
         {
             view_mode = operatingMode::_default;
         });
-    create_button(sf::FloatRect(BTN_HORIZ_POS + 6*BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "Energy",
+    create_button(sf::FloatRect(BTN_HORIZ_POS + 7*BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "Energy",
         [&]()
         {
             view_mode = operatingMode::_energy;
+        });
+    create_button(sf::FloatRect(BTN_HORIZ_POS + 8*BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "BotType",
+        [&]()
+        {
+            view_mode = operatingMode::_botType;
         });
     // second line
     create_button(sf::FloatRect(BTN_HORIZ_POS, BTN_VERT_POS+ BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "+sun",
@@ -127,7 +132,7 @@ void App::initVariables()
 
 
     // Slider
-    auto sld = new gui::Slider(SLD_POSITION, SLD_SIZE, 0, -10, 9,
+    auto sld = new gui::Slider(SLD_POSITION, SLD_SIZE, 0, -19, 20,
         [&](int value) 
         {
             env->setGlobalTemp(value);
@@ -185,6 +190,19 @@ void App::initVariables()
 
     object->setFillColor(sf::Color::Magenta);
     bot_shapes.push_back(object);
+
+    sf::RectangleShape* predator        = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
+    sf::RectangleShape* prey            = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
+
+    sf::Color cl(gui::Color::Red);
+    cl.a = 200;
+    predator->setFillColor(cl);
+    botSpriteByType.push_back(predator);
+
+    cl.a = 0;
+    prey->setFillColor(cl);
+    botSpriteByType.push_back(prey);
+    
     ///
 }
 
@@ -373,7 +391,7 @@ void App::render()
             rectangle->setPosition(i * CELL_SIZE, j * CELL_SIZE);
             root.draw(*rectangle);
 
-            if (view_mode == operatingMode::_energy)
+            if (view_mode == operatingMode::_energy && mat[i][j]->getType() == cellType::Bot)
             {
                 color_rectangle->setFillColor(colorByInt((mat[i][j])->getEnergy() * 20));
                 color_rectangle->setPosition(i * CELL_SIZE, j * CELL_SIZE);
@@ -388,38 +406,54 @@ void App::render()
                 temp_mode = "Enrg: " + std::to_string(min_enrg) + " ~ " + std::to_string(max_enrg);
 
             }
+            if (view_mode == operatingMode::_botType && mat[i][j]->getType() == cellType::Bot)
+            {
+                rectangle = botSpriteByType[((Bot*)mat[i][j])->getSpriteType()];
+                rectangle->setPosition(i * CELL_SIZE, j * CELL_SIZE);
+                root.draw(*rectangle);
+
+                if (mat[i][j]->getEnergy() > max_enrg)
+                    max_enrg = mat[i][j]->getEnergy();
+
+                if (mat[i][j]->getEnergy() < min_enrg)
+                    min_enrg = mat[i][j]->getEnergy();
+
+                temp_mode = "Predator-Prey mode";
+
+            }
         }
     }
     delete color_rectangle;
     
     if (view_mode == operatingMode::_temperature)
     {
-        int_matrix mat = env->getTemperatureMatrix();
+        int_matrix mat2 = env->getTemperatureMatrix();
 
         sf::RectangleShape* rectangle = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
-        max_temp = mat[0][0];
-        min_temp = mat[0][0];
+        max_temp = mat2[0][0];
+        min_temp = mat2[0][0];
         float koef = 1;
 
-        for (int i = 0; i < mat.size(); i++)
+        for (int i = 0; i < mat2.size(); i++)
         {
-            for (int j = 0; j < mat[0].size(); j++)
+            for (int j = 0; j < mat2[0].size(); j++)
             {
-                if (mat[i][j] > max_temp)
-                    max_temp = mat[i][j];
 
-                if (mat[i][j] < min_temp)
-                    min_temp = mat[i][j];
+                if (mat2[i][j] > max_temp)
+                    max_temp = mat2[i][j];
+
+                if (mat2[i][j] < min_temp)
+                    min_temp = mat2[i][j];
             }
         }
 
-        koef = max_temp / ((max_temp - min_temp)? (max_temp - min_temp) : 1);
+        koef = 3*max_temp / ((max_temp - min_temp)? (max_temp - min_temp) : 1);
 
-        for (int i = 0; i < mat.size(); i++)
+        for (int i = 0; i < mat2.size(); i++)
         {
-            for (int j = 0; j < mat[0].size(); j++)
+            for (int j = 0; j < mat2[0].size(); j++)
             {
-                rectangle->setFillColor(colorByInt((max_temp - mat[i][j]) * koef));
+                rectangle->setFillColor(colorByInt((max_temp - mat2[i][j]) * koef));
                 rectangle->setPosition(i * CELL_SIZE, j * CELL_SIZE);
                 root.draw(*rectangle);
             }

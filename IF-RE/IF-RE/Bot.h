@@ -13,6 +13,7 @@ class Bot : public Object
 	int dir_sight	= 0;
 	int cmd_counter = 0;
 	Environment* env;
+	int spriteType = botSpriteType::prey;
 
 public:
 	Bot(Environment* _env, sf::Vector2i pos, unsigned int _energy = BOT_START_ENERGY,
@@ -21,6 +22,7 @@ public:
 
 	void createRandomBrain();
 
+	virtual int getSpriteType() const { return spriteType; }
 	virtual int getType() { return type; };
 	std::vector<int>& getBrain() { return brain; }
 

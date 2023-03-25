@@ -50,5 +50,7 @@ public:
 	void moveCell(int);
 	void eatCell(int);
 	void gemmationCell(int);
+
+	void saveWorld(std::string fname);
 };
 

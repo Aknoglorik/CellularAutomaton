@@ -26,14 +26,14 @@
 // _Field_
 #define CELL_SIZE 20.f 
 
-#define HUD_HEIGHT 200.f
+#define HUD_HEIGHT 150.f
 #define HUD_BG gui::Color::DarkGray
 
 
 // *win prop*
 #define WN_WIDTH	 1600
 #define WN_HEIGHT	 900
-#define WN_START_FPS 60
+#define WN_START_FPS 20
 #define WN_START_MOD sf::Style::Default // or Fullscreen
 
 // *view prop*
@@ -62,8 +62,8 @@
 
 // _Sliders_
 #define SLD_HEIGHT 30.f
-#define SLD_POSITION sf::Vector2f(BTN_HORIZ_POS + 4*BTN_HORIZ_DEL, BTN_VERT_POS + 2*BTN_VERT_DEL)
-#define SLD_SIZE sf::Vector2f(3*BTN_HORIZ_DEL - 10.f, SLD_HEIGHT)
+#define SLD_POSITION sf::Vector2f(BTN_HORIZ_POS + 5*BTN_HORIZ_DEL, BTN_VERT_POS + 2*BTN_VERT_DEL)
+#define SLD_SIZE sf::Vector2f(4*BTN_HORIZ_DEL - 10.f, SLD_HEIGHT)
 ///
 
 
@@ -115,7 +115,17 @@ namespace operatingMode
 	{
 		_default,
 		_temperature,
-		_energy
+		_energy,
+		_botType
+	};
+}
+
+namespace botSpriteType
+{
+	enum
+	{
+		predator,
+		prey
 	};
 }
 
@@ -123,10 +133,11 @@ namespace operatingMode
 #define BOT_BRAIN_SIZE   64
 #define BOT_CMD_AMOUNT   21
 #define BOT_START_ENERGY 25
+#define BOT_MAX_ENERGY	 200
 
 // _Food_
 #define FOOD_ENERGY  10
-#define FOOD_AMOUNT  0
+#define FOOD_AMOUNT  100
 
 // _Corpse_
 

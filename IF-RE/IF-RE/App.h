@@ -25,6 +25,8 @@ private:
 	int FPS;
 
 	std::vector<sf::RectangleShape*> bot_shapes;
+	std::vector<sf::RectangleShape*> botSpriteByType;
+
 	std::vector<gui::GObject*> widgets;
 	
 	// Strings for dynamic Labels
