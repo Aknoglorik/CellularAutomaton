@@ -2,6 +2,7 @@
 #include "consts.h"
 _INC_OBJP_MATRIX
 
+#include <iostream>
 
 
 // Constructor / Destructors
@@ -17,7 +18,7 @@ App::~App()
     delete env;
 
     for (int i = 0; i < widgets.size(); i++)
-        delete widgets[i];
+        widgets.pop_back();
 
     for (int i = 0; i < bot_shapes.size(); i++)
         delete bot_shapes[i];
@@ -37,7 +38,7 @@ void App::initWindow(unsigned int width, unsigned int height, std::string wname,
 
     default_view = sf::View(sf::FloatRect(0, 0, width, height));
 
-    view = sf::View(sf::FloatRect(0, 0, CELL_SIZE * ENV_WIDTH, CELL_SIZE * ENV_HEIGHT + HUD_HEIGHT));
+    view = sf::View(sf::FloatRect(0, 0, width * CELL_SIZE * ENV_HEIGHT / height, CELL_SIZE * ENV_HEIGHT));
     cameraView = new Camera(view);
     root.setView(view);
     
@@ -57,14 +58,15 @@ void App::initVariables()
     /// Setup buttons props
     FPS = 0;
     programEnd = false;
-    auto create_button = [&](sf::FloatRect size, sf::String str, std::function<void()> f)
+    auto create_button = [&](sf::FloatRect size, sf::String str, std::function<void()> f, gui::Anchor anc = BTN_ANCHOR)
     {
         auto btn = new gui::Button(size, PxlFont, str);
         btn->bind(f);
-        btn->setAnc(BTN_ANCHOR);
+        btn->setAnc(anc);
         widgets.push_back(btn);
     };
 
+    // Left side
     // first line
     create_button(sf::FloatRect(BTN_HORIZ_POS, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "Pause",
         [&]() 
@@ -91,25 +93,19 @@ void App::initVariables()
         {
             view_mode = operatingMode::_energy;
         });
-    // second line
-    create_button(sf::FloatRect(BTN_HORIZ_POS, BTN_VERT_POS+ BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "+sun",
-        [&]() 
-        {
-            env->setExtraTemp(1);
-        });
-    create_button(sf::FloatRect(BTN_HORIZ_POS+ BTN_HORIZ_DEL, BTN_VERT_POS+ BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "-sun",
+    create_button(sf::FloatRect(BTN_HORIZ_POS + 7*BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "BotType",
         [&]()
         {
-            env->setExtraTemp(-1);
+            view_mode = operatingMode::_botType;
         });
-    // third line
-    create_button(sf::FloatRect(BTN_HORIZ_POS, BTN_VERT_POS + 2*BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "+delay",
+    // second line
+    create_button(sf::FloatRect(BTN_HORIZ_POS, BTN_VERT_POS + BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "+delay",
         [&]()
         {
             FPS+=5;
             root.setFramerateLimit(FPS);
         });
-    create_button(sf::FloatRect(BTN_HORIZ_POS + BTN_HORIZ_DEL, BTN_VERT_POS + 2*BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "-delay",
+    create_button(sf::FloatRect(BTN_HORIZ_POS + BTN_HORIZ_DEL, BTN_VERT_POS + BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "-delay",
         [&]()
         {
             if ((FPS-5) > 1)
@@ -123,11 +119,59 @@ void App::initVariables()
                 root.setFramerateLimit(1);
             }
         });
+    
+    create_button(sf::FloatRect(BTN_HORIZ_POS + 4 * BTN_HORIZ_DEL, BTN_VERT_POS + BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "-sun",
+        [&]()
+        {
+            env->setExtraTemp(-1);
+        });
+    create_button(sf::FloatRect(BTN_HORIZ_POS + 7 * BTN_HORIZ_DEL, BTN_VERT_POS + BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "+sun",
+        [&]() 
+        {
+            env->setExtraTemp(1);
+        });
+
+    // Right side
+    // first line
+    create_button(sf::FloatRect(-BTN_HORIZ_POS - 2*BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "Save",
+        [&]()
+        {
+            env->saveWorld("saved_world.txt");
+        }, 
+        gui::BottomRight);
+    create_button(sf::FloatRect(-BTN_HORIZ_POS - BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "Load",
+        [&]()
+        {
+            env->loadWorld("saved_world.txt");
+        }, 
+        gui::BottomRight);
+    // second line
+    create_button(sf::FloatRect(-BTN_HORIZ_POS - 2*BTN_HORIZ_DEL, BTN_VERT_POS + BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "GenInfo",
+        [&]()
+        {
+            if (!dlg)
+            {
+                dlg = new gui::DialogWndow(DLG_POS, DLG_SIZE, PxlFont, root);
+                widgets.push_back(dlg);
+            }
+        },
+        gui::BottomRight);
+    create_button(sf::FloatRect(-BTN_HORIZ_POS - BTN_HORIZ_DEL, BTN_VERT_POS + BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "CloseInfo",
+        [&]()
+        {
+            dlg->do_it_close = true;
+            dlg = nullptr;
+        },
+        gui::BottomRight);
     ///
 
-
     // Slider
-    auto sld = new gui::Slider(SLD_POSITION, SLD_SIZE);
+    auto sld = new gui::Slider(SLD_POSITION, SLD_SIZE, 0, -19, 20,
+        [&](int value) 
+        {
+            env->setGlobalTemp(value);
+        });
+    //sld->setDynamicValue(env->getGloabalTemp());
     sld->setAnc(BTN_ANCHOR);
     widgets.push_back(sld);
 
@@ -155,7 +199,6 @@ void App::initVariables()
     widgets.push_back(lb_fps);
     ///
 
-
     /// Setting up bots textures
     sf::RectangleShape *emp             = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
     sf::RectangleShape *bot             = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
@@ -173,7 +216,7 @@ void App::initVariables()
     bot->setFillColor(gui::Color::Green);
     bot_shapes.push_back(bot);
     
-    food->setFillColor(gui::Color::Red);
+    food->setFillColor(gui::Color::Pink);
     bot_shapes.push_back(food);
 
     corpse->setFillColor(gui::Color::LightGray);
@@ -181,6 +224,19 @@ void App::initVariables()
 
     object->setFillColor(sf::Color::Magenta);
     bot_shapes.push_back(object);
+
+    sf::RectangleShape* predator        = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
+    sf::RectangleShape* prey            = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
+
+    sf::Color cl(gui::Color::Red);
+    cl.a = 200;
+    predator->setFillColor(cl);
+    botSpriteByType.push_back(predator);
+
+    cl.a = 0;
+    prey->setFillColor(cl);
+    botSpriteByType.push_back(prey);
+    
     ///
 }
 
@@ -229,6 +285,8 @@ void App::pollEvent()
                 cameraView->moveDown(true);
             if (pressed_key == sf::Keyboard::D)
                 cameraView->moveRight(true);
+            if (pressed_key == sf::Keyboard::Space)
+                env->setPause(!env->getPause());
             break;
         }
         case sf::Event::KeyReleased:
@@ -246,17 +304,40 @@ void App::pollEvent()
         }
 
         case sf::Event::MouseWheelScrolled:
-            if (event_.mouseWheelScroll.delta < 0) //& view..z < 2)
+        {
+            if (event_.mouseWheelScroll.delta < 0)
             {
-                //current_zoom *= 1.1;
                 view.zoom(1.1);
             }
-            else if (event_.mouseWheelScroll.delta > 0) //&& current_zoom > 0.5)
+            else if (event_.mouseWheelScroll.delta > 0)
             {
-                //current_zoom *= 0.9;
                 view.zoom(0.9);
             }
             break;
+        }
+
+        case sf::Event::MouseButtonPressed:
+        {
+            sf::Vector2i m_pos = sf::Mouse::getPosition(root);
+            sf::Vector2f pos = root.mapPixelToCoords(m_pos, view);
+            auto workPlace = sf::IntRect(0, 0, WN_WIDTH, root.getSize().y - HUD_HEIGHT * view.getViewport().height);
+
+            if (!workPlace.contains(m_pos) || dlg && dlg->getHitBox().contains((sf::Vector2f)m_pos))
+                break;
+            
+            if (!sf::FloatRect(0, 0, ENV_WIDTH * CELL_SIZE, ENV_HEIGHT * CELL_SIZE).contains(pos))
+                break;
+
+            auto obj = env->getMatrix()[(int)(pos.x / CELL_SIZE)][(int)(pos.y / CELL_SIZE)];
+            
+            if (obj->getType() == cellType::Bot && dlg)
+            {
+                dlg->setCurrentObj((Bot*)obj);
+            }
+            
+
+            break;
+        }
 
         case sf::Event::Resized:
             default_view = sf::View(sf::FloatRect(0, 0, event_.size.width, event_.size.height));
@@ -278,11 +359,22 @@ void App::update()
     // game logic
     pollEvent();
 
-    sf::Vector2f mouse_pos(sf::Mouse::getPosition(root).x - (int)root.getSize().x / 2, 
-                           sf::Mouse::getPosition(root).y - (int)root.getSize().y / 2);
-    
+    sf::Vector2f mouse_pos(sf::Mouse::getPosition(root).x - (int)root.getSize().x / 2,
+        sf::Mouse::getPosition(root).y - (int)root.getSize().y / 2);
+
     for (auto wid : widgets)
         wid->update(root);
+
+    std::_Erase_nodes_if(widgets, [](gui::GObject* gobj)->bool
+        {
+            if (gobj->do_it_close)
+            {
+                delete gobj;
+                gobj = nullptr;
+                return true;
+            }
+            return false;
+        });
 
     step_string         = "Step " + std::to_string(env->gen_step);
     fps_counter_string  = "FPS: " + std::to_string(int(_FPS));
@@ -358,9 +450,12 @@ void App::render()
     int max_enrg = 0;
     int min_enrg = 0;
 
+    bool flag = false;
+
     objp_matrix mat = env->getMatrix();
     sf::RectangleShape* rectangle;
     sf::RectangleShape* color_rectangle = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));;
+    temp_mode = "DefaultView";
     for (int i = 0; i < mat.size(); i++)
     {
         for (int j = 0; j < mat[0].size(); j++)
@@ -369,11 +464,34 @@ void App::render()
             rectangle->setPosition(i * CELL_SIZE, j * CELL_SIZE);
             root.draw(*rectangle);
 
-            if (view_mode == operatingMode::_energy)
+            if (view_mode == operatingMode::_energy && mat[i][j]->getType() == cellType::Bot)
             {
-                color_rectangle->setFillColor(colorByInt((mat[i][j])->getEnergy() * 20));
+                color_rectangle->setFillColor(colorByInt((mat[i][j])->getEnergy() * 4));
                 color_rectangle->setPosition(i * CELL_SIZE, j * CELL_SIZE);
                 root.draw(*color_rectangle);
+
+                if (mat[i][j]->getEnergy() > max_enrg)
+                    max_enrg = mat[i][j]->getEnergy();
+
+
+                if (!flag && !min_enrg && mat[i][j]->getType() == cellType::Bot)
+                {
+                    min_enrg = mat[i][j]->getEnergy();
+                }
+
+                if (flag && mat[i][j]->getEnergy() < min_enrg && mat[i][j]->getType() == cellType::Bot)
+                {
+                    min_enrg = mat[i][j]->getEnergy();
+                }
+
+                temp_mode = "Enrg: " + std::to_string(min_enrg) + " ~ " + std::to_string(max_enrg);
+
+            }
+            if (view_mode == operatingMode::_botType && mat[i][j]->getType() == cellType::Bot)
+            {
+                rectangle = botSpriteByType[((Bot*)mat[i][j])->getSpriteType()];
+                rectangle->setPosition(i * CELL_SIZE, j * CELL_SIZE);
+                root.draw(*rectangle);
 
                 if (mat[i][j]->getEnergy() > max_enrg)
                     max_enrg = mat[i][j]->getEnergy();
@@ -381,7 +499,7 @@ void App::render()
                 if (mat[i][j]->getEnergy() < min_enrg)
                     min_enrg = mat[i][j]->getEnergy();
 
-                temp_mode = "Enrg: " + std::to_string(min_enrg) + " ~ " + std::to_string(max_enrg);
+                temp_mode = "Predator-Prey mode";
 
             }
         }
@@ -390,39 +508,40 @@ void App::render()
     
     if (view_mode == operatingMode::_temperature)
     {
-        int_matrix mat = env->getTemperatureMatrix();
+        int_matrix mat2 = env->getTemperatureMatrix();
 
         sf::RectangleShape* rectangle = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
-        max_temp = mat[0][0];
-        min_temp = mat[0][0];
+        max_temp = mat2[0][0];
+        min_temp = mat2[0][0];
         float koef = 1;
 
-        for (int i = 0; i < mat.size(); i++)
+        for (int i = 0; i < mat2.size(); i++)
         {
-            for (int j = 0; j < mat[0].size(); j++)
+            for (int j = 0; j < mat2[0].size(); j++)
             {
-                if (mat[i][j] > max_temp)
-                    max_temp = mat[i][j];
 
-                if (mat[i][j] < min_temp)
-                    min_temp = mat[i][j];
+                if (mat2[i][j] > max_temp)
+                    max_temp = mat2[i][j];
+
+                if (mat2[i][j] < min_temp)
+                    min_temp = mat2[i][j];
             }
         }
 
-        koef = max_temp / ((max_temp - min_temp)? (max_temp - min_temp) : 1);
+        koef = 3*max_temp / ((max_temp - min_temp)? (max_temp - min_temp) : 1);
 
-        for (int i = 0; i < mat.size(); i++)
+        for (int i = 0; i < mat2.size(); i++)
         {
-            for (int j = 0; j < mat[0].size(); j++)
+            for (int j = 0; j < mat2[0].size(); j++)
             {
-                rectangle->setFillColor(colorByInt((max_temp - mat[i][j]) * koef));
+                rectangle->setFillColor(colorByInt((max_temp - mat2[i][j]) * koef));
                 rectangle->setPosition(i * CELL_SIZE, j * CELL_SIZE);
                 root.draw(*rectangle);
             }
         }
 
         delete rectangle;
-        temp_mode = "Temp: " + std::to_string(min_temp) + " ~ " + std::to_string(max_temp);
+        temp_mode = "Temp: " + std::to_string(min_temp + env->getGloabalTemp()) + " ~ " + std::to_string(max_temp + env->getGloabalTemp());
     }
 
     // HUD

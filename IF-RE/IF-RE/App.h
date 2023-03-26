@@ -4,6 +4,7 @@
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include <list>
 #include "Camera.hpp"
 #include "Environment.h"
 
@@ -25,7 +26,10 @@ private:
 	int FPS;
 
 	std::vector<sf::RectangleShape*> bot_shapes;
-	std::vector<gui::GObject*> widgets;
+	std::vector<sf::RectangleShape*> botSpriteByType;
+
+	std::list<gui::GObject*> widgets;
+	gui::DialogWndow *dlg = nullptr;
 	
 	// Strings for dynamic Labels
 	sf::String step_string;

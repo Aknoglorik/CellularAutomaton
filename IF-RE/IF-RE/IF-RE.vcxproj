@@ -145,6 +145,7 @@
     <ClCompile Include="Bot.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Corpse.cpp" />
+    <ClCompile Include="DialogWndow.cpp" />
     <ClCompile Include="Emptiness.cpp" />
     <ClCompile Include="Environment.cpp" />
     <ClCompile Include="Food.cpp" />
@@ -161,6 +162,7 @@
     <ClInclude Include="Button.h" />
     <ClInclude Include="consts.h" />
     <ClInclude Include="Corpse.h" />
+    <ClInclude Include="DialogWndow.h" />
     <ClInclude Include="Emptiness.h" />
     <ClInclude Include="Environment.h" />
     <ClInclude Include="ExtraColors.hpp" />

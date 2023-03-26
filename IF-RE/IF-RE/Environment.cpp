@@ -1,4 +1,7 @@
 #include "Environment.h"
+#include <fstream>
+#include <string>
+#include <iostream>
 
 _INC_OBJP_MATRIX
 
@@ -45,7 +48,7 @@ Vector2i vecByInt(int dir)
 	return v_dir;
 }
 
-/// \brief Check if position out of Rect(0, 0, width, height) and correct pos if necassary
+/// \brief Check if position in of Rect(0, 0, width, height) and correct pos if necassary
 /// \param pos - checkable position
 /// \param width, height - properties of a Rect
 /// \return True - if correct in the vertical is nesaccary else false
@@ -73,6 +76,22 @@ bool checkPos(Vector2i& pos, int width, int height)
 	return vert_corr;
 }
 
+//int lookAround(int dir)
+//{
+//	Vector2i oldPos = currentObj->getPos();
+//	Vector2i newPos = oldPos + vecByInt(dir);
+//	if (checkPos(newPos, _width, _height) == true)
+//		return 1;
+//	if (matrix[newPos.x][newPos.y]->getType() == cellType::Emptiness)
+//		return 2;
+//	else if (matrix[newPos.x][newPos.y]->getType() == cellType::Food)
+//		return 3;
+//	else if (matrix[newPos.x][newPos.y]->getType() == cellType::Bot)
+//		return 4;
+//	else
+//		return 5;
+//}
+
 Environment::Environment(int width, int height) : 
 	_width(width), _height(height)
 {
@@ -90,17 +109,12 @@ Environment::Environment(int width, int height) :
 		for (int j = 0; j < _height; j++)
 		{
 			matrix[i][j] = mainEmptiness;
-			temp[i][j] = (height/2 - 2*j > 0)? height/2 - 2*j: 0;
+			temp[i][j] = 3;// (height / 2 - 2 * j > 0) ? height / 2 - 2 * j : 0;
 			
 			//if (j == 0 || j == _height - 1)//i == 10)
 			{
 				matrix[i][j] = new Bot(this, Vector2i(i, j));
 			}
-			/*if (i == 10 && j == 5)
-			{
-				matrix[i][j] = new Food;
-				matrix[i][j]->setPos(Vector2i(i, j));
-			}*/
 		}
 	}
 }
@@ -108,6 +122,13 @@ Environment::Environment(int width, int height) :
 Environment::~Environment()
 {
 	delete genAlg;
+	for (int i = 0; i < matrix.size(); i++)
+		for (int j = 0; j < matrix[0].size(); j++)
+			if (matrix[i][j]->getType())
+				delete matrix[i][j];
+
+	delete mainEmptiness;
+
 }
 
 void Environment::update()
@@ -120,15 +141,20 @@ void Environment::update()
 		for (int j = 0; j < _height; j++)
 		{
 			currentObj = matrix[i][j];
-
 			if (currentObj->isDie())
 			{
 				delete currentObj; // free mem
 				currentObj = mainEmptiness;
-				matrix[i][j] = mainEmptiness;
-				continue;
-			}
 
+				matrix[i][j] = mainEmptiness;
+			}
+		}
+	}
+	for (int i = 0; i < _width; i++)
+	{
+		for (int j = 0; j < _height; j++)
+		{
+			currentObj = matrix[i][j];
 			if (currentObj->getType() != cellType::Emptiness)
 				currentObj->update();
 		}
@@ -142,6 +168,19 @@ void Environment::generateFood()
 	if (Food::amount >= FOOD_AMOUNT) // REDO!
 		return;
 
+	bool flag = false;
+
+	for (int i = 0; i < _width; i++)
+		for (int j = 0; j < _height; j++)
+			if (matrix[i][j]->getType() == cellType::Emptiness)
+			{
+				flag = true;
+				break;
+			}
+
+	if (!flag)
+		return;
+
 	int x, y;
 	do
 	{
@@ -150,8 +189,8 @@ void Environment::generateFood()
 	}
 	while (getByPos(x, y)->getType() != cellType::Emptiness); // REDO! there is no logic to check if field is filled in
 
-	/*matrix[x][y] = new Food;
-	matrix[x][y]->setPos(x, y);*/
+	matrix[x][y] = new Food;
+	matrix[x][y]->setPos(x, y);
 }
 
 Object* Environment::getByPos(Vector2i pos)
@@ -162,18 +201,6 @@ Object* Environment::getByPos(Vector2i pos)
 Object* Environment::getByPos(int x, int y)
 {
 	return matrix[x][y];
-}
-
-void Environment::setExtraTemp(int extra_temperature)
-{
-	for (int i = 0; i < _width; i++)
-		for (int j = 0; j < _height; j++)
-			if (temp[i][j] + extra_temperature >= 0)
-				temp[i][j] += extra_temperature;
-			else
-				temp[i][j] = 0;
-
-
 }
 
 void Environment::moveCell(int dir_move)
@@ -214,11 +241,11 @@ void Environment::eatCell(int dir)
 	if (checkPos(newPos, _width, _height)) // True mean y of newPos was corrected, that is mean bot look at the wall
 		return;
 
-	if (matrix[newPos.x][newPos.y]->getType() == cellType::Bot)
+	if (matrix[newPos.x][newPos.y]->getType() == cellType::Bot && currentObj->getType() == cellType::Bot)
 	{
 		matrix[newPos.x][newPos.y]->setIsDie(true);
 
-		currentObj->addEnergy(matrix[newPos.x][newPos.y]->getEnergy());
+		currentObj->addEnergy(matrix[newPos.x][newPos.y]->getEnergy() * BOT_EAT_RATIO);
 
 		// REDO! (DRY dont executed mb)
 		delete matrix[newPos.x][newPos.y]; // free mem
@@ -247,4 +274,129 @@ void Environment::gemmationCell(int dir)
 			return;
 		}
 	}	
+}
+
+void Environment::saveWorld(std::string fname)
+{
+	std::ofstream out(fname);
+
+	if (!out.is_open())
+	{
+		std::cout << "Not found file!" << std::endl;
+		return;
+	}
+
+	out << _width << ' ' << _height << ' ' << this->_temp << '\n';
+
+	for (int i = 0; i < matrix.size(); i++)
+	{
+		for (int j = 0; j < matrix[0].size(); j++)
+		{
+			int type = matrix[i][j]->getType();
+
+			out << type << ' ';
+			if (type == cellType::Bot)
+			{
+				// save props
+				auto bot = (Bot*)matrix[i][j];
+				out << bot->cmd_counter << ' ' << bot->dir_move << ' ' << bot->dir_sight << ' ' << bot->spriteType << ' ' 
+					<< bot->life_counter << ' ' << bot->digest_speed << ' ' << bot->digested_material << ' ';
+
+				// save brain
+				out << bot->brain.size() << ' ';
+				for (int i = 0; i < bot->brain.size(); i++)
+					out << bot->brain[i] << ' ';
+			}
+			out << matrix[i][j]->getEnergy() << ' ' << matrix[i][j]->isDie() << ' ' << temp[i][j] << ' ';
+		}
+		out << '\n';
+	}
+	out.close();
+}
+
+void Environment::loadWorld(std::string fname)
+{
+	std::ifstream in(fname);
+
+	if (!in.is_open())
+	{
+		std::cout << "Not found file!" << std::endl;
+		return;
+	}
+
+	in >> _width >> _height >> _temp;
+
+	for (int i = 0; i < matrix.size(); i++)
+		for (int j = 0; j < matrix[0].size(); j++)
+			if (matrix[i][j]->getType())
+				delete matrix[i][j];
+	
+	matrix.resize(_width);
+	temp.resize(_width);
+	for (int i = 0; i < _width; i++)
+	{
+		matrix[i].resize(_height);
+		temp[i].resize(_height);
+		for (int j = 0; j < _height; j++)
+		{
+			matrix[i][j] = mainEmptiness;
+		}
+	}
+
+	int type;
+	int size;
+	unsigned int energy;
+	bool is_die;
+	std::vector<int> brain;
+	int cmd_counter, dir_move, dir_sight, spriteType, life_counter, digest_speed, digested_material;
+
+	for (int i = 0; i < matrix.size(); i++)
+	{
+		for (int j = 0; j < matrix[0].size(); j++)
+		{
+			in >> type;
+			if (type == cellType::Bot)
+			{
+				in >> cmd_counter >> dir_move >> dir_sight >> spriteType >> life_counter >> digest_speed >> digested_material;
+				in >> size;
+				brain.resize(size);
+
+				for (int i = 0; i < brain.size(); i++)
+					in >> brain[i];
+			}
+			in >> energy >> is_die >> temp[i][j];
+
+			switch (type)
+			{
+			case cellType::Bot:
+			{
+				// copy stats
+				auto newBot = new Bot(this, sf::Vector2i(i, j), energy, &brain);
+				newBot->setIsDie(is_die);
+				newBot->cmd_counter			= cmd_counter;
+				newBot->dir_move			= dir_move;
+				newBot->dir_sight			= dir_sight;
+				newBot->spriteType			= spriteType;
+				newBot->life_counter		= life_counter;
+				newBot->digest_speed		= digest_speed;
+				newBot->digested_material	= digested_material;
+
+				matrix[i][j] = newBot;
+				break;
+			}
+			case cellType::Food:
+			{
+				matrix[i][j] = new Food;
+				matrix[i][j]->setPos(i, j);
+				break;
+			}
+			case cellType::Emptiness:
+			case cellType::Corpse:
+			default:
+				break;
+			}
+		}
+	}
+
+	in.close();
 }

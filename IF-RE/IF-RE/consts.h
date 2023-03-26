@@ -16,8 +16,8 @@
 
 
 /// ENVIRONMENT
-#define ENV_WIDTH  96
-#define ENV_HEIGHT 44
+#define ENV_WIDTH  64
+#define ENV_HEIGHT 64
 ///
 
 
@@ -26,14 +26,14 @@
 // _Field_
 #define CELL_SIZE 20.f 
 
-#define HUD_HEIGHT 200.f
+#define HUD_HEIGHT 150.f
 #define HUD_BG gui::Color::DarkGray
 
 
 // *win prop*
 #define WN_WIDTH	 1600
 #define WN_HEIGHT	 900
-#define WN_START_FPS 60
+#define WN_START_FPS 20
 #define WN_START_MOD sf::Style::Default // or Fullscreen
 
 // *view prop*
@@ -41,8 +41,8 @@
 
 
 // *btn pos*
-#define BTN_HORIZ_POS 40.f
-#define BTN_VERT_POS  -HUD_HEIGHT + 40.f // reveres because BottomLeft
+#define BTN_HORIZ_POS 20.f
+#define BTN_VERT_POS  -HUD_HEIGHT + 20.f // reveres because BottomLeft
 #define BTN_ANCHOR	  gui::BottomLeft
 
 // *btn prop*
@@ -62,8 +62,17 @@
 
 // _Sliders_
 #define SLD_HEIGHT 30.f
-#define SLD_POSITION sf::Vector2f(BTN_HORIZ_POS + 4*BTN_HORIZ_DEL, BTN_VERT_POS + 2*BTN_VERT_DEL)
-#define SLD_SIZE sf::Vector2f(3*BTN_HORIZ_DEL - 10.f, SLD_HEIGHT)
+#define SLD_POSITION sf::Vector2f(BTN_HORIZ_POS + 5*BTN_HORIZ_DEL, BTN_VERT_POS + BTN_VERT_DEL)
+#define SLD_SIZE sf::Vector2f(2*BTN_HORIZ_DEL - 10.f, SLD_HEIGHT)
+
+
+// _Dialog win_
+#define DLG_HEAD_BAR	30.f
+#define DLG_LB_SIZE		14.f
+#define DLG_POS			sf::Vector2f(0, 0)
+#define DLG_SIZE		sf::Vector2f(200, 300)
+#define DLG_CMD_MARGIN  6.f
+
 ///
 
 
@@ -115,18 +124,38 @@ namespace operatingMode
 	{
 		_default,
 		_temperature,
-		_energy
+		_energy,
+		_botType
+	};
+}
+
+namespace botSpriteType
+{
+	enum
+	{
+		predator,
+		prey
 	};
 }
 
 // _Bot_
 #define BOT_BRAIN_SIZE   64
-#define BOT_CMD_AMOUNT   21
+#define BOT_CMD_AMOUNT   64
 #define BOT_START_ENERGY 25
+
+#define BOT_MAX_ENERGY	 200
+#define BOT_MAX_LIFE	 200
+#define BOT_EAT_RATIO	 0.8f
+
+#define BOT_DIGEST_RATIO 2.f
+#define BOT_DIGEST_SPEED 0.1f
+
+#define BOT_NRG_TO_MOVE  2
+#define BOT_NRG_TO_EAT   2
 
 // _Food_
 #define FOOD_ENERGY  10
-#define FOOD_AMOUNT  0
+#define FOOD_AMOUNT  100
 
 // _Corpse_
 
@@ -135,7 +164,7 @@ namespace operatingMode
 
 
 /// OTHER
-#define GENALG_MUTATION_PRECENT 0.1
+#define GENALG_MUTATION_PRECENT 0.5
 #define GENALG_NUM_OUT_SELECT   8
 
 #define DIR_UP		sf::Vector2i( 0, -1)

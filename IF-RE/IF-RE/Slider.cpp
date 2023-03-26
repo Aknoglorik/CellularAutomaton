@@ -12,12 +12,12 @@ enum _status
 };
 
 
-Slider::Slider(sf::Vector2f p1, sf::Vector2f size, int start_value, int _max_value, std::function<void(int)> callback) 
-    : value(start_value), max_value(_max_value), m_callback(callback)
+Slider::Slider(sf::Vector2f p1, sf::Vector2f size, int start_value, int _min_value, int _max_value, std::function<void(int)> callback)
+    : value(start_value), min_value(_min_value), max_value(_max_value), m_callback(callback)
 {
     circle_radius = size.y / 2;
 
-    float factor = (float)value / max_value;
+    float factor = (float)(value - min_value) / (max_value - min_value);
     float width = size.x;
 
     sf::Vector2f midle_point(width * factor, 0);
@@ -68,7 +68,7 @@ void Slider::setupByPos(sf::Vector2f pos)
         pos.x = hitbox.left + hitbox.width;
 
     // new width = (pos.x - hitbox.left)
-    value = (pos.x - hitbox.left) / hitbox.width * max_value;
+    value = (pos.x - hitbox.left) / hitbox.width * (max_value - min_value) + min_value;
     m_callback(value);
 
     line1.setSize(sf::Vector2f(pos.x - hitbox.left, 2 * circle_radius));
@@ -132,8 +132,7 @@ void gui::Slider::update(sf::RenderWindow& target)
 
 void Slider::setValue(int val)
 {
-    sf::Vector2f pos(hitbox.left + (float)val/max_value * hitbox.width, 0);
-
+    sf::Vector2f pos(hitbox.left + (float)(val - min_value) * hitbox.width / (max_value - min_value), 0);
     setupByPos(pos);
 }
 

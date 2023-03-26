@@ -19,6 +19,7 @@ namespace gui
 		bool isPressed = false;
 		bool isHovered = false;
 		bool isClickedOnThis = false;
+		bool multi_click = false;
 
 	public:
 		Button(sf::FloatRect size, const sf::Font &font, sf::String str = "Button");
@@ -30,6 +31,7 @@ namespace gui
 		void update(sf::RenderWindow&) override;
 		void bind(std::function<void(void)>);
 		void setAnc(Anchor anc) override;
+		void setMultiClick(bool flag) { multi_click = flag; }
 
 	private:
 		void setByStat(int);

@@ -21,6 +21,8 @@ namespace gui
 		void setColor(sf::Color);
 		void setCharSize(unsigned int size);
 
+		float getCharSizeF() { return text.getCharacterSize(); }
+
 		/// \param str - string that can be changed outside this method 
 		///		 CANN'T BE DELETED EARLIER THAN THIS ENTITY!
 		void setDynamicString(sf::String& str);

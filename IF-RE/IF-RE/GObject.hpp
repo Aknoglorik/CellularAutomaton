@@ -19,8 +19,9 @@ namespace gui
 		Anchor _anchor = TopLeft;
 
 	public:
-		virtual ~GObject() {}
+		bool do_it_close = false;
 
+		virtual ~GObject() {}
 
 		virtual void draw(sf::RenderTarget&, sf::RenderStates) const override {}
 		virtual void update(sf::RenderWindow&) {}

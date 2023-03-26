@@ -2,6 +2,7 @@
 #include "Button.h"
 #include "Label.h"
 #include "Slider.h"
+#include "DialogWndow.h"
 
 #ifdef ADD_COLOR_SPECTR
 #include "ExtraColors.hpp"

@@ -34,32 +34,58 @@ void Bot::createRandomBrain()
 	}
 }
 
+void Bot::digest()
+{
+	if (digested_material - digest_speed >= 0)
+		energy += digest_speed * BOT_DIGEST_RATIO;
+	else
+	{
+		energy += digested_material * BOT_DIGEST_RATIO;
+		digested_material = 0;
+	}
+}
+
+bool Bot::reduceEnergy(int value)
+{
+	if (energy <= value)
+	{
+		is_die == true;
+		return false;
+	}
+	energy -= value;
+	return true;
+}
+
 int Bot::getNextInstruction()
 {
 	int Inst = botCmd::nothing;
+	//move
 	if ((brain[cmd_counter] >= 0) && (brain[cmd_counter] <= 7))
 	{
 		dir_move = brain[cmd_counter];
 		Inst = botCmd::move;
 		cmd_counter++;
 	}
+	//direction sight
 	else if ((brain[cmd_counter] >= 8) && (brain[cmd_counter] <= 15))
 	{
 		dir_sight = brain[cmd_counter] - 8;
 		Inst = botCmd::nothing;
 		cmd_counter++;
 	}
-	else if (brain[cmd_counter] == 16)
+	//photosynthesis
+	else if ((brain[cmd_counter] == 16) || (brain[cmd_counter] == 38)) 
 	{
 		Inst = botCmd::photosynthesis;
 		cmd_counter++;
 	}
-	else if (brain[cmd_counter] == 17)
+	//eat
+	else if ((brain[cmd_counter] == 38) || (brain[cmd_counter] == 56))
 	{
 		Inst = botCmd::eat;
 		cmd_counter++;
 	}
-	else if (brain[cmd_counter] == 18)
+	else if (brain[cmd_counter] == 23)
 	{
 		Inst = botCmd::gemmation;
 		cmd_counter++;
@@ -101,6 +127,13 @@ int Bot::getNextInstruction()
 		if (position.y > brain[cmd_counter]) 
 			cmd_counter = (cmd_counter + brain[cmd_counter]) % BOT_BRAIN_SIZE;
 	}
+	//look around
+	/*else if (brain[cmd_counter] == 25)
+	{
+		int Inst = botCmd::nothing;
+	}*/
+	else
+		cmd_counter += brain[cmd_counter];
 
 	cmd_counter %= BOT_BRAIN_SIZE;
 
@@ -109,6 +142,10 @@ int Bot::getNextInstruction()
 
 void Bot::update()
 {
+
+	if (life_counter >= BOT_MAX_LIFE)
+		is_die = true;
+
 	if (is_die || energy <= 0)
 	{
 		is_die = true;
@@ -119,6 +156,8 @@ void Bot::update()
 	{
 	case botCmd::move:
 	{
+		if (reduceEnergy(BOT_NRG_TO_MOVE))
+			break;
 		int abs_dir = dir_move + dir_sight;
 		if (abs_dir > 7)
 			abs_dir -= 8;
@@ -126,12 +165,25 @@ void Bot::update()
 		break; 
 	}
 	case botCmd::eat:
+	{
+		if (reduceEnergy(BOT_NRG_TO_EAT))
+			break;
+
+		spriteType = botSpriteType::predator;
 		env->eatCell(dir_sight);
 		break;
+	}
 	case botCmd::photosynthesis: 
 	{
-		int power = env->getTemperatureMatrix()[position.x][position.y];
-		energy += power;
+		if (spriteType == botSpriteType::predator)
+			break;
+
+		int power = env->getTemperatureMatrix()[position.x][position.y] + env->getGloabalTemp();
+		if (((long)energy + power) > 0)
+			energy += power;
+		else
+			energy = 0;
+
 		break;
 	}
 	case botCmd::nothing:
@@ -142,6 +194,15 @@ void Bot::update()
 	default:
 		break;
 	}
+
+	if ((long)energy > BOT_MAX_ENERGY)
+		energy = BOT_MAX_ENERGY;
+
+	if (spriteType == botSpriteType::predator)
+		digest();
+
 	if(energy)
 		energy--;
+
+	life_counter++;
 }

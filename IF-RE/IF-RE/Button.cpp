@@ -14,11 +14,11 @@ enum _status
 Button::Button(sf::FloatRect _size, const sf::Font &font, sf::String str) : size(_size)
 {
     setPosition(sf::Vector2f(_size.left, _size.top));
+    
     rectangle.setSize(sf::Vector2f(_size.width, _size.height));
-
+    
     // Setting up label
     label = new Label;
-    label->setPosition(this->getPosition());
     label->setString(sf::String(str));
     label->setCharSize(_size.height);
     label->setFont(font);
@@ -60,16 +60,20 @@ void Button::setByStat(int status)
 void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
     states.transform *= getTransform();
+    target.draw(rectangle, getTransform());
 
-    target.draw(rectangle, states);
+
     if (label)
+    {
+        label->move(getPosition() - label->getPosition());
         target.draw(*label, states);
+    }
 }
 
 void Button::update(sf::RenderWindow& target)
 {
     sf::Vector2i m_pos = sf::Mouse::getPosition(target);
-    
+
     label->update(target);
     bool isClick = sf::Mouse::isButtonPressed(sf::Mouse::Left);
     
@@ -86,6 +90,8 @@ void Button::update(sf::RenderWindow& target)
     {
         if (!isClick)
             isPressed = false;
+        if (multi_click)
+            m_callback();
         return;
     }
 

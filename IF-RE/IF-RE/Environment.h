@@ -14,6 +14,7 @@ class Environment
 {
 	int _width;
 	int _height;
+	int _temp = 0;
 
 	GeneticAlgorithm* genAlg = nullptr;
 	objp_matrix matrix;
@@ -40,12 +41,18 @@ public:
 	int getHeight() { return _height; }
 	const objp_matrix& getMatrix() { return matrix; }
 	const int_matrix& getTemperatureMatrix() { return temp; }
+	int getGloabalTemp() { return _temp; }
+	bool getPause() { return pause; }
 
 	void setPause(bool flag) { pause = flag; }
-	void setExtraTemp(int);
+	void setExtraTemp(int temp) { _temp += temp; }
+	void setGlobalTemp(int temp) { _temp = temp; }
 
 	void moveCell(int);
 	void eatCell(int);
 	void gemmationCell(int);
+
+	void saveWorld(std::string fname = "");
+	void loadWorld(std::string fname);
 };
 
