@@ -13,8 +13,12 @@ gui::DialogWndow::DialogWndow(sf::Vector2f pos, sf::Vector2f _size, sf::Font& fo
 	bg.setFillColor(Color::DarkGray);
 
 	currentCmd.setSize(sf::Vector2f(DLG_LB_SIZE + DLG_CMD_MARGIN, DLG_LB_SIZE + DLG_CMD_MARGIN));
-	currentCmd.setFillColor(Color::White1);
 	currentCmd.setPosition(cmdDefaultPos);
+	currentCmd.setFillColor(Color::White1);
+
+	selectedBot.setSize(sf::Vector2f(DLG_LB_SIZE + DLG_CMD_MARGIN, DLG_LB_SIZE + DLG_CMD_MARGIN));
+	selectedBot.setFillColor(Color::Yellow);
+	selectedBot.setPosition(cmdDefaultPos);
 
 
 	lb_brain = new Label(pos + sf::Vector2f(DLG_HEAD_BAR/4, DLG_HEAD_BAR + 20), DLG_LB_SIZE);
@@ -67,6 +71,7 @@ void gui::DialogWndow::draw(sf::RenderTarget& target, sf::RenderStates states) c
 
 	target.draw(bg, states);
 	target.draw(currentCmd, states);
+
 	target.draw(*btn_close, states);
 	target.draw(*lb_brain, states);
 	target.draw(*lb_extra_info, states);
@@ -93,7 +98,10 @@ void gui::DialogWndow::update(sf::RenderWindow& target)
 void gui::DialogWndow::updateBotInfo()
 {
 	if (currentObj && currentObj->isDie())
+	{
 		currentObj = nullptr;
+		s_extra_info = "???\n???\n???\n???";
+	}
 	if (currentObj)
 	{
 		s_brain = "";

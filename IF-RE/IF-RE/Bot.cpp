@@ -94,6 +94,7 @@ int Bot::getNextInstruction()
 			cmd_counter = 0;
 		else
 			cmd_counter++;
+
 		if (energy > (brain[cmd_counter] * 3))
 		{
 			if ((cmd_counter + 1) == BOT_BRAIN_SIZE)
@@ -109,7 +110,7 @@ int Bot::getNextInstruction()
 			else if ((cmd_counter + 2) > BOT_BRAIN_SIZE)
 				cmd_counter = (cmd_counter + 2) % BOT_BRAIN_SIZE;
 			else cmd_counter += 2;
-			cmd_counter = (brain[cmd_counter] + 61) % BOT_BRAIN_SIZE;
+			cmd_counter = (brain[cmd_counter]) % BOT_BRAIN_SIZE;
 		}
 	}
 	//Check bot position.y 
@@ -120,7 +121,7 @@ int Bot::getNextInstruction()
 			cmd_counter = 0;
 		else
 			cmd_counter++;
-		if (position.y > brain[cmd_counter]) 
+		if (position.y > brain[cmd_counter])
 			cmd_counter = (cmd_counter + brain[cmd_counter]) % BOT_BRAIN_SIZE;
 	}
 
