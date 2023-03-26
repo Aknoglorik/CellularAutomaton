@@ -16,8 +16,8 @@
 
 
 /// ENVIRONMENT
-#define ENV_WIDTH  96*2
-#define ENV_HEIGHT 44
+#define ENV_WIDTH  64
+#define ENV_HEIGHT 64
 ///
 
 
@@ -62,8 +62,17 @@
 
 // _Sliders_
 #define SLD_HEIGHT 30.f
-#define SLD_POSITION sf::Vector2f(BTN_HORIZ_POS + 5*BTN_HORIZ_DEL, BTN_VERT_POS + 2*BTN_VERT_DEL)
-#define SLD_SIZE sf::Vector2f(4*BTN_HORIZ_DEL - 10.f, SLD_HEIGHT)
+#define SLD_POSITION sf::Vector2f(BTN_HORIZ_POS + 5*BTN_HORIZ_DEL, BTN_VERT_POS + BTN_VERT_DEL)
+#define SLD_SIZE sf::Vector2f(2*BTN_HORIZ_DEL - 10.f, SLD_HEIGHT)
+
+
+// _Dialog win_
+#define DLG_HEAD_BAR	30.f
+#define DLG_LB_SIZE		14.f
+#define DLG_POS			sf::Vector2f(0, 0)
+#define DLG_SIZE		sf::Vector2f(200, 300)
+#define DLG_CMD_MARGIN  6.f
+
 ///
 
 
@@ -133,11 +142,16 @@ namespace botSpriteType
 #define BOT_BRAIN_SIZE   64
 #define BOT_CMD_AMOUNT   21
 #define BOT_START_ENERGY 25
+
 #define BOT_MAX_ENERGY	 200
-#define BOT_MAX_LIFE	 1000
+#define BOT_MAX_LIFE	 200
 #define BOT_EAT_RATIO	 0.8f
+
 #define BOT_DIGEST_RATIO 2.f
 #define BOT_DIGEST_SPEED 0.1f
+
+#define BOT_NRG_TO_MOVE  2
+#define BOT_NRG_TO_EAT   2
 
 // _Food_
 #define FOOD_ENERGY  10

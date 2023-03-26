@@ -45,6 +45,17 @@ void Bot::digest()
 	}
 }
 
+bool Bot::reduceEnergy(int value)
+{
+	if (energy <= value)
+	{
+		is_die == true;
+		return false;
+	}
+	energy -= value;
+	return true;
+}
+
 int Bot::getNextInstruction()
 {
 	int Inst = botCmd::nothing;
@@ -134,6 +145,8 @@ void Bot::update()
 	{
 	case botCmd::move:
 	{
+		if (reduceEnergy(BOT_NRG_TO_MOVE))
+			break;
 		int abs_dir = dir_move + dir_sight;
 		if (abs_dir > 7)
 			abs_dir -= 8;
@@ -141,9 +154,14 @@ void Bot::update()
 		break; 
 	}
 	case botCmd::eat:
+	{
+		if (reduceEnergy(BOT_NRG_TO_EAT))
+			break;
+
 		spriteType = botSpriteType::predator;
 		env->eatCell(dir_sight);
 		break;
+	}
 	case botCmd::photosynthesis: 
 	{
 		if (spriteType == botSpriteType::predator)

@@ -99,11 +99,6 @@ Environment::Environment(int width, int height) :
 			{
 				matrix[i][j] = new Bot(this, Vector2i(i, j));
 			}
-			/*if (i == 10 && j == 5)
-			{
-				matrix[i][j] = new Food;
-				matrix[i][j]->setPos(Vector2i(i, j));
-			}*/
 		}
 	}
 }

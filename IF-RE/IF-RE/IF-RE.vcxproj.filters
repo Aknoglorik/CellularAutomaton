@@ -66,6 +66,9 @@
     <ClCompile Include="Bot.cpp">
       <Filter>Bot\Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="DialogWndow.cpp">
+      <Filter>Графика\Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneticAlgorithm.h">
@@ -118,6 +121,9 @@
     </ClInclude>
     <ClInclude Include="Camera.hpp">
       <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="DialogWndow.h">
+      <Filter>Графика\Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -12,6 +12,7 @@ namespace gui
 		int max_value;
 		int min_value;
 		int value;
+		int *d_value = nullptr;
 		float circle_radius;
 
 		sf::FloatRect hitbox;
@@ -28,12 +29,13 @@ namespace gui
 		Slider(sf::Vector2f p1, sf::Vector2f size, int start_value = 50, int _min_value = 0, int _max_value = 100, std::function<void(int)> callback = [](int) {});
 		~Slider();
 
-		void setByStat(int status);
-
 		void draw(sf::RenderTarget&, sf::RenderStates) const override;
 		void update(sf::RenderWindow&) override;
 
+		void setByStat(int status);
 		void setValue(int val);
+		void setDynamicValue(int& val) { d_value = &val; }
+
 		int getValue() { return value; }
 
 		void bind(std::function<void(int)> callback) { m_callback = callback; }

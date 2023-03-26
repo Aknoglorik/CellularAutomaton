@@ -132,8 +132,7 @@ void gui::Slider::update(sf::RenderWindow& target)
 
 void Slider::setValue(int val)
 {
-    sf::Vector2f pos(hitbox.left + (float)(val - min_value)/(max_value - min_value) * hitbox.width, 0);
-
+    sf::Vector2f pos(hitbox.left + (float)(val - min_value) * hitbox.width / (max_value - min_value), 0);
     setupByPos(pos);
 }
 

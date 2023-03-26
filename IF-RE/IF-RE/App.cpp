@@ -2,6 +2,7 @@
 #include "consts.h"
 _INC_OBJP_MATRIX
 
+#include <iostream>
 
 
 // Constructor / Destructors
@@ -17,7 +18,7 @@ App::~App()
     delete env;
 
     for (int i = 0; i < widgets.size(); i++)
-        delete widgets[i];
+        widgets.pop_back();
 
     for (int i = 0; i < bot_shapes.size(); i++)
         delete bot_shapes[i];
@@ -36,8 +37,6 @@ void App::initWindow(unsigned int width, unsigned int height, std::string wname,
     //ret.create(VM, wname, 7U, sf::ContextSettings(0, 0, 7));
 
     default_view = sf::View(sf::FloatRect(0, 0, width, height));
-
-    float x_factor = width / height;
 
     view = sf::View(sf::FloatRect(0, 0, width * CELL_SIZE * ENV_HEIGHT / height, CELL_SIZE * ENV_HEIGHT));
     cameraView = new Camera(view);
@@ -67,6 +66,7 @@ void App::initVariables()
         widgets.push_back(btn);
     };
 
+    // Left side
     // first line
     create_button(sf::FloatRect(BTN_HORIZ_POS, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "Pause",
         [&]() 
@@ -78,45 +78,34 @@ void App::initVariables()
         {
             env->setPause(false);
         });
-    create_button(sf::FloatRect(BTN_HORIZ_POS + 5*BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "tempera",
+    create_button(sf::FloatRect(BTN_HORIZ_POS + 4*BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "tempera",
         [&]() 
         {
             view_mode = operatingMode::_temperature;
         });
-    create_button(sf::FloatRect(BTN_HORIZ_POS + 6*BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "default",
+    create_button(sf::FloatRect(BTN_HORIZ_POS + 5*BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "default",
         [&]()
         {
             view_mode = operatingMode::_default;
         });
-    create_button(sf::FloatRect(BTN_HORIZ_POS + 7*BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "Energy",
+    create_button(sf::FloatRect(BTN_HORIZ_POS + 6*BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "Energy",
         [&]()
         {
             view_mode = operatingMode::_energy;
         });
-    create_button(sf::FloatRect(BTN_HORIZ_POS + 8*BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "BotType",
+    create_button(sf::FloatRect(BTN_HORIZ_POS + 7*BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "BotType",
         [&]()
         {
             view_mode = operatingMode::_botType;
         });
     // second line
-    create_button(sf::FloatRect(BTN_HORIZ_POS, BTN_VERT_POS+ BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "+sun",
-        [&]() 
-        {
-            env->setExtraTemp(1);
-        });
-    create_button(sf::FloatRect(BTN_HORIZ_POS+ BTN_HORIZ_DEL, BTN_VERT_POS+ BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "-sun",
-        [&]()
-        {
-            env->setExtraTemp(-1);
-        });
-    // third line
-    create_button(sf::FloatRect(BTN_HORIZ_POS, BTN_VERT_POS + 2*BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "+delay",
+    create_button(sf::FloatRect(BTN_HORIZ_POS, BTN_VERT_POS + BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "+delay",
         [&]()
         {
             FPS+=5;
             root.setFramerateLimit(FPS);
         });
-    create_button(sf::FloatRect(BTN_HORIZ_POS + BTN_HORIZ_DEL, BTN_VERT_POS + 2*BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "-delay",
+    create_button(sf::FloatRect(BTN_HORIZ_POS + BTN_HORIZ_DEL, BTN_VERT_POS + BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "-delay",
         [&]()
         {
             if ((FPS-5) > 1)
@@ -130,21 +119,51 @@ void App::initVariables()
                 root.setFramerateLimit(1);
             }
         });
-    ///
+    
+    create_button(sf::FloatRect(BTN_HORIZ_POS + 4 * BTN_HORIZ_DEL, BTN_VERT_POS + BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "-sun",
+        [&]()
+        {
+            env->setExtraTemp(-1);
+        });
+    create_button(sf::FloatRect(BTN_HORIZ_POS + 7 * BTN_HORIZ_DEL, BTN_VERT_POS + BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "+sun",
+        [&]() 
+        {
+            env->setExtraTemp(1);
+        });
 
-
-    create_button(sf::FloatRect(-BTN_HORIZ_POS - BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "Save",
+    // Right side
+    // first line
+    create_button(sf::FloatRect(-BTN_HORIZ_POS - 2*BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "Save",
         [&]()
         {
             env->saveWorld("saved_world.txt");
         }, 
         gui::BottomRight);
-    create_button(sf::FloatRect(-BTN_HORIZ_POS - BTN_HORIZ_DEL, BTN_VERT_POS + BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "Load",
+    create_button(sf::FloatRect(-BTN_HORIZ_POS - BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "Load",
         [&]()
         {
             env->loadWorld("saved_world.txt");
         }, 
         gui::BottomRight);
+    // second line
+    create_button(sf::FloatRect(-BTN_HORIZ_POS - 2*BTN_HORIZ_DEL, BTN_VERT_POS + BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "GenInfo",
+        [&]()
+        {
+            if (!dlg)
+            {
+                dlg = new gui::DialogWndow(DLG_POS, DLG_SIZE, PxlFont, root);
+                widgets.push_back(dlg);
+            }
+        },
+        gui::BottomRight);
+    create_button(sf::FloatRect(-BTN_HORIZ_POS - BTN_HORIZ_DEL, BTN_VERT_POS + BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "CloseInfo",
+        [&]()
+        {
+            dlg->do_it_close = true;
+            dlg = nullptr;
+        },
+        gui::BottomRight);
+    ///
 
     // Slider
     auto sld = new gui::Slider(SLD_POSITION, SLD_SIZE, 0, -19, 20,
@@ -152,6 +171,7 @@ void App::initVariables()
         {
             env->setGlobalTemp(value);
         });
+    //sld->setDynamicValue(env->getGloabalTemp());
     sld->setAnc(BTN_ANCHOR);
     widgets.push_back(sld);
 
@@ -178,7 +198,6 @@ void App::initVariables()
     lb_fps->setAnc(BTN_ANCHOR);
     widgets.push_back(lb_fps);
     ///
-
 
     /// Setting up bots textures
     sf::RectangleShape *emp             = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
@@ -285,6 +304,7 @@ void App::pollEvent()
         }
 
         case sf::Event::MouseWheelScrolled:
+        {
             if (event_.mouseWheelScroll.delta < 0)
             {
                 view.zoom(1.1);
@@ -294,6 +314,29 @@ void App::pollEvent()
                 view.zoom(0.9);
             }
             break;
+        }
+
+        case sf::Event::MouseButtonPressed:
+        {
+            sf::Vector2i m_pos = sf::Mouse::getPosition(root);
+            sf::Vector2f pos = root.mapPixelToCoords(m_pos, view);
+            auto workPlace = sf::IntRect(0, 0, WN_WIDTH, WN_HEIGHT - HUD_HEIGHT);
+
+            if (!workPlace.contains(m_pos) || dlg && dlg->getHitBox().contains((sf::Vector2f)m_pos))
+                break;
+            
+            if (!sf::FloatRect(0, 0, ENV_WIDTH * CELL_SIZE, ENV_HEIGHT * CELL_SIZE).contains(pos))
+                break;
+            auto obj = env->getMatrix()[(int)(pos.x / CELL_SIZE)][(int)(pos.y / CELL_SIZE)];
+            
+            if (obj->getType() == cellType::Bot && dlg)
+            {
+                dlg->setCurrentObj((Bot*)obj);
+            }
+            
+
+            break;
+        }
 
         case sf::Event::Resized:
             default_view = sf::View(sf::FloatRect(0, 0, event_.size.width, event_.size.height));
@@ -315,11 +358,22 @@ void App::update()
     // game logic
     pollEvent();
 
-    sf::Vector2f mouse_pos(sf::Mouse::getPosition(root).x - (int)root.getSize().x / 2, 
-                           sf::Mouse::getPosition(root).y - (int)root.getSize().y / 2);
-    
+    sf::Vector2f mouse_pos(sf::Mouse::getPosition(root).x - (int)root.getSize().x / 2,
+        sf::Mouse::getPosition(root).y - (int)root.getSize().y / 2);
+
     for (auto wid : widgets)
         wid->update(root);
+
+    std::_Erase_nodes_if(widgets, [](gui::GObject* gobj)->bool
+        {
+            if (gobj->do_it_close)
+            {
+                delete gobj;
+                gobj = nullptr;
+                return true;
+            }
+            return false;
+        });
 
     step_string         = "Step " + std::to_string(env->gen_step);
     fps_counter_string  = "FPS: " + std::to_string(int(_FPS));

@@ -30,12 +30,18 @@ public:
 	virtual int getSpriteType() const { return spriteType; }
 	virtual int getType() { return type; };
 	std::vector<int>& getBrain() { return brain; }
-	void addDigestMaterial(int amount) { digested_material += amount; }
+	int getCmdCounter() { return cmd_counter; };
+	int getLifeCounter() { return life_counter; };
+	int getDigestedMaterial() { return digested_material; };
 
+	void addDigestMaterial(int amount) { digested_material += amount; }
 
 	friend Environment;
 
 	int getNextInstruction();
 	void update() override;
 	void digest();
+
+private:
+	bool reduceEnergy(int value);
 };
