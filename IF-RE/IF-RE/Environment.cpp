@@ -125,15 +125,20 @@ void Environment::update()
 		for (int j = 0; j < _height; j++)
 		{
 			currentObj = matrix[i][j];
-
 			if (currentObj->isDie())
 			{
 				delete currentObj; // free mem
 				currentObj = mainEmptiness;
-				matrix[i][j] = mainEmptiness;
-				continue;
-			}
 
+				matrix[i][j] = mainEmptiness;
+			}
+		}
+	}
+	for (int i = 0; i < _width; i++)
+	{
+		for (int j = 0; j < _height; j++)
+		{
+			currentObj = matrix[i][j];
 			if (currentObj->getType() != cellType::Emptiness)
 				currentObj->update();
 		}

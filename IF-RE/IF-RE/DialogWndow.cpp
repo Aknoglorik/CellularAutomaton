@@ -92,7 +92,9 @@ void gui::DialogWndow::update(sf::RenderWindow& target)
 
 void gui::DialogWndow::updateBotInfo()
 {
-	if (currentObj && !currentObj->isDie())
+	if (currentObj && currentObj->isDie())
+		currentObj = nullptr;
+	if (currentObj)
 	{
 		s_brain = "";
 		std::vector<int>& r_brain = currentObj->getBrain();

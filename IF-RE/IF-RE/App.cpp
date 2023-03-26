@@ -320,13 +320,14 @@ void App::pollEvent()
         {
             sf::Vector2i m_pos = sf::Mouse::getPosition(root);
             sf::Vector2f pos = root.mapPixelToCoords(m_pos, view);
-            auto workPlace = sf::IntRect(0, 0, WN_WIDTH, WN_HEIGHT - HUD_HEIGHT);
+            auto workPlace = sf::IntRect(0, 0, WN_WIDTH, root.getSize().y - HUD_HEIGHT * view.getViewport().height);
 
             if (!workPlace.contains(m_pos) || dlg && dlg->getHitBox().contains((sf::Vector2f)m_pos))
                 break;
             
             if (!sf::FloatRect(0, 0, ENV_WIDTH * CELL_SIZE, ENV_HEIGHT * CELL_SIZE).contains(pos))
                 break;
+
             auto obj = env->getMatrix()[(int)(pos.x / CELL_SIZE)][(int)(pos.y / CELL_SIZE)];
             
             if (obj->getType() == cellType::Bot && dlg)
