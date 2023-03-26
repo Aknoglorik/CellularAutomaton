@@ -140,7 +140,7 @@ namespace botSpriteType
 
 // _Bot_
 #define BOT_BRAIN_SIZE   64
-#define BOT_CMD_AMOUNT   21
+#define BOT_CMD_AMOUNT   64
 #define BOT_START_ENERGY 25
 
 #define BOT_MAX_ENERGY	 200
@@ -164,7 +164,7 @@ namespace botSpriteType
 
 
 /// OTHER
-#define GENALG_MUTATION_PRECENT 0.1
+#define GENALG_MUTATION_PRECENT 0.5
 #define GENALG_NUM_OUT_SELECT   8
 
 #define DIR_UP		sf::Vector2i( 0, -1)

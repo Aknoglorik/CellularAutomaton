@@ -57,6 +57,7 @@ gui::DialogWndow::DialogWndow(sf::Vector2f pos, sf::Vector2f _size, sf::Font& fo
 
 }
 
+//write in program if delete nothing then ignore, because invalid and close the program, correct it 
 gui::DialogWndow::~DialogWndow()
 {
 	delete btn_close;

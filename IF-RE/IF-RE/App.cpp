@@ -503,6 +503,29 @@ void App::render()
                 if (mat[i][j]->getEnergy() > max_enrg)
                     max_enrg = mat[i][j]->getEnergy();
 
+
+                if (!flag && !min_enrg && mat[i][j]->getType() == cellType::Bot)
+                {
+                    min_enrg = mat[i][j]->getEnergy();
+                }
+
+                if (flag && mat[i][j]->getEnergy() < min_enrg && mat[i][j]->getType() == cellType::Bot)
+                {
+                    min_enrg = mat[i][j]->getEnergy();
+                }
+
+                temp_mode = "Enrg: " + std::to_string(min_enrg) + " ~ " + std::to_string(max_enrg);
+
+            }
+            if (view_mode == operatingMode::_botType && mat[i][j]->getType() == cellType::Bot)
+            {
+                rectangle = botSpriteByType[((Bot*)mat[i][j])->getSpriteType()];
+                rectangle->setPosition(i * CELL_SIZE, j * CELL_SIZE);
+                root.draw(*rectangle);
+
+                if (mat[i][j]->getEnergy() > max_enrg)
+                    max_enrg = mat[i][j]->getEnergy();
+
                 if (mat[i][j]->getEnergy() < min_enrg)
                     min_enrg = mat[i][j]->getEnergy();
 
