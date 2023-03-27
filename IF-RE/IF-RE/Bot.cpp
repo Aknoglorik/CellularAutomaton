@@ -156,6 +156,11 @@ int Bot::getNextInstruction()
 			break;
 		}
 	}
+	//look around
+	/*else if (brain[cmd_counter] == 25)
+	{
+		int Inst = botCmd::nothing;
+	}*/
 	else
 		cmd_counter += brain[cmd_counter];
 
