@@ -165,7 +165,8 @@ void App::initVariables()
     create_button(sf::FloatRect(-BTN_HORIZ_POS - BTN_HORIZ_DEL, BTN_VERT_POS + BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "CloseInfo",
         [&]()
         {
-            dlg->do_it_close = true;
+            if (dlg)
+                dlg->do_it_close = true;
             dlg = nullptr;
         },
         gui::BottomRight);
