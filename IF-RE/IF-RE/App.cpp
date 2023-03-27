@@ -372,11 +372,14 @@ void App::update()
     for (auto wid : widgets)
         wid->update(root);
 
-    std::_Erase_nodes_if(widgets, [](gui::GObject* gobj)->bool
+    std::_Erase_nodes_if(widgets, [&](gui::GObject* gobj)->bool
         {
             if (gobj->do_it_close)
             {
                 delete gobj;
+                if (gobj == (gui::GObject*)dlg)
+                    dlg = nullptr;
+
                 gobj = nullptr;
                 return true;
             }
