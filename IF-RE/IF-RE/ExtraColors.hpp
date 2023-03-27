@@ -10,6 +10,7 @@ namespace gui
 		static sf::Color DarkGray	= sf::Color(30, 30, 30, 150);
 		static sf::Color DarkGray2	= sf::Color(30, 30, 30);
 		static sf::Color Clay		= sf::Color(114, 225, 209);
+		static sf::Color Yellow		= sf::Color(255, 255, 0, 200);
 		static sf::Color DullWhite	= sf::Color(232, 225, 239);
 		static sf::Color LightGray	= sf::Color(214, 204, 194);
 		static sf::Color Red		= sf::Color(255, 75, 62);

@@ -76,14 +76,21 @@ bool checkPos(Vector2i& pos, int width, int height)
 	return vert_corr;
 }
 
-int Environment::lookAround(int dir)
-{
-	Vector2i oldPos = currentObj->getPos();
-	Vector2i newPos = oldPos + vecByInt(dir);
-	if (checkPos(newPos, _width, _height))
-		return cellType::Wall;
-	return matrix[newPos.x][newPos.y]->getType();		
-}
+//int lookAround(int dir)
+//{
+//	Vector2i oldPos = currentObj->getPos();
+//	Vector2i newPos = oldPos + vecByInt(dir);
+//	if (checkPos(newPos, _width, _height) == true)
+//		return 1;
+//	if (matrix[newPos.x][newPos.y]->getType() == cellType::Emptiness)
+//		return 2;
+//	else if (matrix[newPos.x][newPos.y]->getType() == cellType::Food)
+//		return 3;
+//	else if (matrix[newPos.x][newPos.y]->getType() == cellType::Bot)
+//		return 4;
+//	else
+//		return 5;
+//}
 
 Environment::Environment(int width, int height) : 
 	_width(width), _height(height)

@@ -29,8 +29,10 @@ private:
 	std::vector<sf::RectangleShape*> botSpriteByType;
 
 	std::list<gui::GObject*> widgets;
+
 	gui::DialogWndow *dlg = nullptr;
-	
+	sf::Vertex *line_dlg_obj = nullptr;
+
 	// Strings for dynamic Labels
 	sf::String step_string;
 	sf::String fps_counter_string;
