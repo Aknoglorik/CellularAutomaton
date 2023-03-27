@@ -59,29 +59,33 @@ bool Bot::reduceEnergy(int value)
 int Bot::getNextInstruction()
 {
 	int Inst = botCmd::nothing;
+	//move
 	if ((brain[cmd_counter] >= 0) && (brain[cmd_counter] <= 7))
 	{
 		dir_move = brain[cmd_counter];
 		Inst = botCmd::move;
 		cmd_counter++;
 	}
+	//direction sight
 	else if ((brain[cmd_counter] >= 8) && (brain[cmd_counter] <= 15))
 	{
 		dir_sight = brain[cmd_counter] - 8;
 		Inst = botCmd::nothing;
 		cmd_counter++;
 	}
-	else if (brain[cmd_counter] == 16)
+	//photosynthesis
+	else if ((brain[cmd_counter] == 16) || (brain[cmd_counter] == 38)) 
 	{
 		Inst = botCmd::photosynthesis;
 		cmd_counter++;
 	}
-	else if (brain[cmd_counter] == 17)
+	//eat
+	else if ((brain[cmd_counter] == 38) || (brain[cmd_counter] == 56))
 	{
 		Inst = botCmd::eat;
 		cmd_counter++;
 	}
-	else if (brain[cmd_counter] == 18)
+	else if (brain[cmd_counter] == 23)
 	{
 		Inst = botCmd::gemmation;
 		cmd_counter++;
@@ -124,6 +128,13 @@ int Bot::getNextInstruction()
 		if (position.y > brain[cmd_counter])
 			cmd_counter = (cmd_counter + brain[cmd_counter]) % BOT_BRAIN_SIZE;
 	}
+	//look around
+	/*else if (brain[cmd_counter] == 25)
+	{
+		int Inst = botCmd::nothing;
+	}*/
+	else
+		cmd_counter += brain[cmd_counter];
 
 	cmd_counter %= BOT_BRAIN_SIZE;
 
