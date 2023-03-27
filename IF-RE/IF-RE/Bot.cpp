@@ -87,12 +87,12 @@ int Bot::getNextInstruction()
 		cmd_counter++;
 	}
 	//eat
-	else if ((brain[cmd_counter] == 38) || (brain[cmd_counter] == 42))
+	else if ((brain[cmd_counter] == 17) || (brain[cmd_counter] == 42))
 	{
 		Inst = botCmd::eat;
 		cmd_counter++;
 	}
-	else if (brain[cmd_counter] == 23)
+	else if (brain[cmd_counter] == 18)
 	{
 		Inst = botCmd::gemmation;
 		cmd_counter++;
@@ -157,6 +157,32 @@ int Bot::getNextInstruction()
 			break;
 		}
 		cmd_counter += brain[ifer(cmd_counter + delta)];
+	}
+	else if (brain[cmd_counter] == 27)
+	{
+		cmd_counter = ifer(cmd_counter + 1);
+		dir_move = brain[cmd_counter] % 8;
+		Inst = botCmd::move;
+		int delta = 0;
+		switch (env->lookAround(dir_sight))
+		{
+		case cellType::Wall:
+			delta = 1;
+			break;
+		case cellType::Emptiness:
+			delta = 2;
+			break;
+		case cellType::Bot:
+			delta = 3;
+			break;
+		case cellType::Food:
+			delta = 4;
+			break;
+		case cellType::Corpse:
+			delta = 5;
+			break;
+		}
+		cmd_counter += brain[ifer(cmd_counter + delta)] + BOT_BRAIN_SIZE - 1;
 	}
 	else
 		cmd_counter += brain[cmd_counter];
