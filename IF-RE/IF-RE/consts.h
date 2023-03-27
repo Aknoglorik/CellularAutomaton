@@ -87,7 +87,8 @@ namespace cellType
 		Bot,
 		Food,
 		Corpse,
-		Object
+		Object,
+		Wall
 	};
 }
 

@@ -56,6 +56,13 @@ bool Bot::reduceEnergy(int value)
 	return true;
 }
 
+int ifer(int p)
+{
+	if (p > (BOT_BRAIN_SIZE - 1))
+		p %= BOT_BRAIN_SIZE;
+	return p;
+}
+
 int Bot::getNextInstruction()
 {
 	int Inst = botCmd::nothing;
@@ -80,7 +87,7 @@ int Bot::getNextInstruction()
 		cmd_counter++;
 	}
 	//eat
-	else if ((brain[cmd_counter] == 38) || (brain[cmd_counter] == 56))
+	else if ((brain[cmd_counter] == 38) || (brain[cmd_counter] == 42))
 	{
 		Inst = botCmd::eat;
 		cmd_counter++;
@@ -98,23 +105,22 @@ int Bot::getNextInstruction()
 			cmd_counter = 0;
 		else
 			cmd_counter++;
-
 		if (energy > (brain[cmd_counter] * 3))
 		{
 			if ((cmd_counter + 1) == BOT_BRAIN_SIZE)
 				cmd_counter = 0;
 			else
 				cmd_counter++;
-			cmd_counter = (brain[cmd_counter] + 62) % BOT_BRAIN_SIZE;
+			cmd_counter = ifer(brain[cmd_counter] + BOT_BRAIN_SIZE - 2);
 		}
 		else
 		{
 			if ((cmd_counter + 2) == BOT_BRAIN_SIZE)
 				cmd_counter = 0;
 			else if ((cmd_counter + 2) > BOT_BRAIN_SIZE)
-				cmd_counter = (cmd_counter + 2) % BOT_BRAIN_SIZE;
+				cmd_counter = ifer(cmd_counter + 2);
 			else cmd_counter += 2;
-			cmd_counter = (brain[cmd_counter] + 61) % BOT_BRAIN_SIZE;
+			cmd_counter = ifer(brain[cmd_counter] + BOT_BRAIN_SIZE - 3);
 		}
 	}
 	//Check bot position.y 
@@ -126,17 +132,36 @@ int Bot::getNextInstruction()
 		else
 			cmd_counter++;
 		if (position.y > brain[cmd_counter]) 
-			cmd_counter = (cmd_counter + brain[cmd_counter]) % BOT_BRAIN_SIZE;
+			cmd_counter = ifer(cmd_counter + brain[cmd_counter]);
 	}
 	//look around
-	/*else if (brain[cmd_counter] == 25)
+	else if (brain[cmd_counter] == 25)
 	{
-		int Inst = botCmd::nothing;
-	}*/
+		int delta = 0;
+		switch (env->lookAround(dir_sight))
+		{
+		case cellType::Wall:
+			delta = 1;
+			break;
+		case cellType::Emptiness:
+			delta = 2;
+			break;
+		case cellType::Bot:
+			delta = 3;
+			break;
+		case cellType::Food:
+			delta = 4;
+			break;
+		case cellType::Corpse:
+			delta = 5;
+			break;
+		}
+		cmd_counter += brain[ifer(cmd_counter + delta)];
+	}
 	else
 		cmd_counter += brain[cmd_counter];
 
-	cmd_counter %= BOT_BRAIN_SIZE;
+	cmd_counter = ifer(cmd_counter);
 
 	return Inst;  // 0 - move, 1 - eat, 2 - photosynthesis, 3 - nothing, 4 - gemmation
 };
