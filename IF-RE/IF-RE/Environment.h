@@ -51,6 +51,7 @@ public:
 	void moveCell(int);
 	void eatCell(int);
 	void gemmationCell(int);
+	int lookAround(int dir);
 
 	void saveWorld(std::string fname = "");
 	void loadWorld(std::string fname);

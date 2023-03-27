@@ -56,6 +56,13 @@ bool Bot::reduceEnergy(int value)
 	return true;
 }
 
+int ifer(int p)
+{
+	if (p > (BOT_BRAIN_SIZE - 1))
+		p %= BOT_BRAIN_SIZE;
+	return p;
+}
+
 int Bot::getNextInstruction()
 {
 	int Inst = botCmd::nothing;
@@ -104,16 +111,16 @@ int Bot::getNextInstruction()
 				cmd_counter = 0;
 			else
 				cmd_counter++;
-			cmd_counter = (brain[cmd_counter] + 62) % BOT_BRAIN_SIZE;
+			cmd_counter = ifer(brain[cmd_counter] + BOT_BRAIN_SIZE - 2);
 		}
 		else
 		{
 			if ((cmd_counter + 2) == BOT_BRAIN_SIZE)
 				cmd_counter = 0;
 			else if ((cmd_counter + 2) > BOT_BRAIN_SIZE)
-				cmd_counter = (cmd_counter + 2) % BOT_BRAIN_SIZE;
+				cmd_counter = ifer(cmd_counter + 2);
 			else cmd_counter += 2;
-			cmd_counter = (brain[cmd_counter] + 61) % BOT_BRAIN_SIZE;
+			cmd_counter = ifer(brain[cmd_counter] + BOT_BRAIN_SIZE - 3);
 		}
 	}
 	//Check bot position.y 
@@ -125,17 +132,34 @@ int Bot::getNextInstruction()
 		else
 			cmd_counter++;
 		if (position.y > brain[cmd_counter]) 
-			cmd_counter = (cmd_counter + brain[cmd_counter]) % BOT_BRAIN_SIZE;
+			cmd_counter = ifer(cmd_counter + brain[cmd_counter]);
 	}
 	//look around
-	/*else if (brain[cmd_counter] == 25)
+	else if (brain[cmd_counter] == 25)
 	{
-		int Inst = botCmd::nothing;
-	}*/
+		switch (env->lookAround(dir_sight))
+		{
+		case cellType::Wall:
+			cmd_counter += 1;
+			break;
+		case cellType::Emptiness:
+			cmd_counter += 1;
+			break;
+		case cellType::Bot:
+			cmd_counter += 1;
+			break;
+		case cellType::Food:
+			cmd_counter += 1;
+			break;
+		case cellType::Corpse:
+			cmd_counter += 1;
+			break;
+		}
+	}
 	else
 		cmd_counter += brain[cmd_counter];
 
-	cmd_counter %= BOT_BRAIN_SIZE;
+	cmd_counter = ifer(cmd_counter);
 
 	return Inst;  // 0 - move, 1 - eat, 2 - photosynthesis, 3 - nothing, 4 - gemmation
 };
