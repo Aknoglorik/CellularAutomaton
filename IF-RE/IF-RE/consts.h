@@ -16,8 +16,8 @@
 
 
 /// ENVIRONMENT
-#define ENV_WIDTH  96
-#define ENV_HEIGHT 54
+#define ENV_WIDTH  64
+#define ENV_HEIGHT 64
 ///
 
 
@@ -87,7 +87,8 @@ namespace cellType
 		Bot,
 		Food,
 		Corpse,
-		Object
+		Object,
+		Wall
 	};
 }
 

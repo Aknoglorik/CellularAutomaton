@@ -16,17 +16,12 @@ App::~App()
 {
     delete cameraView;
     delete env;
-    delete dlg;
-    delete line_dlg_obj;
 
     for (int i = 0; i < widgets.size(); i++)
         widgets.pop_back();
 
     for (int i = 0; i < bot_shapes.size(); i++)
         delete bot_shapes[i];
-
-    for (int i = 0; i < botSpriteByType.size(); i++)
-        delete botSpriteByType[i];
 }
 
 // Initializers
@@ -59,7 +54,6 @@ void App::initVariables()
     /// Setting up environment
     env = new Environment(ENV_WIDTH, ENV_HEIGHT);
 
-    line_dlg_obj = new sf::Vertex[2];
 
     /// Setup buttons props
     FPS = 0;
@@ -280,7 +274,6 @@ void App::pollEvent()
             {
                 root.close();
                 root.create(VM, "", (isFullscreen)? sf::Style::Default : sf::Style::Fullscreen, sf::ContextSettings(0, 0, 7));
-                root.setFramerateLimit(FPS);
 
                 isFullscreen = !isFullscreen;
             }
@@ -327,7 +320,7 @@ void App::pollEvent()
         {
             sf::Vector2i m_pos = sf::Mouse::getPosition(root);
             sf::Vector2f pos = root.mapPixelToCoords(m_pos, view);
-            auto workPlace = sf::IntRect(0, 0, root.getSize().x, root.getSize().y - HUD_HEIGHT * view.getViewport().height);
+            auto workPlace = sf::IntRect(0, 0, WN_WIDTH, root.getSize().y - HUD_HEIGHT * view.getViewport().height);
 
             if (!workPlace.contains(m_pos) || dlg && dlg->getHitBox().contains((sf::Vector2f)m_pos))
                 break;
@@ -473,7 +466,7 @@ void App::render()
 
             if (view_mode == operatingMode::_energy && mat[i][j]->getType() == cellType::Bot)
             {
-                color_rectangle->setFillColor(colorByInt((mat[i][j])->getEnergy() * 3));
+                color_rectangle->setFillColor(colorByInt((mat[i][j])->getEnergy() * 4));
                 color_rectangle->setPosition(i * CELL_SIZE, j * CELL_SIZE);
                 root.draw(*color_rectangle);
 
@@ -572,24 +565,6 @@ void App::render()
 
         delete rectangle;
         temp_mode = "Temp: " + std::to_string(min_temp + env->getGloabalTemp()) + " ~ " + std::to_string(max_temp + env->getGloabalTemp());
-    }
-    // dl selected obj
-    if (dlg)
-    {
-        auto sel_obj = dlg->getCurrentObj();
-        if (sel_obj)
-        {
-            sf::Vector2f sel_obj_pos(sel_obj->getPos().x * CELL_SIZE, sel_obj->getPos().y * CELL_SIZE);
-            auto second_point = root.mapPixelToCoords(root.mapCoordsToPixel(dlg->getPosition(), default_view), view);
-
-            dlg->selectedBot.setPosition(sel_obj_pos);
-            root.draw(dlg->selectedBot);
-
-            line_dlg_obj[0] = sf::Vertex(sel_obj_pos, gui::Color::DarkGray2);
-            line_dlg_obj[1] = sf::Vertex(second_point, gui::Color::DarkGray2);
-
-            root.draw(line_dlg_obj, 4, sf::Lines);
-        }
     }
 
     // HUD
