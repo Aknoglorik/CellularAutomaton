@@ -13,6 +13,7 @@ Bot::Bot(Environment* _env, sf::Vector2i pos, unsigned int _energy, const std::v
 	else
 		for (int i = 0; i < BOT_BRAIN_SIZE; i++)
 			brain[i] = parent_brain->at(i);
+	bot_count++;
 }
 
 // \brief copy-constructor
@@ -24,6 +25,7 @@ Bot::Bot(const Bot& other)
 
 	brain.resize(other.brain.size());
 	std::copy(other.brain.begin(), other.brain.end(), brain.begin());
+	bot_count++;
 }
 
 void Bot::createRandomBrain()
@@ -45,6 +47,23 @@ void Bot::digest()
 	}
 }
 
+void Bot::reSetup()
+{
+	// props
+	digested_material = 0;
+	dir_move = 0;
+	dir_sight = 0;
+
+	cmd_counter = 0;
+	life_counter = 0;
+	move_counter = 0;
+	spriteType = botSpriteType::prey;
+
+	energy = BOT_START_ENERGY;
+	is_die = false;
+}
+
+// \return false - if cant rudece energy, else true
 bool Bot::reduceEnergy(int value)
 {
 	if (energy <= value)
@@ -65,6 +84,9 @@ int ifer(int p)
 
 int Bot::getNextInstruction()
 {
+	if (brain[cmd_counter] == 64)
+		cmd_counter--;
+
 	int Inst = botCmd::nothing;
 	//move
 	if ((brain[cmd_counter] >= 0) && (brain[cmd_counter] <= 7))
@@ -194,11 +216,7 @@ int Bot::getNextInstruction()
 
 void Bot::update()
 {
-
-	if (life_counter >= BOT_MAX_LIFE)
-		is_die = true;
-
-	if (is_die || energy <= 0)
+	if (is_die || energy <= 0 || life_counter >= BOT_MAX_LIFE)
 	{
 		is_die = true;
 		return;
@@ -208,8 +226,11 @@ void Bot::update()
 	{
 	case botCmd::move:
 	{
-		if (reduceEnergy(BOT_NRG_TO_MOVE))
+		if (!reduceEnergy(BOT_NRG_TO_MOVE))
 			break;
+
+		move_counter++;
+		
 		int abs_dir = dir_move + dir_sight;
 		if (abs_dir > 7)
 			abs_dir -= 8;
@@ -218,7 +239,7 @@ void Bot::update()
 	}
 	case botCmd::eat:
 	{
-		if (reduceEnergy(BOT_NRG_TO_EAT))
+		if (!reduceEnergy(BOT_NRG_TO_EAT))
 			break;
 
 		spriteType = botSpriteType::predator;
@@ -241,7 +262,7 @@ void Bot::update()
 	case botCmd::nothing:
 		break;
 	case botCmd::gemmation:
-		env->gemmationCell(dir_sight);
+		//env->gemmationCell(dir_sight);
 		break;
 	default:
 		break;
@@ -253,8 +274,11 @@ void Bot::update()
 	if (spriteType == botSpriteType::predator)
 		digest();
 
+
 	if(energy)
 		energy--;
+	else 
+		is_die = true;
 
 	life_counter++;
 }

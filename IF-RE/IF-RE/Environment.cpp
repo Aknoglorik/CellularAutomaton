@@ -1,6 +1,8 @@
 #include "Environment.h"
 #include <fstream>
 #include <string>
+#include <functional>
+#include <algorithm>
 #include <iostream>
 
 _INC_OBJP_MATRIX
@@ -89,7 +91,7 @@ Environment::Environment(int width, int height) :
 	_width(width), _height(height)
 {
 	genAlg = new GeneticAlgorithm;
-
+	pause = true;
 	mainEmptiness = new Emptiness;
 
 	// Creating & filling matrix
@@ -107,6 +109,8 @@ Environment::Environment(int width, int height) :
 			//if (j == 0 || j == _height - 1)//i == 10)
 			{
 				matrix[i][j] = new Bot(this, Vector2i(i, j));
+				all_bots.push_back(dynamic_cast<Bot*>(matrix[i][j]));
+				active_bots.push_back(dynamic_cast<Bot*>(matrix[i][j]));
 			}
 		}
 	}
@@ -120,8 +124,39 @@ Environment::~Environment()
 			if (matrix[i][j]->getType())
 				delete matrix[i][j];
 
+	all_bots.clear();
 	delete mainEmptiness;
 
+}
+
+// \brief setup world for new bots (in all_bots)
+void Environment::clear()
+{
+	gen_step = 0;
+	gen_generation++;
+	//pause = true;
+	
+	for (int i = 0; i < _width; i++)
+	{
+		for (int j = 0; j < _height; j++)
+		{
+			currentObj = nullptr;
+			if (matrix[i][j]->getType() || matrix[i][j]->getType() == cellType::Bot) // cellType::Emptiness = 0
+				delete matrix[i][j];
+			matrix[i][j] = mainEmptiness;
+		}
+	}
+	for (auto bot : all_bots)
+	{
+		auto b_pos = generatePosition();
+
+		if (!(b_pos.x + 1))
+			throw std::exception("New population size too large.");
+
+		bot->reSetup();
+		bot->setPos(b_pos);
+		matrix[b_pos.x][b_pos.y] = bot;
+	}
 }
 
 void Environment::update()
@@ -129,61 +164,75 @@ void Environment::update()
 	if (pause)
 		return;
 
-	for (int i = 0; i < _width; i++)
-	{
-		for (int j = 0; j < _height; j++)
-		{
-			currentObj = matrix[i][j];
-			if (currentObj->isDie())
-			{
-				delete currentObj; // free mem
-				currentObj = mainEmptiness;
+	std::list<Bot*>::iterator it = active_bots.begin();
+	std::list<Bot*>::iterator it_to_del = active_bots.begin();
 
-				matrix[i][j] = mainEmptiness;
-			}
-		}
-	}
-	for (int i = 0; i < _width; i++)
+	for (; it != active_bots.end();)
 	{
-		for (int j = 0; j < _height; j++)
+		it_to_del = it;
+		++it;
+		if ((*it_to_del)->isDie())
 		{
-			currentObj = matrix[i][j];
-			if (currentObj->getType() != cellType::Emptiness)
-				currentObj->update();
+			sf::Vector2i pos = (*it_to_del)->getPos();
+			matrix[pos.x][pos.y] = mainEmptiness;
+			active_bots.erase(it_to_del);
 		}
 	}
-	generateFood();
-	gen_step++;
+
+	if (!active_bots.size())
+	{
+		all_bots = genAlg->selection(all_bots);
+		active_bots = all_bots;
+		clear();
+		return;
+	}
+
+	for (auto bot : active_bots)
+	{
+		currentObj = bot;
+		if (currentObj->getType() != cellType::Emptiness)
+			currentObj->update();
+	}
+
+	if (Food::amount < FOOD_AMOUNT)
+	{
+		sf::Vector2i food_pos = generatePosition();
+		if ((bool)(food_pos.x + 1))
+		{
+			matrix[food_pos.x][food_pos.y] = new Food;
+			matrix[food_pos.x][food_pos.y]->setPos(food_pos);
+		}
+	}
+ 	gen_step++;
 }
 
-void Environment::generateFood()
+sf::Vector2i Environment::generatePosition()
 {
-	if (Food::amount >= FOOD_AMOUNT) // REDO!
-		return;
-
 	bool flag = false;
-
 	for (int i = 0; i < _width; i++)
+	{
 		for (int j = 0; j < _height; j++)
 			if (matrix[i][j]->getType() == cellType::Emptiness)
 			{
 				flag = true;
 				break;
 			}
+		if (flag)
+			break;
+	}
 
 	if (!flag)
-		return;
+		return sf::Vector2i(-1, -1);
 
 	int x, y;
 	do
 	{
 		x = rand() % _width;
 		y = rand() % _height;
-	}
-	while (getByPos(x, y)->getType() != cellType::Emptiness); // REDO! there is no logic to check if field is filled in
+	} 
+	while (matrix[x][y]->getType() != cellType::Emptiness);
 
-	matrix[x][y] = new Food;
-	matrix[x][y]->setPos(x, y);
+	return sf::Vector2i(x, y);
 }
 
 Object* Environment::getByPos(Vector2i pos)
@@ -201,21 +250,21 @@ void Environment::moveCell(int dir_move)
 	Vector2i oldPos = currentObj->getPos();
 	Vector2i newPos = oldPos + vecByInt(dir_move);
 
-	checkPos(newPos, _width, _height);
+	// True mean y of newPos was corrected, that is mean bot look at the wall
+	if (checkPos(newPos, _width, _height))
+		return;
 
-	// very bad code
-	// mb redo to switch()
 	if (currentObj->getType() == cellType::Bot && matrix[newPos.x][newPos.y]->getType() == cellType::Food)
 	{
 		currentObj->setPos(newPos);
-
+	
 		currentObj->addEnergy(matrix[newPos.x][newPos.y]->getEnergy());
 		delete matrix[newPos.x][newPos.y];
-
+	
 		matrix[newPos.x][newPos.y] = currentObj;
 		matrix[oldPos.x][oldPos.y] = mainEmptiness;
 	}
-	else if (!matrix[newPos.x][newPos.y]->getType()) // cellType::Emptiness = 0
+	if (!matrix[newPos.x][newPos.y]->getType()) // cellType::Emptiness = 0
 	{
 		currentObj->setPos(newPos);
 		matrix[newPos.x][newPos.y] = currentObj;
@@ -231,18 +280,14 @@ void Environment::eatCell(int dir)
 	Vector2i oldPos = currentObj->getPos();
 	Vector2i newPos = oldPos + vecByInt(dir);
 
-	if (checkPos(newPos, _width, _height)) // True mean y of newPos was corrected, that is mean bot look at the wall
+	// True mean y of newPos was corrected, that is mean bot look at the wall
+	if (checkPos(newPos, _width, _height)) 
 		return;
-
-	if (matrix[newPos.x][newPos.y]->getType() == cellType::Bot && currentObj->getType() == cellType::Bot)
+	
+	if (!matrix[newPos.x][newPos.y]->isDie() && matrix[newPos.x][newPos.y]->getType() == cellType::Bot && currentObj->getType() == cellType::Bot)
 	{
 		matrix[newPos.x][newPos.y]->setIsDie(true);
-
 		currentObj->addEnergy(matrix[newPos.x][newPos.y]->getEnergy() * BOT_EAT_RATIO);
-
-		// REDO! (DRY dont executed mb)
-		delete matrix[newPos.x][newPos.y]; // free mem
-		matrix[newPos.x][newPos.y] = mainEmptiness;
 	}
 }
 
@@ -263,7 +308,8 @@ void Environment::gemmationCell(int dir)
 
 			matrix[newPos.x][newPos.y] = genAlg->mutation(upCastObj);
 			matrix[newPos.x][newPos.y]->setPos(newPos);
-
+			all_bots.push_back((Bot*)matrix[newPos.x][newPos.y]);
+			active_bots.push_back((Bot*)matrix[newPos.x][newPos.y]);
 			return;
 		}
 	}	
@@ -323,7 +369,9 @@ void Environment::loadWorld(std::string fname)
 		for (int j = 0; j < matrix[0].size(); j++)
 			if (matrix[i][j]->getType())
 				delete matrix[i][j];
-	
+	all_bots.clear();
+	active_bots.clear();
+
 	matrix.resize(_width);
 	temp.resize(_width);
 	for (int i = 0; i < _width; i++)
@@ -375,6 +423,8 @@ void Environment::loadWorld(std::string fname)
 				newBot->digested_material	= digested_material;
 
 				matrix[i][j] = newBot;
+				all_bots.push_back(newBot);
+				active_bots.push_back(newBot);
 				break;
 			}
 			case cellType::Food:

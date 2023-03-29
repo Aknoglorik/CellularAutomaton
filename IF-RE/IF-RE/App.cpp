@@ -110,6 +110,7 @@ void App::initVariables()
         {
             FPS+=5;
             root.setFramerateLimit(FPS);
+
         });
     create_button(sf::FloatRect(BTN_HORIZ_POS + BTN_HORIZ_DEL, BTN_VERT_POS + BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "-delay",
         [&]()
@@ -190,15 +191,22 @@ void App::initVariables()
     lb_step->setColor(sf::Color::Red);
     lb_step->setAnc(BTN_ANCHOR);
     widgets.push_back(lb_step);
+    
+    gui::Label* lb_gen = new gui::Label(STEP_LABEL_POS + sf::Vector2f(0, BTN_VERT_DEL), STEP_LABEL_SIZE);
+    lb_gen->setDynamicString(gen_string);
+    lb_gen->setFont(PxlFont);
+    lb_gen->setColor(sf::Color::Red);
+    lb_gen->setAnc(BTN_ANCHOR);
+    widgets.push_back(lb_gen);
 
-    gui::Label* lb_temp = new gui::Label(FPS_LABEL_POS + sf::Vector2f(0, BTN_VERT_DEL), FPS_LABEL_SIZE);
+    gui::Label* lb_temp = new gui::Label(STEP_LABEL_POS + sf::Vector2f(0, 2*BTN_VERT_DEL), FPS_LABEL_SIZE);
     lb_temp->setDynamicString(temp_mode);
     lb_temp->setFont(PxlFont);
     lb_temp->setColor(sf::Color::Red);
     lb_temp->setAnc(BTN_ANCHOR);
     widgets.push_back(lb_temp);
 
-    gui::Label* lb_fps = new gui::Label(FPS_LABEL_POS, FPS_LABEL_SIZE);
+    gui::Label* lb_fps = new gui::Label(STEP_LABEL_POS + sf::Vector2f(2*BTN_HORIZ_DEL, 2 * BTN_VERT_DEL), FPS_LABEL_SIZE);
     lb_fps->setDynamicString(fps_counter_string);
     lb_fps->setFont(PxlFont);
     lb_fps->setColor(sf::Color::Red);
@@ -295,6 +303,24 @@ void App::pollEvent()
                 cameraView->moveRight(true);
             if (pressed_key == sf::Keyboard::Space)
                 env->setPause(!env->getPause());
+            if (pressed_key == sf::Keyboard::Equal)
+            {
+                FPS += 5;
+                root.setFramerateLimit(FPS);
+            }
+            if (pressed_key == sf::Keyboard::Hyphen)
+            {
+                if ((FPS - 5) > 1)
+                {
+                    FPS -= 5;
+                    root.setFramerateLimit(FPS);
+                }
+                else
+                {
+                    FPS = 0;
+                    root.setFramerateLimit(1);
+                }
+            }
             break;
         }
         case sf::Event::KeyReleased:
@@ -388,6 +414,7 @@ void App::update()
         });
 
     step_string         = "Step " + std::to_string(env->gen_step);
+    gen_string          = "Gen  " + std::to_string(env->gen_generation);
     fps_counter_string  = "FPS: " + std::to_string(int(_FPS));
 
     env->update();
@@ -542,7 +569,7 @@ void App::render()
     
     if (view_mode == operatingMode::_temperature)
     {
-        int_matrix mat2 = env->getTemperatureMatrix();
+        float_matrix mat2 = env->getTemperatureMatrix();
 
         sf::RectangleShape* rectangle = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
         max_temp = mat2[0][0];

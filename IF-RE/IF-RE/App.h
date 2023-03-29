@@ -35,6 +35,7 @@ private:
 
 	// Strings for dynamic Labels
 	sf::String step_string;
+	sf::String gen_string;
 	sf::String fps_counter_string;
 	sf::String temp_mode;
 

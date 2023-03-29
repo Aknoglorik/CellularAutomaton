@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/System.hpp>
+#include <list>
 
 #include "Object.hpp"
 #include "Cells.h"
@@ -8,7 +9,9 @@
 #include "consts.h"
 
 _INC_OBJP_MATRIX
-_INC_INT_MATRIX
+_INC_FLOAT_MATRIX
+
+class GeneticAlgorithm;
 
 class Environment
 {
@@ -19,28 +22,37 @@ class Environment
 	GeneticAlgorithm* genAlg = nullptr;
 	objp_matrix matrix;
 
+	// bots
+	std::list<Bot*> all_bots;
+	std::list<Bot*> active_bots;
+
 	Emptiness *mainEmptiness = nullptr;
 	Object *currentObj = nullptr;
 	
 	bool pause = false;
 	
 	// temprature
-	int_matrix temp;
+	float_matrix temp;
 
 public:
 	int gen_step = 0;
+	int gen_generation = 0;
 
 	Environment(int width = 100, int height = 100);
 	~Environment();
 
+	friend GeneticAlgorithm;
+
+	void clear();
+
 	void update();
-	void generateFood();
+	sf::Vector2i generatePosition();
 
 	Object* getByPos(sf::Vector2i);
 	Object* getByPos(int, int);
 	int getHeight() { return _height; }
 	const objp_matrix& getMatrix() { return matrix; }
-	const int_matrix& getTemperatureMatrix() { return temp; }
+	const float_matrix& getTemperatureMatrix() { return temp; }
 	int getGloabalTemp() { return _temp; }
 	bool getPause() { return pause; }
 

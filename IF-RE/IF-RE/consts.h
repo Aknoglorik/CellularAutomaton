@@ -11,6 +11,7 @@
 /// OBJP mean pointer on object
 #define _INC_OBJP_MATRIX typedef std::vector<std::vector<Object*>> objp_matrix;
 #define _INC_INT_MATRIX  typedef std::vector<std::vector<int>> int_matrix;
+#define _INC_FLOAT_MATRIX typedef std::vector<std::vector<float>> float_matrix;
 ///
 
 
@@ -33,7 +34,7 @@
 // *win prop*
 #define WN_WIDTH	 1600
 #define WN_HEIGHT	 900
-#define WN_START_FPS 20
+#define WN_START_FPS 10
 #define WN_START_MOD sf::Style::Default // or Fullscreen
 
 // *view prop*
@@ -151,12 +152,12 @@ namespace botSpriteType
 #define BOT_DIGEST_RATIO 2.f
 #define BOT_DIGEST_SPEED 0.1f
 
-#define BOT_NRG_TO_MOVE  2
-#define BOT_NRG_TO_EAT   2
+#define BOT_NRG_TO_MOVE  0
+#define BOT_NRG_TO_EAT   0
 
 // _Food_
 #define FOOD_ENERGY  10
-#define FOOD_AMOUNT  100
+#define FOOD_AMOUNT  200000
 
 // _Corpse_
 
