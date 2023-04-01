@@ -6,11 +6,12 @@
 
 class GeneticAlgorithm
 {
-	int _out_selection;
-	float _mutation_probability;
+	int _in_num_selection;
+	int _descendants_num;
+	int _mutation_num;
 
 public:
-	GeneticAlgorithm(int num_out_select = 8, float mutation_precent = .25);
+	GeneticAlgorithm(int in_num_selection = 10, int descendants_num = 10, int mutation_num = 1);
 	~GeneticAlgorithm();
 
 	int fitness(Bot* entity);
@@ -19,10 +20,10 @@ public:
 
 	std::list<Bot*> newPopulation(const std::list<Bot*>&);
 
-	void setOutSelection(int num_out_select) { _out_selection = num_out_select; }
-	void setMutationProbability(float mutation_precent) { _mutation_probability = mutation_precent; }
+	void setOutSelection(int num_out_select) { _in_num_selection = num_out_select; }
+	void setMutationProbability(int mutation_precent) { _mutation_num = mutation_precent; }
 
-	int getOutSelection() { return _out_selection; }
-	float getMutationProbability() { return _mutation_probability; }
+	int getOutSelection() { return _in_num_selection; }
+	int getMutationProbability() { return _mutation_num; }
 };
 

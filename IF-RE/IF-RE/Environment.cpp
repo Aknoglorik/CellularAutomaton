@@ -245,14 +245,14 @@ Object* Environment::getByPos(int x, int y)
 	return matrix[x][y];
 }
 
-void Environment::moveCell(int dir_move)
+bool Environment::moveCell(int dir_move)
 {
 	Vector2i oldPos = currentObj->getPos();
 	Vector2i newPos = oldPos + vecByInt(dir_move);
 
 	// True mean y of newPos was corrected, that is mean bot look at the wall
 	if (checkPos(newPos, _width, _height))
-		return;
+		return false;
 
 	if (currentObj->getType() == cellType::Bot && matrix[newPos.x][newPos.y]->getType() == cellType::Food)
 	{
@@ -264,12 +264,13 @@ void Environment::moveCell(int dir_move)
 		matrix[newPos.x][newPos.y] = currentObj;
 		matrix[oldPos.x][oldPos.y] = mainEmptiness;
 	}
-	if (!matrix[newPos.x][newPos.y]->getType()) // cellType::Emptiness = 0
+	else if (!matrix[newPos.x][newPos.y]->getType()) // cellType::Emptiness = 0
 	{
 		currentObj->setPos(newPos);
 		matrix[newPos.x][newPos.y] = currentObj;
 		matrix[oldPos.x][oldPos.y] = mainEmptiness;
 	}
+	return true;
 }
 
 /// \brief Method allow cell to eat other in the direction of view
@@ -325,7 +326,7 @@ void Environment::saveWorld(std::string fname)
 		return;
 	}
 
-	out << _width << ' ' << _height << ' ' << this->_temp << '\n';
+	out << gen_generation << ' ' << gen_step << ' ' << _width << ' ' << _height << ' ' << this->_temp << '\n';
 
 	for (int i = 0; i < matrix.size(); i++)
 	{
@@ -363,7 +364,7 @@ void Environment::loadWorld(std::string fname)
 		return;
 	}
 
-	in >> _width >> _height >> _temp;
+	in >> gen_generation >> gen_step >> _width >> _height >> _temp;
 
 	for (int i = 0; i < matrix.size(); i++)
 		for (int j = 0; j < matrix[0].size(); j++)

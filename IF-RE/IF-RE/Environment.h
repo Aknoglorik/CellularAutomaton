@@ -60,7 +60,8 @@ public:
 	void setExtraTemp(int temp) { _temp += temp; }
 	void setGlobalTemp(int temp) { _temp = temp; }
 
-	void moveCell(int);
+	// \return True if cell was moved else false
+	bool moveCell(int);
 	void eatCell(int);
 	void gemmationCell(int);
 	int lookAround(int);

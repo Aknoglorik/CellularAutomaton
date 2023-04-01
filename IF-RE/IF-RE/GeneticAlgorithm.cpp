@@ -1,8 +1,8 @@
 #include "GeneticAlgorithm.h"
 #include "Environment.h"
 
-GeneticAlgorithm::GeneticAlgorithm(int num_out_select, float mutation_precent) 
-	: _out_selection(num_out_select), _mutation_probability(mutation_precent)
+GeneticAlgorithm::GeneticAlgorithm(int in_num_selection, int descendants_num, int mutation_num)
+	: _in_num_selection(in_num_selection), _descendants_num(descendants_num), _mutation_num(mutation_num)
 {
 }
 
@@ -39,15 +39,18 @@ std::list<Bot*> GeneticAlgorithm::selection(std::list<Bot*>& old_pop)
 	std::list<Bot*> new_pop;
 	for (auto bot : old_pop)
 	{
-		if (i < 10) // MOVE CONST to certain file
+		if (i < _in_num_selection) // MOVE CONST to certain file
 		{
-			new_pop.push_back(bot);
-			for (int j = 0; j < 8; j++)
+			new_pop.push_back(bot); // Save old bot
+			for (int j = 0; j < _descendants_num - _mutation_num - 1; j++) // copy him
 			{
 				auto newbot = new Bot(*bot);
 				new_pop.push_back(newbot);
 			}
-			new_pop.push_back(mutation(bot));
+			for (int j = 0; j < _mutation_num; j++) // copy him _descendants_num-2 times
+			{
+				new_pop.push_back(mutation(bot)); // add mutaded bots
+			}
 		}
 		else
 			break;
@@ -55,7 +58,7 @@ std::list<Bot*> GeneticAlgorithm::selection(std::list<Bot*>& old_pop)
 	}
 
 	// TODO! Check if new_pop.size() < necassary
-	while (old_pop.size() > 10)
+	while (old_pop.size() > _in_num_selection)
 	{
 		auto bot = old_pop.back();
 		bot->env->matrix[bot->position.x][bot->position.y] = bot->env->mainEmptiness; // so terribly

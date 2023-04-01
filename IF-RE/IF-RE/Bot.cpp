@@ -229,12 +229,11 @@ void Bot::update()
 		if (!reduceEnergy(BOT_NRG_TO_MOVE))
 			break;
 
-		move_counter++;
-		
 		int abs_dir = dir_move + dir_sight;
 		if (abs_dir > 7)
 			abs_dir -= 8;
-		env->moveCell(abs_dir);
+		if (env->moveCell(abs_dir))
+			move_counter++;
 		break; 
 	}
 	case botCmd::eat:
