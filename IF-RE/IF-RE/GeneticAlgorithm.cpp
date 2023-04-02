@@ -12,7 +12,8 @@ GeneticAlgorithm::~GeneticAlgorithm()
 
 int GeneticAlgorithm::fitness(Bot* entity)
 {
-	return entity->move_counter;
+	return entity->life_counter;
+	//return entity->move_counter;
 }
 
 Bot* GeneticAlgorithm::mutation(const Bot* entity)

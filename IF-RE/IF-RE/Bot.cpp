@@ -100,21 +100,47 @@ int Bot::getNextInstruction()
 		cmd_counter++;
 	}
 	//photosynthesis
-	else if ((brain[cmd_counter] == 16) || (brain[cmd_counter] == 38)) 
+	else if (brain[cmd_counter] == 16) 
 	{
 		Inst = botCmd::photosynthesis;
 		cmd_counter++;
 	}
 	//eat
-	else if ((brain[cmd_counter] == 17) || (brain[cmd_counter] == 42))
+	else if (brain[cmd_counter] == 17)
 	{
 		Inst = botCmd::eat;
 		cmd_counter++;
 	}
-	else if (brain[cmd_counter] == 18)
+	/*else if (brain[cmd_counter] == 18)
 	{
 		Inst = botCmd::gemmation;
 		cmd_counter++;
+	}*/
+	//Check temperature
+	else if (brain[cmd_counter] == 18)
+	{
+		Inst = botCmd::nothing;
+		if ((cmd_counter + 1) == BOT_BRAIN_SIZE)
+			cmd_counter = 0;
+		else
+			cmd_counter++;
+		if (env->getTemperatureMatrix()[position.x][position.y] > (brain[cmd_counter] * 3))
+		{
+			if ((cmd_counter + 1) == BOT_BRAIN_SIZE)
+				cmd_counter = 0;
+			else
+				cmd_counter++;
+			cmd_counter = ifer(brain[cmd_counter] + BOT_BRAIN_SIZE - 2);
+		}
+		else
+		{
+			if ((cmd_counter + 2) == BOT_BRAIN_SIZE)
+				cmd_counter = 0;
+			else if ((cmd_counter + 2) > BOT_BRAIN_SIZE)
+				cmd_counter = ifer(cmd_counter + 2);
+			else cmd_counter += 2;
+			cmd_counter = ifer(brain[cmd_counter] + BOT_BRAIN_SIZE - 3);
+		}
 	}
 	//Check energy very more if)
 	else if (brain[cmd_counter] == 19)
@@ -204,7 +230,7 @@ int Bot::getNextInstruction()
 		cmd_counter += brain[ifer(cmd_counter + delta)] + BOT_BRAIN_SIZE - 1;
 	}
 	else
-		cmd_counter += brain[cmd_counter];
+		cmd_counter += brain[cmd_counter]; 
 
 	cmd_counter = ifer(cmd_counter);
 
@@ -244,8 +270,8 @@ void Bot::update()
 	}
 	case botCmd::photosynthesis: 
 	{
-		if (spriteType == botSpriteType::predator)
-			break;
+		/*if (spriteType == botSpriteType::predator)
+			break;*/
 
 		int power = env->getLightMatrix()[position.x][position.y];
 		reduceEnergy(-power);

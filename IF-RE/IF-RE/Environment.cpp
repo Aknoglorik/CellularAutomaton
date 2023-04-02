@@ -260,6 +260,7 @@ void Environment::cellsUpdate()
 
 	if (active_bots.size() <= genAlg->getOutSelection())
 	{
+		std::cout << active_bots.size() << std::endl;
 		all_bots = genAlg->selection(all_bots);
 		active_bots = all_bots;
 		clear();

@@ -20,6 +20,12 @@
 #define ENV_WIDTH				64
 #define ENV_HEIGHT				36
 #define ENV_FREQ_TEMP_UPDATE	10
+
+/// THE FIRST TYPE OF SELECTION
+#define ENV_NUM_SELECTION	10
+#define ENV_NUM_DESCENDANTS 5
+#define ENV_NUM_MUTATION	5
+
 ///
 
 
@@ -143,7 +149,7 @@ namespace botSpriteType
 // _Bot_
 #define BOT_BRAIN_SIZE   64
 #define BOT_CMD_AMOUNT   64
-#define BOT_START_ENERGY 25
+#define BOT_START_ENERGY 30
 
 #define BOT_MAX_ENERGY	 200
 #define BOT_MAX_LIFE	 200

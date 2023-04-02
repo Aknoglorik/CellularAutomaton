@@ -11,7 +11,7 @@ class GeneticAlgorithm
 	int _mutation_num;
 
 public:
-	GeneticAlgorithm(int in_num_selection = 10, int descendants_num = 10, int mutation_num = 1);
+	GeneticAlgorithm(int in_num_selection = ENV_NUM_SELECTION, int descendants_num = ENV_NUM_DESCENDANTS, int mutation_num = ENV_NUM_MUTATION);
 	~GeneticAlgorithm();
 
 	int fitness(Bot* entity);
