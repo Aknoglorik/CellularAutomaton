@@ -14,7 +14,7 @@ int _tempPenalti(float x)
 Corpse::Corpse(Environment* _env, Bot* bot) : Object(_env)
 {
 	energy = bot->getEnergy();
-
+	position = bot->getPos();
 }
 
 void Corpse::update()
@@ -26,5 +26,5 @@ void Corpse::update()
 	if (!reduceEnergy(penalti))
 		is_die = true;
 
-	env->localReduceTemp(position, FOOD_REDUCE_TEMP);
+	env->localReduceTemp(position, -FOOD_REDUCE_TEMP);
 }

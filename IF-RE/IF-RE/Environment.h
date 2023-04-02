@@ -33,6 +33,7 @@ class Environment
 	bool pause = false;
 	
 	// env props
+	float_matrix default_temp;
 	float_matrix temp;
 	float_matrix hiden_temp;
 	float_matrix light;

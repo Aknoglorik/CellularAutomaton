@@ -99,18 +99,21 @@ Environment::Environment(int width, int height) :
 	// Creating & filling matrix
 	matrix.resize(_width);
 	temp.resize(_width);
+	default_temp.resize(_width);
 	hiden_temp.resize(_width);
 	light.resize(_width);
 	for (int i = 0; i < _width; i++)
 	{
 		matrix[i].resize(_height);
 		temp[i].resize(_height);
+		default_temp[i].resize(_height);
 		hiden_temp[i].resize(_height);
 		light[i].resize(_height);
 		for (int j = 0; j < _height; j++)
 		{
 			matrix[i][j] = mainEmptiness;
 			temp[i][j] = 3.f;
+			default_temp[i][j] = temp[i][j];
 			hiden_temp[i][j] = 0.f;
 			light[i][j] = (4 * height / 2 - 2 * j > 0) ? 4 * height / 2 - 2 * j : 0;
 			if (!i && !j)
@@ -146,13 +149,13 @@ void Environment::clear()
 	gen_step = 0;
 	gen_generation++;
 	//pause = true;
-	
+	temp = default_temp;
+	currentObj = nullptr;
 	for (int i = 0; i < _width; i++)
 	{
 		for (int j = 0; j < _height; j++)
 		{
-			currentObj = nullptr;
-			if (matrix[i][j]->getType() || matrix[i][j]->getType() == cellType::Bot) // cellType::Emptiness = 0
+			if (matrix[i][j]->getType() && matrix[i][j]->getType() != cellType::Bot) // cellType::Emptiness = 0
 				delete matrix[i][j];
 			matrix[i][j] = mainEmptiness;
 		}
@@ -178,8 +181,8 @@ void Environment::update()
 	cellsUpdate();
 	foodUpdate();
 	lightUpdate();
-	if (!(gen_step % ENV_FREQ_TEMP_UPDATE))
-		tempUpdate();
+	//if (!(gen_step % ENV_FREQ_TEMP_UPDATE))
+	//	tempUpdate();
 
  	gen_step++;
 }
@@ -255,13 +258,13 @@ void Environment::cellsUpdate()
 		}
 	}
 
-	//if (!active_bots.size())
-	//{
-	//	all_bots = genAlg->selection(all_bots);
-	//	active_bots = all_bots;
-	//	clear();
-	//	return;
-	//}
+	if (active_bots.size() <= genAlg->getOutSelection())
+	{
+		all_bots = genAlg->selection(all_bots);
+		active_bots = all_bots;
+		clear();
+		return;
+	}
 
 	// Update movabel objs
 	for (auto bot : active_bots)
