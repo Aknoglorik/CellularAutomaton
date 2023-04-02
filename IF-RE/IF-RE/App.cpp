@@ -228,17 +228,6 @@ void App::makeButtons()
             }
         });
 
-    create_button(sf::FloatRect(BTN_HORIZ_POS + 4 * BTN_HORIZ_DEL, BTN_VERT_POS + BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "-sun",
-        [&]()
-        {
-            env->setExtraTemp(-1);
-        });
-    create_button(sf::FloatRect(BTN_HORIZ_POS + 7 * BTN_HORIZ_DEL, BTN_VERT_POS + BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "+sun",
-        [&]()
-        {
-            env->setExtraTemp(1);
-        });
-
     create_button(sf::FloatRect(BTN_HORIZ_POS + 6 * BTN_HORIZ_DEL, BTN_VERT_POS + BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "-sun",
         [&]()
         {

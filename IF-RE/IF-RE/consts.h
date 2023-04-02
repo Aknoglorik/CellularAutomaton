@@ -17,8 +17,8 @@
 
 
 /// ENVIRONMENT
-#define ENV_WIDTH				64
-#define ENV_HEIGHT				36
+#define ENV_WIDTH				128
+#define ENV_HEIGHT				72
 #define ENV_FREQ_TEMP_UPDATE	10
 
 /// THE FIRST TYPE OF SELECTION

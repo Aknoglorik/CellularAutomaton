@@ -9,6 +9,13 @@ _INC_OBJP_MATRIX
 
 extern int tempPenalti(float);
 
+float deltaTempByLight(float light)
+{
+	if (light <= 30)
+		return  0.5*(light - 10);
+	return light / 256 + 10;
+}
+
 using sf::Vector2i; // work only in this cpp
 
 /// \brief Function return vector2i by botMove direction (0-7)
@@ -115,7 +122,7 @@ Environment::Environment(int width, int height) :
 			temp[i][j] = 3.f;
 			default_temp[i][j] = temp[i][j];
 			hiden_temp[i][j] = 0.f;
-			light[i][j] = (4 * height / 2 - 2 * j > 0) ? 4 * height / 2 - 2 * j : 0;
+			light[i][j] = 10;//  (4 * height / 2 - 2 * j > 0) ? 4 * height / 2 - 2 * j : 0;
 			if (!i && !j)
 				global_light = light[0][0];
 			//if (i == 7 && j == 4)
@@ -177,25 +184,26 @@ void Environment::update()
 {
 	if (pause)
 		return;
-
 	cellsUpdate();
 	foodUpdate();
-	lightUpdate();
-	//if (!(gen_step % ENV_FREQ_TEMP_UPDATE))
-	//	tempUpdate();
+	if (!(gen_step % ENV_FREQ_TEMP_UPDATE))
+	{
+		lightUpdate();
+		tempUpdate();
+	}
 
  	gen_step++;
 }
 
 void Environment::lightUpdate()
 {
-	//for (int i = 0; i < _width; ++i)
-	//{
-	//	for (int j = 0; j < _height; ++j)
-	//	{
-	//		//temp[i][j] = light[i][j];
-	//	}
-	//}
+	for (int i = 0; i < _width; ++i)
+	{
+		for (int j = 0; j < _height; ++j)
+		{
+			temp[i][j] += deltaTempByLight(light[i][j]);
+		}
+	}
 }
 
 void Environment::tempUpdate()
@@ -434,7 +442,7 @@ void Environment::saveWorld(std::string fname)
 		return;
 	}
 
-	out << gen_generation << ' ' << gen_step << ' ' << _width << ' ' << _height << ' ' << this->global_temp << '\n';
+	out << gen_generation << ' ' << gen_step << ' ' << _width << ' ' << _height << ' ' << this->global_temp << ' ' << global_light << '\n';
 
 	for (int i = 0; i < matrix.size(); i++)
 	{
@@ -455,7 +463,7 @@ void Environment::saveWorld(std::string fname)
 				for (int i = 0; i < bot->brain.size(); i++)
 					out << bot->brain[i] << ' ';
 			}
-			out << matrix[i][j]->getEnergy() << ' ' << matrix[i][j]->isDie() << ' ' << temp[i][j] << ' ';
+			out << matrix[i][j]->getEnergy() << ' ' << matrix[i][j]->isDie() << ' ' << temp[i][j] << ' ' << light[i][j] << ' ';
 		}
 		out << '\n';
 	}
@@ -472,7 +480,7 @@ void Environment::loadWorld(std::string fname)
 		return;
 	}
 
-	in >> gen_generation >> gen_step >> _width >> _height >> global_temp;
+	in >> gen_generation >> gen_step >> _width >> _height >> global_temp >> global_light;
 
 	for (int i = 0; i < matrix.size(); i++)
 		for (int j = 0; j < matrix[0].size(); j++)
@@ -514,7 +522,7 @@ void Environment::loadWorld(std::string fname)
 				for (int i = 0; i < brain.size(); i++)
 					in >> brain[i];
 			}
-			in >> energy >> is_die >> temp[i][j];
+			in >> energy >> is_die >> temp[i][j] >> light[i][j];
 
 			switch (type)
 			{
