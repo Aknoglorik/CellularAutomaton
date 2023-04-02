@@ -1,9 +1,18 @@
 #include "Bot.h"
 #include "Environment.h"
 
+int tempPenalti(float x)
+{
+	int res = ceil((float)pow(x - 10, 2) / 32);
+
+	if (!res)
+		res = 1;
+	return res;
+}
+
 
 Bot::Bot(Environment* _env, sf::Vector2i pos, unsigned int _energy, const std::vector<int>* parent_brain)
-	: env(_env)
+	: Object(_env)
 {
 	energy = _energy;
 	position = pos;
@@ -17,7 +26,7 @@ Bot::Bot(Environment* _env, sf::Vector2i pos, unsigned int _energy, const std::v
 }
 
 // \brief copy-constructor
-Bot::Bot(const Bot& other)
+Bot::Bot(const Bot& other) : Object(other.env)
 {
 	env = other.env;
 	energy = other.energy;
@@ -61,18 +70,6 @@ void Bot::reSetup()
 
 	energy = BOT_START_ENERGY;
 	is_die = false;
-}
-
-// \return false - if cant rudece energy, else true
-bool Bot::reduceEnergy(int value)
-{
-	if (energy <= value)
-	{
-		is_die == true;
-		return false;
-	}
-	energy -= value;
-	return true;
 }
 
 int ifer(int p)
@@ -216,7 +213,7 @@ int Bot::getNextInstruction()
 
 void Bot::update()
 {
-	if (is_die || energy <= 0 || life_counter >= BOT_MAX_LIFE)
+	if (is_die || energy <= 0)// || life_counter >= BOT_MAX_LIFE)
 	{
 		is_die = true;
 		return;
@@ -250,12 +247,8 @@ void Bot::update()
 		if (spriteType == botSpriteType::predator)
 			break;
 
-		int power = env->getTemperatureMatrix()[position.x][position.y] + env->getGloabalTemp();
-		if (((long)energy + power) > 0)
-			energy += power;
-		else
-			energy = 0;
-
+		int power = env->getLightMatrix()[position.x][position.y];
+		reduceEnergy(-power);
 		break;
 	}
 	case botCmd::nothing:
@@ -273,11 +266,9 @@ void Bot::update()
 	if (spriteType == botSpriteType::predator)
 		digest();
 
+	int penalti = tempPenalti(env->getTemperatureMatrix()[position.x][position.y] + env->getGloabalTemp());
+	reduceEnergy(penalti);
 
-	if(energy)
-		energy--;
-	else 
-		is_die = true;
-
+	env->localReduceTemp(position, -FOOD_REDUCE_TEMP);
 	life_counter++;
 }

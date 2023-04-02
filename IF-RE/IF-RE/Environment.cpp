@@ -7,6 +7,7 @@
 
 _INC_OBJP_MATRIX
 
+extern int tempPenalti(float);
 
 using sf::Vector2i; // work only in this cpp
 
@@ -78,6 +79,7 @@ bool checkPos(Vector2i& pos, int width, int height)
 	return vert_corr;
 }
 
+
 int Environment::lookAround(int dir)
 {
 	Vector2i oldPos = currentObj->getPos();
@@ -97,21 +99,30 @@ Environment::Environment(int width, int height) :
 	// Creating & filling matrix
 	matrix.resize(_width);
 	temp.resize(_width);
+	hiden_temp.resize(_width);
+	light.resize(_width);
 	for (int i = 0; i < _width; i++)
 	{
 		matrix[i].resize(_height);
 		temp[i].resize(_height);
+		hiden_temp[i].resize(_height);
+		light[i].resize(_height);
 		for (int j = 0; j < _height; j++)
 		{
 			matrix[i][j] = mainEmptiness;
-			temp[i][j] = 3;// (height / 2 - 2 * j > 0) ? height / 2 - 2 * j : 0;
-			
-			//if (j == 0 || j == _height - 1)//i == 10)
+			temp[i][j] = 3.f;
+			hiden_temp[i][j] = 0.f;
+			light[i][j] = (4 * height / 2 - 2 * j > 0) ? 4 * height / 2 - 2 * j : 0;
+			if (!i && !j)
+				global_light = light[0][0];
+			//if (i == 7 && j == 4)
 			{
 				matrix[i][j] = new Bot(this, Vector2i(i, j));
 				all_bots.push_back(dynamic_cast<Bot*>(matrix[i][j]));
 				active_bots.push_back(dynamic_cast<Bot*>(matrix[i][j]));
 			}
+			if (global_light < light[i][j])
+				global_light = light[i][j];
 		}
 	}
 }
@@ -164,8 +175,73 @@ void Environment::update()
 	if (pause)
 		return;
 
+	cellsUpdate();
+	foodUpdate();
+	lightUpdate();
+	if (!(gen_step % ENV_FREQ_TEMP_UPDATE))
+		tempUpdate();
+
+ 	gen_step++;
+}
+
+void Environment::lightUpdate()
+{
+	//for (int i = 0; i < _width; ++i)
+	//{
+	//	for (int j = 0; j < _height; ++j)
+	//	{
+	//		//temp[i][j] = light[i][j];
+	//	}
+	//}
+}
+
+void Environment::tempUpdate()
+{
+	/// median filter
+	float median;
+	int counter;
+	sf::Vector2i pos;
+	for (int i = 0; i < _width; ++i)
+	{
+		for (int j = 1; j < _height - 1; ++j)
+		{
+			median = 0;
+			counter = 0;
+			// find median
+			for (int k = -1; k < 2; ++k)
+				for (int w = -1; w < 2; ++w)
+				{
+					
+					pos.x = i + k;
+					pos.y = j + w;
+					if (checkPos(pos, _width, _height))
+						continue;
+					median += temp[pos.x][pos.y];
+					
+					++counter;
+				}
+			median /= counter;
+
+			// change by median
+			for (int k = -1; k < 2; ++k)
+				for (int w = -1; w < 2; ++w)
+				{
+					pos.x = i + k;
+					pos.y = j + w;
+					if (checkPos(pos, _width, _height))
+						continue;
+					hiden_temp[pos.x][pos.y] = median;
+				}
+		}
+	}
+	temp = hiden_temp;
+	///
+}
+
+void Environment::cellsUpdate()
+{
 	std::list<Bot*>::iterator it = active_bots.begin();
-	std::list<Bot*>::iterator it_to_del = active_bots.begin();
+	std::list<Bot*>::iterator it_to_del = it;
 
 	for (; it != active_bots.end();)
 	{
@@ -174,36 +250,55 @@ void Environment::update()
 		if ((*it_to_del)->isDie())
 		{
 			sf::Vector2i pos = (*it_to_del)->getPos();
-			matrix[pos.x][pos.y] = mainEmptiness;
+			matrix[pos.x][pos.y] = new Corpse(this, *it_to_del);
 			active_bots.erase(it_to_del);
 		}
 	}
 
-	if (!active_bots.size())
-	{
-		all_bots = genAlg->selection(all_bots);
-		active_bots = all_bots;
-		clear();
-		return;
-	}
+	//if (!active_bots.size())
+	//{
+	//	all_bots = genAlg->selection(all_bots);
+	//	active_bots = all_bots;
+	//	clear();
+	//	return;
+	//}
 
+	// Update movabel objs
 	for (auto bot : active_bots)
 	{
 		currentObj = bot;
-		if (currentObj->getType() != cellType::Emptiness)
-			currentObj->update();
+		currentObj->update();
 	}
+	// Update other objs
+	for (int i = 0; i < _width; ++i)
+	{
+		for (int j = 0; j < _height; ++j)
+		{
+			currentObj = matrix[i][j];
+			if (currentObj->getType() != cellType::Emptiness && currentObj->getType() != cellType::Bot)
+			{
+				currentObj->update();
+				if (currentObj->isDie())
+				{
+					delete matrix[i][j];
+					matrix[i][j] = mainEmptiness;
+				}
+			}
+		}
+	}
+}
 
+void Environment::foodUpdate()
+{
 	if (Food::amount < FOOD_AMOUNT)
 	{
 		sf::Vector2i food_pos = generatePosition();
-		if ((bool)(food_pos.x + 1))
+		if ((bool)(food_pos.x + 1) && (tempPenalti(temp[food_pos.x][food_pos.y]) <= 3))
 		{
-			matrix[food_pos.x][food_pos.y] = new Food;
+			matrix[food_pos.x][food_pos.y] = new Food(this);
 			matrix[food_pos.x][food_pos.y]->setPos(food_pos);
 		}
 	}
- 	gen_step++;
 }
 
 sf::Vector2i Environment::generatePosition()
@@ -258,6 +353,15 @@ bool Environment::moveCell(int dir_move)
 	{
 		currentObj->setPos(newPos);
 	
+		currentObj->addEnergy(matrix[newPos.x][newPos.y]->getEnergy());
+		delete matrix[newPos.x][newPos.y];
+	
+		matrix[newPos.x][newPos.y] = currentObj;
+		matrix[oldPos.x][oldPos.y] = mainEmptiness;
+	}
+	else if (currentObj->getType() == cellType::Bot && matrix[newPos.x][newPos.y]->getType() == cellType::Corpse)
+	{
+		currentObj->setPos(newPos);
 		currentObj->addEnergy(matrix[newPos.x][newPos.y]->getEnergy());
 		delete matrix[newPos.x][newPos.y];
 	
@@ -326,7 +430,7 @@ void Environment::saveWorld(std::string fname)
 		return;
 	}
 
-	out << gen_generation << ' ' << gen_step << ' ' << _width << ' ' << _height << ' ' << this->_temp << '\n';
+	out << gen_generation << ' ' << gen_step << ' ' << _width << ' ' << _height << ' ' << this->global_temp << '\n';
 
 	for (int i = 0; i < matrix.size(); i++)
 	{
@@ -364,7 +468,7 @@ void Environment::loadWorld(std::string fname)
 		return;
 	}
 
-	in >> gen_generation >> gen_step >> _width >> _height >> _temp;
+	in >> gen_generation >> gen_step >> _width >> _height >> global_temp;
 
 	for (int i = 0; i < matrix.size(); i++)
 		for (int j = 0; j < matrix[0].size(); j++)
@@ -430,7 +534,7 @@ void Environment::loadWorld(std::string fname)
 			}
 			case cellType::Food:
 			{
-				matrix[i][j] = new Food;
+				matrix[i][j] = new Food(this);
 				matrix[i][j]->setPos(i, j);
 				break;
 			}

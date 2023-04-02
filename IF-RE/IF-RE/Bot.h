@@ -2,7 +2,6 @@
 #include "Object.hpp"
 #include <vector>
 
-class Environment;
 class GeneticAlgorithm;
 
 // Bioligical unit.
@@ -24,7 +23,6 @@ class Bot : public Object
 	int life_counter = 0;
 	int move_counter = 0;
 
-	Environment* env;
 	int spriteType = botSpriteType::prey;
 
 public:
@@ -53,6 +51,4 @@ public:
 
 	void reSetup();
 
-private:
-	bool reduceEnergy(int value);
 };

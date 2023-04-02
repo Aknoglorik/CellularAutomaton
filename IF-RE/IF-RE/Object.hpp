@@ -3,18 +3,22 @@
 #include <SFML/System.hpp>
 #include "consts.h"
 
+extern class Environment;
+
 class Object
 {
 protected:
 	sf::Vector2i position;
+	Environment* env = nullptr;
 
 	inline static const int type = cellType::Object;
 	bool is_die = false;
 	unsigned int energy = 0;
 
 public:
-	Object() {};
-	virtual ~Object() {};
+	Object() {}
+	Object(Environment* _env) : env(_env) {}
+	virtual ~Object() {}
 
 	/// \brief Object make his step.
 	virtual void update() {};
@@ -32,5 +36,19 @@ public:
 	virtual void addEnergy(unsigned int value) { energy += value; }
 
 	bool isDie() const { return is_die; }
+
+protected:
+	// \return false - if cant rudece energy, else true
+	bool reduceEnergy(int value)
+	{
+		if (energy <= value)
+		{
+			energy = 0;
+			is_die = true;
+			return false;
+		}
+		energy -= value;
+		return true;
+	}
 };
 

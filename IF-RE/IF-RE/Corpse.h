@@ -2,6 +2,7 @@
 #include "Object.hpp"
 
 
+class Bot;
 
 // Remains afte bot's death
 class Corpse : public Object
@@ -9,7 +10,8 @@ class Corpse : public Object
 	inline static const int type = cellType::Corpse;
 
 public:
-	virtual int getType() { return type; };
+	Corpse(Environment* _env, Bot*);
+	virtual int getType() { return type; }
 
-	void update() override {};
+	void update() override;
 };

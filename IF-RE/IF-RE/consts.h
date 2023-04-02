@@ -17,8 +17,9 @@
 
 
 /// ENVIRONMENT
-#define ENV_WIDTH  96
-#define ENV_HEIGHT 54
+#define ENV_WIDTH				15
+#define ENV_HEIGHT				9
+#define ENV_FREQ_TEMP_UPDATE	10
 ///
 
 
@@ -63,7 +64,7 @@
 
 // _Sliders_
 #define SLD_HEIGHT 30.f
-#define SLD_POSITION sf::Vector2f(BTN_HORIZ_POS + 5*BTN_HORIZ_DEL, BTN_VERT_POS + BTN_VERT_DEL)
+#define SLD_POSITION sf::Vector2f(BTN_HORIZ_POS + 4*BTN_HORIZ_DEL, BTN_VERT_POS + BTN_VERT_DEL)
 #define SLD_SIZE sf::Vector2f(2*BTN_HORIZ_DEL - 10.f, SLD_HEIGHT)
 
 
@@ -82,7 +83,7 @@
 // _Namespases_
 namespace cellType
 {
-	enum
+	enum cell
 	{
 		Emptiness,
 		Bot,
@@ -131,13 +132,12 @@ namespace operatingMode
 	};
 }
 
+// 1, 2, 4, 8...
 namespace botSpriteType
 {
-	enum
-	{
-		predator,
-		prey
-	};
+	inline char prey = 1;
+	inline char predator = 2;
+	inline char corpse_eater = 4;
 }
 
 // _Bot_
@@ -156,8 +156,9 @@ namespace botSpriteType
 #define BOT_NRG_TO_EAT   0
 
 // _Food_
-#define FOOD_ENERGY  10
-#define FOOD_AMOUNT  200000
+#define FOOD_ENERGY			10
+#define FOOD_AMOUNT			200000
+#define FOOD_REDUCE_TEMP	1
 
 // _Corpse_
 

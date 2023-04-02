@@ -64,6 +64,107 @@ void App::initVariables()
     /// Setup buttons props
     FPS = 0;
     programEnd = false;
+    hideHUD = false;
+
+    makeWidgets();
+    makeCellTextures();
+}
+
+void App::makeCellTextures()
+{
+    /// Setting up bots textures
+    sf::RectangleShape* emp = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
+    sf::RectangleShape* bot = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
+    sf::RectangleShape* food = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
+    sf::RectangleShape* corpse = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
+    sf::RectangleShape* object = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
+
+    emp->setOutlineColor(gui::Color::LightGray);
+    emp->setOutlineThickness(-1);
+    emp->setFillColor(gui::Color::DullWhite);
+    bot_shapes.push_back(emp);
+
+    bot->setOutlineColor(gui::Color::DarkGreen);
+    bot->setOutlineThickness(-1);
+    bot->setFillColor(gui::Color::Green);
+    bot_shapes.push_back(bot);
+
+    food->setOutlineColor(gui::Color::DarkRed2);
+    food->setOutlineThickness(-1);
+    food->setFillColor(gui::Color::DarkRed);
+    bot_shapes.push_back(food);
+
+    corpse->setOutlineColor(gui::Color::DarkGray3);
+    corpse->setOutlineThickness(-1);
+    corpse->setFillColor(gui::Color::LightGray);
+    bot_shapes.push_back(corpse);
+
+    object->setFillColor(sf::Color::Magenta);
+    bot_shapes.push_back(object);
+
+    sf::RectangleShape* predator = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
+    sf::RectangleShape* prey = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
+
+    sf::Color cl(gui::Color::Red);
+    cl.a = 150;
+    predator->setFillColor(cl);
+    botSpriteByType.push_back(predator);
+
+    cl.a = 0;
+    prey->setFillColor(cl);
+    botSpriteByType.push_back(prey);
+
+    ///
+}
+
+void App::makeWidgets()
+{
+    makeButtons();
+
+    // Slider
+    auto sld = new gui::Slider(SLD_POSITION, SLD_SIZE, 0, -19, 20,
+        [&](int value)
+        {
+            env->setGlobalTemp(value);
+        });
+    //sld->setDynamicValue(env->getGloabalTemp());
+    sld->setAnc(BTN_ANCHOR);
+    widgets.push_back(sld);
+
+
+    /// Labels
+    gui::Label* lb_step = new gui::Label(STEP_LABEL_POS, STEP_LABEL_SIZE);
+    lb_step->setDynamicString(step_string);
+    lb_step->setFont(PxlFont);
+    lb_step->setColor(sf::Color::Red);
+    lb_step->setAnc(BTN_ANCHOR);
+    widgets.push_back(lb_step);
+
+    gui::Label* lb_gen = new gui::Label(STEP_LABEL_POS + sf::Vector2f(0, BTN_VERT_DEL), STEP_LABEL_SIZE);
+    lb_gen->setDynamicString(gen_string);
+    lb_gen->setFont(PxlFont);
+    lb_gen->setColor(sf::Color::Red);
+    lb_gen->setAnc(BTN_ANCHOR);
+    widgets.push_back(lb_gen);
+
+    gui::Label* lb_temp = new gui::Label(STEP_LABEL_POS + sf::Vector2f(0, 2 * BTN_VERT_DEL), FPS_LABEL_SIZE);
+    lb_temp->setDynamicString(temp_mode);
+    lb_temp->setFont(PxlFont);
+    lb_temp->setColor(sf::Color::Red);
+    lb_temp->setAnc(BTN_ANCHOR);
+    widgets.push_back(lb_temp);
+
+    gui::Label* lb_fps = new gui::Label(STEP_LABEL_POS + sf::Vector2f(2 * BTN_HORIZ_DEL, 2 * BTN_VERT_DEL), FPS_LABEL_SIZE);
+    lb_fps->setDynamicString(fps_counter_string);
+    lb_fps->setFont(PxlFont);
+    lb_fps->setColor(sf::Color::Red);
+    lb_fps->setAnc(BTN_ANCHOR);
+    widgets.push_back(lb_fps);
+    ///
+}
+
+void App::makeButtons()
+{
     auto create_button = [&](sf::FloatRect size, sf::String str, std::function<void()> f, gui::Anchor anc = BTN_ANCHOR)
     {
         auto btn = new gui::Button(size, PxlFont, str);
@@ -75,7 +176,7 @@ void App::initVariables()
     // Left side
     // first line
     create_button(sf::FloatRect(BTN_HORIZ_POS, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "Pause",
-        [&]() 
+        [&]()
         {
             env->setPause(true);
         });
@@ -84,22 +185,22 @@ void App::initVariables()
         {
             env->setPause(false);
         });
-    create_button(sf::FloatRect(BTN_HORIZ_POS + 4*BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "tempera",
-        [&]() 
+    create_button(sf::FloatRect(BTN_HORIZ_POS + 4 * BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "tempera",
+        [&]()
         {
             view_mode = operatingMode::_temperature;
         });
-    create_button(sf::FloatRect(BTN_HORIZ_POS + 5*BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "default",
+    create_button(sf::FloatRect(BTN_HORIZ_POS + 5 * BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "default",
         [&]()
         {
             view_mode = operatingMode::_default;
         });
-    create_button(sf::FloatRect(BTN_HORIZ_POS + 6*BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "Energy",
+    create_button(sf::FloatRect(BTN_HORIZ_POS + 6 * BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "Energy",
         [&]()
         {
             view_mode = operatingMode::_energy;
         });
-    create_button(sf::FloatRect(BTN_HORIZ_POS + 7*BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "BotType",
+    create_button(sf::FloatRect(BTN_HORIZ_POS + 7 * BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "BotType",
         [&]()
         {
             view_mode = operatingMode::_botType;
@@ -108,16 +209,16 @@ void App::initVariables()
     create_button(sf::FloatRect(BTN_HORIZ_POS, BTN_VERT_POS + BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "+delay",
         [&]()
         {
-            FPS+=5;
+            FPS += 5;
             root.setFramerateLimit(FPS);
 
         });
     create_button(sf::FloatRect(BTN_HORIZ_POS + BTN_HORIZ_DEL, BTN_VERT_POS + BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "-delay",
         [&]()
         {
-            if ((FPS-5) > 1)
+            if ((FPS - 5) > 1)
             {
-                FPS-=5;
+                FPS -= 5;
                 root.setFramerateLimit(FPS);
             }
             else
@@ -126,34 +227,55 @@ void App::initVariables()
                 root.setFramerateLimit(1);
             }
         });
-    
+
     create_button(sf::FloatRect(BTN_HORIZ_POS + 4 * BTN_HORIZ_DEL, BTN_VERT_POS + BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "-sun",
         [&]()
         {
             env->setExtraTemp(-1);
         });
     create_button(sf::FloatRect(BTN_HORIZ_POS + 7 * BTN_HORIZ_DEL, BTN_VERT_POS + BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "+sun",
-        [&]() 
+        [&]()
+        {
+            env->setExtraTemp(1);
+        });
+
+    create_button(sf::FloatRect(BTN_HORIZ_POS + 6 * BTN_HORIZ_DEL, BTN_VERT_POS + BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "-sun",
+        [&]()
+        {
+            env->setExtraLight(-1);
+        });
+    create_button(sf::FloatRect(BTN_HORIZ_POS + 7 * BTN_HORIZ_DEL, BTN_VERT_POS + BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "+sun",
+        [&]()
+        {
+            env->setExtraLight(1);
+        });
+    create_button(sf::FloatRect(BTN_HORIZ_POS + 6 * BTN_HORIZ_DEL, BTN_VERT_POS + 2 * BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "-temp",
+        [&]()
+        {
+            env->setExtraTemp(-1);
+        });
+    create_button(sf::FloatRect(BTN_HORIZ_POS + 7 * BTN_HORIZ_DEL, BTN_VERT_POS + 2 * BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "+temp",
+        [&]()
         {
             env->setExtraTemp(1);
         });
 
     // Right side
     // first line
-    create_button(sf::FloatRect(-BTN_HORIZ_POS - 2*BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "Save",
+    create_button(sf::FloatRect(-BTN_HORIZ_POS - 2 * BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "Save",
         [&]()
         {
             env->saveWorld("saved_world.txt");
-        }, 
+        },
         gui::BottomRight);
     create_button(sf::FloatRect(-BTN_HORIZ_POS - BTN_HORIZ_DEL, BTN_VERT_POS, BTN_WITDH, BTN_HEIGHT), "Load",
         [&]()
         {
             env->loadWorld("saved_world.txt");
-        }, 
+        },
         gui::BottomRight);
     // second line
-    create_button(sf::FloatRect(-BTN_HORIZ_POS - 2*BTN_HORIZ_DEL, BTN_VERT_POS + BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "GenInfo",
+    create_button(sf::FloatRect(-BTN_HORIZ_POS - 2 * BTN_HORIZ_DEL, BTN_VERT_POS + BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "GenInfo",
         [&]()
         {
             if (!dlg)
@@ -171,87 +293,6 @@ void App::initVariables()
             dlg = nullptr;
         },
         gui::BottomRight);
-    ///
-
-    // Slider
-    auto sld = new gui::Slider(SLD_POSITION, SLD_SIZE, 0, -19, 20,
-        [&](int value) 
-        {
-            env->setGlobalTemp(value);
-        });
-    //sld->setDynamicValue(env->getGloabalTemp());
-    sld->setAnc(BTN_ANCHOR);
-    widgets.push_back(sld);
-
-
-    /// Labels
-    gui::Label* lb_step = new gui::Label(STEP_LABEL_POS, STEP_LABEL_SIZE);
-    lb_step->setDynamicString(step_string);
-    lb_step->setFont(PxlFont);
-    lb_step->setColor(sf::Color::Red);
-    lb_step->setAnc(BTN_ANCHOR);
-    widgets.push_back(lb_step);
-    
-    gui::Label* lb_gen = new gui::Label(STEP_LABEL_POS + sf::Vector2f(0, BTN_VERT_DEL), STEP_LABEL_SIZE);
-    lb_gen->setDynamicString(gen_string);
-    lb_gen->setFont(PxlFont);
-    lb_gen->setColor(sf::Color::Red);
-    lb_gen->setAnc(BTN_ANCHOR);
-    widgets.push_back(lb_gen);
-
-    gui::Label* lb_temp = new gui::Label(STEP_LABEL_POS + sf::Vector2f(0, 2*BTN_VERT_DEL), FPS_LABEL_SIZE);
-    lb_temp->setDynamicString(temp_mode);
-    lb_temp->setFont(PxlFont);
-    lb_temp->setColor(sf::Color::Red);
-    lb_temp->setAnc(BTN_ANCHOR);
-    widgets.push_back(lb_temp);
-
-    gui::Label* lb_fps = new gui::Label(STEP_LABEL_POS + sf::Vector2f(2*BTN_HORIZ_DEL, 2 * BTN_VERT_DEL), FPS_LABEL_SIZE);
-    lb_fps->setDynamicString(fps_counter_string);
-    lb_fps->setFont(PxlFont);
-    lb_fps->setColor(sf::Color::Red);
-    lb_fps->setAnc(BTN_ANCHOR);
-    widgets.push_back(lb_fps);
-    ///
-
-    /// Setting up bots textures
-    sf::RectangleShape *emp             = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
-    sf::RectangleShape *bot             = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
-    sf::RectangleShape *food            = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
-    sf::RectangleShape *corpse          = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
-    sf::RectangleShape *object          = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
-    
-    emp->setOutlineColor(gui::Color::LightGray);
-    emp->setOutlineThickness(-1);
-    emp->setFillColor(gui::Color::DullWhite);
-    bot_shapes.push_back(emp);
-
-    bot->setOutlineColor(gui::Color::DarkGreen);
-    bot->setOutlineThickness(-1);
-    bot->setFillColor(gui::Color::Green);
-    bot_shapes.push_back(bot);
-    
-    food->setFillColor(gui::Color::Pink);
-    bot_shapes.push_back(food);
-
-    corpse->setFillColor(gui::Color::LightGray);
-    bot_shapes.push_back(corpse);
-
-    object->setFillColor(sf::Color::Magenta);
-    bot_shapes.push_back(object);
-
-    sf::RectangleShape* predator        = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
-    sf::RectangleShape* prey            = new sf::RectangleShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
-
-    sf::Color cl(gui::Color::Red);
-    cl.a = 200;
-    predator->setFillColor(cl);
-    botSpriteByType.push_back(predator);
-
-    cl.a = 0;
-    prey->setFillColor(cl);
-    botSpriteByType.push_back(prey);
-    
     ///
 }
 
@@ -293,6 +334,8 @@ void App::pollEvent()
 
                 isFullscreen = !isFullscreen;
             }
+            if (pressed_key == sf::Keyboard::F1)
+                hideHUD = !hideHUD;
             if (pressed_key == sf::Keyboard::W)
                 cameraView->moveUp(true);
             if (pressed_key == sf::Keyboard::A)
@@ -390,32 +433,32 @@ void App::update()
     clock.restart();
     ///
 
-    // game logic
     pollEvent();
 
-    sf::Vector2f mouse_pos(sf::Mouse::getPosition(root).x - (int)root.getSize().x / 2,
-        sf::Mouse::getPosition(root).y - (int)root.getSize().y / 2);
+    // HUD logic
+    if (!hideHUD) 
+    {
+        for (auto wid : widgets)
+            wid->update(root);
 
-    for (auto wid : widgets)
-        wid->update(root);
-
-    std::_Erase_nodes_if(widgets, [&](gui::GObject* gobj)->bool
-        {
-            if (gobj->do_it_close)
+        std::_Erase_nodes_if(widgets, [&](gui::GObject* gobj)->bool
             {
-                delete gobj;
-                if (gobj == (gui::GObject*)dlg)
-                    dlg = nullptr;
+                if (gobj->do_it_close)
+                {
+                    if (gobj == (gui::GObject*)dlg)
+                        dlg = nullptr;
+                    delete gobj;
 
-                gobj = nullptr;
-                return true;
-            }
-            return false;
-        });
+                    gobj = nullptr;
+                    return true;
+                }
+                return false;
+            });
 
-    step_string         = "Step " + std::to_string(env->gen_step);
-    gen_string          = "Gen  " + std::to_string(env->gen_generation);
-    fps_counter_string  = "FPS: " + std::to_string(int(_FPS));
+        step_string         = "Step " + std::to_string(env->gen_step);
+        gen_string          = "Gen  " + std::to_string(env->gen_generation);
+        fps_counter_string  = "FPS: " + std::to_string(int(_FPS));
+    }
 
     env->update();
 
@@ -527,30 +570,7 @@ void App::render()
             }
             if (view_mode == operatingMode::_botType && mat[i][j]->getType() == cellType::Bot)
             {
-                rectangle = botSpriteByType[((Bot*)mat[i][j])->getSpriteType()];
-                rectangle->setPosition(i * CELL_SIZE, j * CELL_SIZE);
-                root.draw(*rectangle);
-
-                if (mat[i][j]->getEnergy() > max_enrg)
-                    max_enrg = mat[i][j]->getEnergy();
-
-
-                if (!flag && !min_enrg && mat[i][j]->getType() == cellType::Bot)
-                {
-                    min_enrg = mat[i][j]->getEnergy();
-                }
-
-                if (flag && mat[i][j]->getEnergy() < min_enrg && mat[i][j]->getType() == cellType::Bot)
-                {
-                    min_enrg = mat[i][j]->getEnergy();
-                }
-
-                temp_mode = "Enrg: " + std::to_string(min_enrg) + " ~ " + std::to_string(max_enrg);
-
-            }
-            if (view_mode == operatingMode::_botType && mat[i][j]->getType() == cellType::Bot)
-            {
-                rectangle = botSpriteByType[((Bot*)mat[i][j])->getSpriteType()];
+                rectangle = botSpriteByType[((Bot*)mat[i][j])->getSpriteType()/2];
                 rectangle->setPosition(i * CELL_SIZE, j * CELL_SIZE);
                 root.draw(*rectangle);
 
@@ -560,7 +580,7 @@ void App::render()
                 if (mat[i][j]->getEnergy() < min_enrg)
                     min_enrg = mat[i][j]->getEnergy();
 
-                temp_mode = "Predator-Prey mode";
+                temp_mode = "Predator-Prey";
 
             }
         }
@@ -590,7 +610,10 @@ void App::render()
         }
 
         koef = 3*max_temp / ((max_temp - min_temp)? (max_temp - min_temp) : 1);
-
+        if (!koef)
+            koef = 3;
+        if (koef < 0)
+            koef = -koef;
         for (int i = 0; i < mat2.size(); i++)
         {
             for (int j = 0; j < mat2[0].size(); j++)
@@ -624,15 +647,18 @@ void App::render()
     }
 
     // HUD
-    root.setView(default_view);
+    if (!hideHUD)
+    {
+            root.setView(default_view);
 
-    sf::RectangleShape hud_bg(sf::Vector2f(default_view.getSize().x, HUD_HEIGHT));
-    hud_bg.setFillColor(HUD_BG);
-    hud_bg.setPosition(0, default_view.getSize().y - HUD_HEIGHT);
-    root.draw(hud_bg);
+            sf::RectangleShape hud_bg(sf::Vector2f(default_view.getSize().x, HUD_HEIGHT));
+            hud_bg.setFillColor(HUD_BG);
+            hud_bg.setPosition(0, default_view.getSize().y - HUD_HEIGHT);
+            root.draw(hud_bg);
 
-    for (auto wid : widgets)
-        root.draw(*wid);
+            for (auto wid : widgets)
+                root.draw(*wid);
+    }
 
     root.display();
 }

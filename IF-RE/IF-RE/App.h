@@ -49,10 +49,17 @@ private:
 	float _FPS;
 	bool programEnd;
 	bool isFullscreen;
+	bool hideHUD;
 	sf::Font PxlFont;
 
 	void initWindow(unsigned int width, unsigned int height, std::string wname, int _fps);
 	void initVariables();
+
+	void makeCellTextures();
+
+	void makeWidgets();
+
+	void makeButtons();
 
 
 public:

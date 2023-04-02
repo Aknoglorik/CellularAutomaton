@@ -17,7 +17,8 @@ class Environment
 {
 	int _width;
 	int _height;
-	int _temp = 0;
+	int global_temp = 0;
+	int global_light = 0;
 
 	GeneticAlgorithm* genAlg = nullptr;
 	objp_matrix matrix;
@@ -31,8 +32,10 @@ class Environment
 	
 	bool pause = false;
 	
-	// temprature
+	// env props
 	float_matrix temp;
+	float_matrix hiden_temp;
+	float_matrix light;
 
 public:
 	int gen_step = 0;
@@ -46,6 +49,11 @@ public:
 	void clear();
 
 	void update();
+	void tempUpdate();
+	void lightUpdate();
+	void cellsUpdate();
+	void foodUpdate();
+
 	sf::Vector2i generatePosition();
 
 	Object* getByPos(sf::Vector2i);
@@ -53,18 +61,23 @@ public:
 	int getHeight() { return _height; }
 	const objp_matrix& getMatrix() { return matrix; }
 	const float_matrix& getTemperatureMatrix() { return temp; }
-	int getGloabalTemp() { return _temp; }
+	const float_matrix& getLightMatrix() { return light; }
+	int getGloabalTemp() { return global_temp; }
+	int getGloaballight() { return global_light; }
 	bool getPause() { return pause; }
 
 	void setPause(bool flag) { pause = flag; }
-	void setExtraTemp(int temp) { _temp += temp; }
-	void setGlobalTemp(int temp) { _temp = temp; }
+	void setExtraTemp(int temp) { global_temp += temp; if (global_light < 0) global_light = 0; }
+	void setExtraLight(int light) { global_light += light; }
+	void setGlobalTemp(int temp) { global_temp = temp; }
 
 	// \return True if cell was moved else false
 	bool moveCell(int);
 	void eatCell(int);
 	void gemmationCell(int);
 	int lookAround(int);
+
+	void localReduceTemp(sf::Vector2i pos, int val) { temp[pos.x][pos.y] -= val; }
 
 	void saveWorld(std::string fname = "");
 	void loadWorld(std::string fname);

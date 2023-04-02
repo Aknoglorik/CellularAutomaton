@@ -9,8 +9,9 @@ class Food : public Object
 
 public:
 	inline static unsigned int amount = 0;
-	Food() { energy = FOOD_ENERGY; amount++; }
+	Food(Environment* _env) : Object(_env) { energy = FOOD_ENERGY; amount++; }
 	~Food() { amount--; }
 	
-	virtual int getType() { return type; };
+	virtual int getType() { return type; }
+	void update() override;
 };
