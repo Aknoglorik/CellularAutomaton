@@ -598,7 +598,7 @@ void App::render()
             }
         }
 
-        koef = 3*max_temp / ((max_temp - min_temp)? (max_temp - min_temp) : 1);
+        koef = 4000 / ((max_temp - min_temp)? (max_temp - min_temp) : 1);
         if (!koef)
             koef = 3;
         if (koef < 0)
@@ -607,7 +607,7 @@ void App::render()
         {
             for (int j = 0; j < mat2[0].size(); j++)
             {
-                rectangle->setFillColor(colorByInt((max_temp - mat2[i][j]) * koef));
+                rectangle->setFillColor(colorByInt((max_temp - mat2[i][j]) * 2));
                 rectangle->setPosition(i * CELL_SIZE, j * CELL_SIZE);
                 root.draw(*rectangle);
             }

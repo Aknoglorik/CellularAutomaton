@@ -1,5 +1,6 @@
 #include "Bot.h"
 #include "Environment.h"
+#include <iostream>
 
 int tempPenalti(float x)
 {
@@ -273,8 +274,9 @@ void Bot::update()
 		/*if (spriteType == botSpriteType::predator)
 			break;*/
 
-		int power = env->getLightMatrix()[position.x][position.y];
-		reduceEnergy(-power);
+		int power = env->getLightMatrix()[position.x][position.y] + env->getGloaballight();
+		energy += power;
+
 		break;
 	}
 	case botCmd::nothing:
@@ -295,6 +297,6 @@ void Bot::update()
 	int penalti = tempPenalti(env->getTemperatureMatrix()[position.x][position.y] + env->getGloabalTemp());
 	reduceEnergy(penalti);
 
-	env->localReduceTemp(position, -FOOD_REDUCE_TEMP);
+	env->localReduceTemp(position, -10);
 	life_counter++;
 }
