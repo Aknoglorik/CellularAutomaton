@@ -607,7 +607,7 @@ void App::render()
         {
             for (int j = 0; j < mat2[0].size(); j++)
             {
-                rectangle->setFillColor(colorByInt((max_temp - mat2[i][j]) * koef));
+                rectangle->setFillColor(colorByInt((max_temp - mat2[i][j]) * 30));// koef));
                 rectangle->setPosition(i * CELL_SIZE, j * CELL_SIZE);
                 root.draw(*rectangle);
             }

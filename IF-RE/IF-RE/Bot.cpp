@@ -1,5 +1,6 @@
 #include "Bot.h"
 #include "Environment.h"
+#include <iostream>
 
 int tempPenalti(float x)
 {
@@ -274,6 +275,7 @@ void Bot::update()
 			break;*/
 
 		int power = env->getLightMatrix()[position.x][position.y];
+		std::cout << "Power:" << power << std::endl;
 		reduceEnergy(-power);
 		break;
 	}
