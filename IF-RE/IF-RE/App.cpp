@@ -446,7 +446,7 @@ void App::update()
 
         step_string         = "Step " + std::to_string(env->gen_step);
         gen_string          = "Gen  " + std::to_string(env->gen_generation);
-        fps_counter_string  = "FPS: " + std::to_string(int(_FPS));
+        fps_counter_string  = "IPS: " + std::to_string(int(_FPS));
     }
 
     env->update();

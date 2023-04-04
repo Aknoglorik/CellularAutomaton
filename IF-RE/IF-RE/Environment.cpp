@@ -126,7 +126,7 @@ Environment::Environment(int width, int height) :
 			light[i][j] = 10;//  (4 * height / 2 - 2 * j > 0) ? 4 * height / 2 - 2 * j : 0;
 			if (!i && !j)
 				global_light = light[0][0];
-			//if (i == 7 && j == 4)
+			if (i == 7 && j == 4)
 			{
 				matrix[i][j] = new Bot(this, Vector2i(i, j));
 				all_bots.push_back(dynamic_cast<Bot*>(matrix[i][j]));
@@ -136,7 +136,6 @@ Environment::Environment(int width, int height) :
 				global_light = light[i][j];
 		}
 	}
-
 	for (int i = 0; i < _width; ++i)
 		for (int j = 0; j < _height; ++j)
 			light[i][j] -= global_light;
@@ -190,7 +189,7 @@ void Environment::update()
 	if (pause)
 		return;
 	cellsUpdate();
-	foodUpdate();
+	//foodUpdate();
 	if (true || !(gen_step % ENV_FREQ_TEMP_UPDATE))
 	{
 		lightUpdate();
@@ -257,7 +256,7 @@ void Environment::cellsUpdate()
 		}
 	}
 
-	if (active_bots.size() <= genAlg->getOutSelection())
+	if (false && active_bots.size() <= genAlg->getOutSelection())
 	{
 		std::cout << active_bots.size() << std::endl;
 		all_bots = genAlg->selection(all_bots);

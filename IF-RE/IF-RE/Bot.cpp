@@ -96,7 +96,8 @@ int Bot::getNextInstruction()
 	//direction sight
 	else if ((brain[cmd_counter] >= 8) && (brain[cmd_counter] <= 15))
 	{
-		dir_sight = brain[cmd_counter] - 8;
+		dir_sight += (brain[cmd_counter]);
+		dir_sight %= 8;
 		Inst = botCmd::nothing;
 		cmd_counter++;
 	}
@@ -274,9 +275,8 @@ void Bot::update()
 		/*if (spriteType == botSpriteType::predator)
 			break;*/
 
-		int power = env->getLightMatrix()[position.x][position.y];
-		std::cout << "Power:" << power << std::endl;
-		reduceEnergy(-power);
+		int power = env->getLightMatrix()[position.x][position.y] + env->getGloaballight();
+		energy += power;
 		break;
 	}
 	case botCmd::nothing:
@@ -295,7 +295,7 @@ void Bot::update()
 		digest();
 
 	int penalti = tempPenalti(env->getTemperatureMatrix()[position.x][position.y] + env->getGloabalTemp());
-	reduceEnergy(penalti);
+	//reduceEnergy(penalti);
 
 	env->localReduceTemp(position, -10);
 	life_counter++;
