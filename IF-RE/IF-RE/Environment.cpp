@@ -3,6 +3,7 @@
 #include <string>
 #include <functional>
 #include <algorithm>
+#include <random>
 #include <iostream>
 
 _INC_OBJP_MATRIX
@@ -119,9 +120,9 @@ Environment::Environment(int width, int height) :
 		for (int j = 0; j < _height; j++)
 		{
 			matrix[i][j] = mainEmptiness;
-			temp[i][j] = 3.f;
+			temp[i][j] = 3.f; (height / 2 - 2 * j > 0) ? 2 * height / 2 - 2 * j : 0;;
 			default_temp[i][j] = temp[i][j];
-			hiden_temp[i][j] = 0.f;
+			hiden_temp[i][j] = temp[i][j];
 			light[i][j] = 10;//  (4 * height / 2 - 2 * j > 0) ? 4 * height / 2 - 2 * j : 0;
 			if (!i && !j)
 				global_light = light[0][0];
@@ -135,6 +136,10 @@ Environment::Environment(int width, int height) :
 				global_light = light[i][j];
 		}
 	}
+
+	for (int i = 0; i < _width; ++i)
+		for (int j = 0; j < _height; ++j)
+			light[i][j] -= global_light;
 }
 
 Environment::~Environment()
@@ -186,7 +191,7 @@ void Environment::update()
 		return;
 	cellsUpdate();
 	foodUpdate();
-	if (!(gen_step % ENV_FREQ_TEMP_UPDATE))
+	if (true || !(gen_step % ENV_FREQ_TEMP_UPDATE))
 	{
 		lightUpdate();
 		tempUpdate();
@@ -201,52 +206,38 @@ void Environment::lightUpdate()
 	{
 		for (int j = 0; j < _height; ++j)
 		{
-			temp[i][j] += deltaTempByLight(light[i][j]);
+			temp[i][j] += deltaTempByLight(light[i][j] + global_light);
 		}
 	}
 }
 
 void Environment::tempUpdate()
 {
-	/// median filter
-	float median;
-	int counter;
 	sf::Vector2i pos;
+	std::vector<int> crawl_order = { 0, 1, 2, 3, 4, 5, 6, 7 };
+
+	std::random_device rd;
+	std::mt19937 prnd(rd());
 	for (int i = 0; i < _width; ++i)
 	{
-		for (int j = 1; j < _height - 1; ++j)
+		for (int j = 0; j < _height; ++j)
 		{
-			median = 0;
-			counter = 0;
-			// find median
-			for (int k = -1; k < 2; ++k)
-				for (int w = -1; w < 2; ++w)
-				{
-					
-					pos.x = i + k;
-					pos.y = j + w;
-					if (checkPos(pos, _width, _height))
-						continue;
-					median += temp[pos.x][pos.y];
-					
-					++counter;
-				}
-			median /= counter;
+			std::shuffle(crawl_order.begin(), crawl_order.end(), prnd);
+			for (int dir : crawl_order)
+			{
+				pos = sf::Vector2i(i,j) + vecByInt(dir);
 
-			// change by median
-			for (int k = -1; k < 2; ++k)
-				for (int w = -1; w < 2; ++w)
+				if (checkPos(pos, _width, _height))
+					continue;
+
+				if (temp[pos.x][pos.y] < temp[i][j])
 				{
-					pos.x = i + k;
-					pos.y = j + w;
-					if (checkPos(pos, _width, _height))
-						continue;
-					hiden_temp[pos.x][pos.y] = median;
+					temp[i][j] -= ENV_HEAT_TRANSFER;
+					temp[pos.x][pos.y] += ENV_HEAT_TRANSFER;
 				}
+			}
 		}
 	}
-	temp = hiden_temp;
-	///
 }
 
 void Environment::cellsUpdate()

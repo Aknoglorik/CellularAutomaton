@@ -598,7 +598,7 @@ void App::render()
             }
         }
 
-        koef = 3*max_temp / ((max_temp - min_temp)? (max_temp - min_temp) : 1);
+        koef = 4000 / ((max_temp - min_temp)? (max_temp - min_temp) : 1);
         if (!koef)
             koef = 3;
         if (koef < 0)
