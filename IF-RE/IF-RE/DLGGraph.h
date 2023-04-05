@@ -74,9 +74,9 @@ public:
 		position.y *= 4;
 		pts.append(sf::Vertex(position, sf::Color::Red));
 
-
-		file << position.x << ' ' << position.y;
-
+		file.open("graph.txt", std::ios_base::app);
+		file << position.x << ' ' << position.y << ' ';
+		file.close();
 		pttts.push_back(position);
 
 	}
