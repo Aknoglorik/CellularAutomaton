@@ -463,7 +463,7 @@ void App::update()
     int step = env->update();
     if (step + 1)
     {
-        std::cout << "--" << step  << std::endl;
+        //std::cout << "--" << step  << std::endl;
         //std::cout << "step " << step << std::endl;
         dkg_graph->AddPoint(sf::Vector2f(env->gen_generation, step));
     }

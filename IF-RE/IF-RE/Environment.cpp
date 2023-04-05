@@ -267,7 +267,7 @@ bool Environment::cellsUpdate()
 		//std::cout << active_bots.size() << std::endl;
 		all_bots = genAlg->selection(all_bots);
 		active_bots = all_bots;
-		std::cout << "dsds "  << this->gen_step << std::endl;
+		//std::cout << "dsds "  << this->gen_step << std::endl;
 		return true;
 	}
 
