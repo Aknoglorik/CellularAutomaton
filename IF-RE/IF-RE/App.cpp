@@ -119,6 +119,11 @@ void App::makeCellTextures()
 
 void App::makeWidgets()
 {
+
+    dkg_graph = new DLGGraph(sf::Vector2f(800, 600), sf::Vector2f(0,  CELL_SIZE * ENV_HEIGHT));//sf::Vector2f(-800, 600));
+    //dkg_graph->setAnc(gui::TopRight);
+    //widgets.push_back(dkg_graph);
+
     makeButtons();
 
     // Slider
@@ -280,6 +285,12 @@ void App::makeButtons()
             if (dlg)
                 dlg->do_it_close = true;
             dlg = nullptr;
+        },
+        gui::BottomRight);
+    create_button(sf::FloatRect(-BTN_HORIZ_POS - 2 * BTN_HORIZ_DEL, BTN_VERT_POS + 2*BTN_VERT_DEL, BTN_WITDH, BTN_HEIGHT), "Graph",
+        [&]()
+        {
+            dkg_graph->draw_it = !dkg_graph->draw_it;
         },
         gui::BottomRight);
     ///
@@ -449,9 +460,16 @@ void App::update()
         fps_counter_string  = "IPS: " + std::to_string(int(_FPS));
     }
 
-    env->update();
+    int step = env->update();
+    if (step + 1)
+    {
+        std::cout << "--" << step  << std::endl;
+        //std::cout << "step " << step << std::endl;
+        dkg_graph->AddPoint(sf::Vector2f(env->gen_generation, step));
+    }
 
     cameraView->move();
+    dkg_graph->update(root);
 }
 
 void App::render()
@@ -634,7 +652,7 @@ void App::render()
             root.draw(line_dlg_obj, 4, sf::Lines);
         }
     }
-
+    root.draw(*dkg_graph);
     // HUD
     if (!hideHUD)
     {

@@ -10,6 +10,7 @@
 
 #define ADD_COLOR_SPECTR
 #include "GenGui.h"
+#include "DLGGraph.h"
 
 
 class App
@@ -31,6 +32,8 @@ private:
 	std::list<gui::GObject*> widgets;
 
 	gui::DialogWndow *dlg = nullptr;
+	DLGGraph* dkg_graph = nullptr;
+
 	sf::Vertex *line_dlg_obj = nullptr;
 
 	// Strings for dynamic Labels
@@ -50,6 +53,7 @@ private:
 	bool programEnd;
 	bool isFullscreen;
 	bool hideHUD;
+
 	sf::Font PxlFont;
 
 	void initWindow(unsigned int width, unsigned int height, std::string wname, int _fps);

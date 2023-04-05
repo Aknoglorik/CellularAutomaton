@@ -17,8 +17,8 @@
 
 
 /// ENVIRONMENT
-#define ENV_WIDTH				16//128
-#define ENV_HEIGHT				9//72
+#define ENV_WIDTH				30//128
+#define ENV_HEIGHT				30//72
 #define ENV_FREQ_TEMP_UPDATE	10
 #define ENV_HEAT_TRANSFER		1
 

@@ -49,10 +49,10 @@ public:
 
 	void clear();
 
-	void update();
+	int update();
 	void tempUpdate();
 	void lightUpdate();
-	void cellsUpdate();
+	bool cellsUpdate();
 	void foodUpdate();
 
 	sf::Vector2i generatePosition();

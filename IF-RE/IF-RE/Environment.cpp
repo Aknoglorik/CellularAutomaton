@@ -184,11 +184,16 @@ void Environment::clear()
 	}
 }
 
-void Environment::update()
+int Environment::update()
 {
+	int result = -1;
 	if (pause)
-		return;
-	cellsUpdate();
+		return result;
+	if (cellsUpdate())
+	{
+		result = this->gen_step + 1;
+		clear();
+	}
 	//foodUpdate();
 	if (true || !(gen_step % ENV_FREQ_TEMP_UPDATE))
 	{
@@ -197,6 +202,7 @@ void Environment::update()
 	}
 
  	gen_step++;
+	return result;
 }
 
 void Environment::lightUpdate()
@@ -239,7 +245,7 @@ void Environment::tempUpdate()
 	}
 }
 
-void Environment::cellsUpdate()
+bool Environment::cellsUpdate()
 {
 	std::list<Bot*>::iterator it = active_bots.begin();
 	std::list<Bot*>::iterator it_to_del = it;
@@ -258,11 +264,11 @@ void Environment::cellsUpdate()
 
 	if (active_bots.size() <= genAlg->getOutSelection())
 	{
-		std::cout << active_bots.size() << std::endl;
+		//std::cout << active_bots.size() << std::endl;
 		all_bots = genAlg->selection(all_bots);
 		active_bots = all_bots;
-		clear();
-		return;
+		std::cout << "dsds "  << this->gen_step << std::endl;
+		return true;
 	}
 
 	// Update movabel objs
@@ -288,6 +294,7 @@ void Environment::cellsUpdate()
 			}
 		}
 	}
+	return false;
 }
 
 void Environment::foodUpdate()
