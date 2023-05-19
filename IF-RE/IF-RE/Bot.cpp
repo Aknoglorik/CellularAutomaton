@@ -297,6 +297,6 @@ void Bot::update()
 	int penalti = tempPenalti(env->getTemperatureMatrix()[position.x][position.y] + env->getGloabalTemp());
 	reduceEnergy(penalti);
 
-	env->localReduceTemp(position, -10);
+	env->localReduceTemp(position, -3);
 	life_counter++;
 }

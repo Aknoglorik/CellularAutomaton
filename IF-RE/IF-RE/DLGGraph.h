@@ -70,8 +70,8 @@ public:
 		////position.y = size.y - position.y;
 
 		//std::cout << position.x << ' ' << position.y << std::endl;
-		position.x *= 4;
-		position.y *= 4;
+		//position.x *= 4;
+		//position.y *= 4;
 		pts.append(sf::Vertex(position, sf::Color::Red));
 
 		file.open("graph.txt", std::ios_base::app);

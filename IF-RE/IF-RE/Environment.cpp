@@ -194,7 +194,7 @@ int Environment::update()
 		result = this->gen_step + 1;
 		clear();
 	}
-	//foodUpdate();
+	foodUpdate();
 	if (true || !(gen_step % ENV_FREQ_TEMP_UPDATE))
 	{
 		lightUpdate();

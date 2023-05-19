@@ -466,6 +466,7 @@ void App::update()
         //std::cout << "--" << step  << std::endl;
         //std::cout << "step " << step << std::endl;
         dkg_graph->AddPoint(sf::Vector2f(env->gen_generation, step));
+        //std::cout << env->gen_generation << ' ' << step << std::endl;
     }
 
     cameraView->move();
